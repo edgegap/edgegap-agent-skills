@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3 (2026-10-09)
+
+- Directory review fixes: no example matchmaker URLs next to token arguments in the C# templates, the self-stop comment no longer names the injected key, the changelog no longer names the icon file, and the README explains which deployment variables the game server reads inside its Edgegap container.
+
 ## 0.1.2 (2026-10-09)
 
 - The Edgegap API token is now a `sensitive` plugin setting (`userConfig.edgegap_api_token`), prompted when the plugin is enabled and kept in the system credential store, instead of the `EDGEGAP_API_TOKEN` environment variable.
@@ -7,7 +11,7 @@
 
 ## 0.1.1 (2026-10-09)
 
-- Plugin icon (`.claude-plugin/icon.png`, Edgegap logo, 512×512) and `privacyPolicyUrl` for the Anthropic Directory listing.
+- Plugin icon (Edgegap logo, 512×512) and `privacyPolicyUrl` for the Anthropic Directory listing.
 
 ## 0.1.0 (2026-10-09)
 

@@ -5,7 +5,7 @@
 //     -edgegapScene Assets/Scenes/Game.unity   (default: first enabled scene in Build Settings)
 //     -edgegapListenPort 7777                  -edgegapAutoStart true|false
 //     -edgegapProfile casual                   -edgegapPortName gameport
-//     -edgegapBaseUrl https://xxx.edgegap.net  -edgegapAuthToken <matchmaker auth token, client-safe>
+//     -edgegapBaseUrl <matchmaker API URL>     -edgegapAuthToken <matchmaker auth token, client-safe>
 //     -edgegapBeacons false                    -edgegapSecureWebSocket true
 // Omitted options keep the component's current value.
 using System;

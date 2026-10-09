@@ -1,6 +1,6 @@
 {
   "name": "edgegap",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Get Unity multiplayer games online on Edgegap: dedicated servers, matchmaking and end-to-end debugging, driven by your coding agent.",
   "author": {
     "name": "Edgegap",

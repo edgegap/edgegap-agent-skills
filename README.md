@@ -74,6 +74,8 @@ Everything here happens only when you ask the agent to work on your game, and mo
 
 **Files it writes to your project**: C# scripts under `Assets/Edgegap/`, a `link.xml`, a `Dockerfile` and `.dockerignore`, `matchmaker-config.json`, a line in `Packages/manifest.json`, and edits to your scenes and netcode scripts.
 
+**Inside your game server (on Edgegap, not on your machine)**: the `EdgegapServerLifecycle` script added to your game reads the deployment variables Edgegap injects into the server container, including a one-time self-stop key, and uses them only to call Edgegap's own self-stop endpoint for that deployment when the match ends. The game client script calls only your matchmaker. Neither script talks to the MCP server.
+
 **Not collected**: the plugin itself sends no telemetry and no conversation data anywhere. Your Edgegap API token and registry credentials are never written to project files. The matchmaker auth token is written into the game client by design: it is meant to ship to players and grants no access to your Edgegap account.
 
 ## Requirements

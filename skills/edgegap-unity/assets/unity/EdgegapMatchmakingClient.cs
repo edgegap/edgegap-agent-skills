@@ -13,7 +13,7 @@ using UnityEngine.Networking;
 public class EdgegapMatchmakingClient : MonoBehaviour
 {
     [Header("Matchmaker (from the Edgegap dashboard)")]
-    [Tooltip("Matchmaker API URL, e.g. https://abc123.edgegap.net (no trailing slash needed).")]
+    [Tooltip("Matchmaker API URL from the Edgegap dashboard (no trailing slash needed).")]
     public string BaseUrl;
 
     [Tooltip("Matchmaker Auth Token. Safe to ship in clients: it grants no Edgegap account access.")]

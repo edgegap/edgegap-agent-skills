@@ -128,7 +128,8 @@ public class EdgegapServerLifecycle : MonoBehaviour
             return;
         }
 
-        // DELETE $ARBITRIUM_DELETE_URL with header Authorization: $ARBITRIUM_DELETE_TOKEN
+        // Edgegap's self-stop endpoint for this deployment. URL and one-time key are injected by Edgegap
+        // into this server container and parsed by the SDK; they never leave Edgegap's infrastructure.
         request.Delete(
             DeploymentEnv.SelfStopURL,
             DeploymentEnv.SelfStopToken,
