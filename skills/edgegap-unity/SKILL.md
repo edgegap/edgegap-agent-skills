@@ -45,7 +45,7 @@ Read `references/netcode.md`.
 
 ## Phase 2: Connect to Edgegap
 
-Read `references/deploy.md` §1-2. Make sure the developer has an account, Docker running, and the Unity Linux Build Support + Linux Dedicated Server modules. Then get the Edgegap MCP connected with their API token: with the `edgegap` plugin they set `EDGEGAP_API_TOKEN` in their environment; otherwise they run the `claude mcp add ...` command in their own terminal. Either way they restart the session afterwards. Common slip: the header must be exactly `Authorization: token <uuid>`. A token pasted with its own `token ` prefix becomes `token token <uuid>` and is rejected as "not an Edgegap API token".
+Read `references/deploy.md` §1-2. Make sure the developer has an account, Docker running, and the Unity Linux Build Support + Linux Dedicated Server modules. Then get the Edgegap MCP connected with their API token: with the `edgegap` plugin Claude Code prompts them for it when the plugin is enabled; otherwise they run the `claude mcp add ...` command in their own terminal. Either way they restart the session afterwards. Common slip: the header must be exactly `Authorization: token <uuid>`. A token pasted with its own `token ` prefix becomes `token token <uuid>` and is rejected as "not an Edgegap API token".
 
 ✅ Check: `edgegap_list_apps` succeeds.
 

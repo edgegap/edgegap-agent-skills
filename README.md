@@ -35,16 +35,7 @@ You only handle the parts that need a human: secrets, a few dashboard clicks, an
 /plugin install edgegap@edgegap
 ```
 
-The plugin installs the skill **and** the hosted Edgegap MCP server. Give the MCP your [Edgegap API token](https://app.edgegap.com/user-settings?tab=tokens) through an environment variable, as the bare UUID, then restart Claude Code:
-
-```bash
-# macOS / Linux (add to ~/.zshrc or ~/.bashrc)
-export EDGEGAP_API_TOKEN=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-```
-```powershell
-# Windows (new terminals and apps pick it up)
-setx EDGEGAP_API_TOKEN xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-```
+The plugin installs the skill **and** the hosted Edgegap MCP server. When you install and enable it, Claude Code asks for your [Edgegap API token](https://app.edgegap.com/user-settings?tab=tokens) (paste just the UUID). It is stored in your system's secure credential store (it's a `sensitive` plugin setting), never in your project, and sent only to the Edgegap MCP server.
 
 ### Claude Code: skill only
 
@@ -67,6 +58,24 @@ The skill is a plain folder: `SKILL.md`, plus `references/` and `assets/`. Point
 
 > claude.ai and Claude Desktop *custom connectors* can't send an `Authorization` header, so they can't use the hosted MCP server. In Claude Desktop, use the local server (`npx -y @edgegap/mcp`) as described in the edgegap-mcp README.
 
+## What the plugin runs, sends and fetches
+
+Everything here happens only when you ask the agent to work on your game, and most steps show you the command first.
+
+**Network**
+- **Hosted Edgegap MCP server**, `https://mcp.edgegap.dev/mcp`, operated by Edgegap. Every tool call sends your Edgegap API token in the `Authorization` header. The server uses it for that request against the Edgegap API (`https://api.edgegap.com`) and does not store it. Tools list and create applications and app versions, start, inspect and stop deployments, read deployment logs, list registry tags, and generate Dockerfiles and matchmaker configs. Deployments are billed to your Edgegap account outside the free tier.
+- **Edgegap container registry**, `registry.edgegap.com`: `docker push` of your game server image, using the registry login you enter yourself with `docker login`.
+- **GitHub**: Unity Package Manager downloads the Edgegap Unity SDK (`https://github.com/edgegap/edgegap-unity-sdk.git#3.5.5`) when the skill adds it to your project.
+- **Docker Hub**: `docker build` pulls the `ubuntu:22.04` base image.
+- **Your matchmaker** (`https://<id>.edgegap.net`, created by you in the Edgegap dashboard): the game client code the skill adds calls it at runtime with the matchmaker auth token.
+- **Optional checks**: `https://api.ipify.org`, to find your public IP so a test server is placed near you, and an HTTPS/WebSocket request to a test deployment to confirm its port answers.
+
+**Local commands** (in your project folder): Unity in batch mode (`-executeMethod EdgegapServerBuild.Build`, `BuildClient`, `EdgegapSceneSetup.Setup`), `docker build`, `docker run` (local smoke test), `docker push`, `git`, `curl`, and a local static web server for WebGL tests.
+
+**Files it writes to your project**: C# scripts under `Assets/Edgegap/`, a `link.xml`, a `Dockerfile` and `.dockerignore`, `matchmaker-config.json`, a line in `Packages/manifest.json`, and edits to your scenes and netcode scripts.
+
+**Not collected**: the plugin itself sends no telemetry and no conversation data anywhere. Your Edgegap API token and registry credentials are never written to project files. The matchmaker auth token is written into the game client by design: it is meant to ship to players and grants no access to your Edgegap account.
+
 ## Requirements
 
 - Unity 2021.3+ (tested on Unity 6000.3) with the **Linux Build Support** and **Linux Dedicated Server Build Support** modules.
@@ -87,7 +96,7 @@ The skill is a plain folder: `SKILL.md`, plus `references/` and `assets/`. Point
 
 ## Security and cost
 
-- Your **Edgegap API token** is organization-wide and can't be scoped. The skill never writes it to files, code or chat. It goes in the MCP config or an environment variable that you set yourself.
+- Your **Edgegap API token** is organization-wide and can't be scoped. The skill never writes it to files, code or chat. It goes in the plugin's sensitive setting (prompted at install) or your own MCP config.
 - The **matchmaker Auth Token** is designed to ship in game clients and grants no account access.
 - Deployments cost money outside the free tier. The skill tags its test deployments, stops the ones it starts, and makes servers stop themselves when matches end.
 
@@ -95,7 +104,7 @@ The skill is a plain folder: `SKILL.md`, plus `references/` and `assets/`. Point
 
 ```
 .claude-plugin/        plugin + marketplace manifests
-.mcp.json              hosted Edgegap MCP server (token from EDGEGAP_API_TOKEN)
+.mcp.json              hosted Edgegap MCP server (token from the plugin's sensitive user setting)
 skills/edgegap-unity/  the skill: SKILL.md, references/, assets/ (C# templates, Dockerfile, matchmaker configs)
 evals/                 test prompts, trigger eval set and a small fixture project
 scripts/validate.py    checks used by CI

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2 (2026-10-09)
+
+- The Edgegap API token is now a `sensitive` plugin setting (`userConfig.edgegap_api_token`), prompted when the plugin is enabled and kept in the system credential store, instead of the `EDGEGAP_API_TOKEN` environment variable.
+- README: new "What the plugin runs, sends and fetches" section listing every network endpoint, local command and project file.
+
 ## 0.1.1 (2026-10-09)
 
 - Plugin icon (`.claude-plugin/icon.png`, Edgegap logo, 512×512) and `privacyPolicyUrl` for the Anthropic Directory listing.

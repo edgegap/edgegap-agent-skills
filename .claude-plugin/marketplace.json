@@ -10,7 +10,7 @@
       "name": "edgegap",
       "source": "./",
       "description": "Unity + Edgegap: dedicated servers and matchmaking, end to end. Includes the edgegap-unity skill and the hosted Edgegap MCP server.",
-      "version": "0.1.1"
+      "version": "0.1.2"
     }
   ]
 }

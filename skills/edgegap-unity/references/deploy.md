@@ -21,7 +21,7 @@ Contents
 
 **Connect the Edgegap MCP server** (hosted, `https://mcp.edgegap.dev/mcp`). First check whether tools named like `edgegap_list_apps` are already available and work; if so, skip this.
 
-If this skill was installed through the `edgegap` Claude Code plugin, the plugin already declares the MCP server and reads the token from the `EDGEGAP_API_TOKEN` environment variable (just the UUID). Ask the developer to set it in their own shell profile or system environment variables, then restart Claude Code. Windows: `setx EDGEGAP_API_TOKEN <uuid>`. macOS/Linux: `export EDGEGAP_API_TOKEN=<uuid>` in `~/.zshrc` or `~/.bashrc`.
+If this skill was installed through the `edgegap` Claude Code plugin, the plugin already declares the MCP server. Its token is a sensitive plugin setting that Claude Code asks for when the plugin is enabled, and keeps in the system credential store. If the tools fail with a missing or invalid token, ask the developer to re-enter it: `/plugin` → edgegap → configure, or disable and re-enable the plugin. Paste only the UUID.
 
 Otherwise ask the developer to run this in their own terminal, so the token never passes through the conversation:
 

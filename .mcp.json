@@ -4,7 +4,7 @@
       "type": "http",
       "url": "https://mcp.edgegap.dev/mcp",
       "headers": {
-        "Authorization": "token ${EDGEGAP_API_TOKEN}"
+        "Authorization": "token ${user_config.edgegap_api_token}"
       }
     }
   }
