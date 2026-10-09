@@ -1,0 +1,16 @@
+{
+  "name": "edgegap",
+  "description": "Official Edgegap skills for coding agents: get multiplayer games online with dedicated servers and matchmaking.",
+  "owner": {
+    "name": "Edgegap",
+    "url": "https://edgegap.com"
+  },
+  "plugins": [
+    {
+      "name": "edgegap",
+      "source": "./",
+      "description": "Unity + Edgegap: dedicated servers and matchmaking, end to end. Includes the edgegap-unity skill and the hosted Edgegap MCP server.",
+      "version": "0.1.0"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+[
+  {"query": "I have a Unity 6 game using Netcode for GameObjects that works with host/client locally. How do I get it running on real dedicated servers with Edgegap so players can join from anywhere?", "should_trigger": true},
+  {"query": "My Unity game works when I play with my friend on the same wifi, but not over the internet. How do I fix that?", "should_trigger": true},
+  {"query": "My Unity game has multiplayer but someone has to host. How do I make it so nobody has to host?", "should_trigger": true},
+  {"query": "Can you help me get my Unity game ready for an online playtest with strangers? it's a 4 player co-op thing, made with mirror", "should_trigger": true},
+  {"query": "ok so i've got a little unity party game using mirror, up to 4 players, works in the editor with host mode. want to put it on itch.io as webgl and have people queue up and land in the same match. least painful way?", "should_trigger": true},
+  {"query": "my fishnet game server runs fine locally with tugboat on port 7770. how do i containerize it and get matchmaking working on edgegap? project is in D:/dev/kartclash", "should_trigger": true},
+  {"query": "How do games like Fall Guys or Among Us get everyone into the same game? I want that for my Unity project.", "should_trigger": true},
+  {"query": "we're a 3 person studio, unity 2022.3 LTS + NGO. need servers in EU and NA for a closed beta next month, players click Play and get matched by region. where do we even start", "should_trigger": true},
+  {"query": "I need servers for my Unity game. Where do I start?", "should_trigger": true},
+  {"query": "edgegap deployment keeps going to Error and my unity clients time out connecting to the port the matchmaker assigned. server is a mirror kcp linux build, can you look at the project and fix it", "should_trigger": true},
+  {"query": "my unity webgl build shows a black screen on itch.io and the console says unable to parse Build/game.framework.js.gz. how do i fix the compression settings", "should_trigger": false},
+  {"query": "write a NetworkVariable based health + damage system for my NGO player prefab, server authoritative, with a ClientRpc for hit effects", "should_trigger": false},
+  {"query": "I want to deploy my Node.js websocket chat backend on Edgegap, I already have a Dockerfile. what app version settings do I need?", "should_trigger": false},
+  {"query": "Unreal Engine 5.4 dedicated server: how do I package a linux server build and host it on edgegap with matchmaking", "should_trigger": false},
+  {"query": "set up game-ci in github actions so my unity project's playmode tests run on every PR, using docker images", "should_trigger": false},
+  {"query": "add a local split-screen 2 player mode to my unity racing game using the new input system", "should_trigger": false},
+  {"query": "my Steamworks.NET leaderboards stopped updating after I upgraded to Unity 6, scores upload returns k_EResultFail", "should_trigger": false},
+  {"query": "How much would Edgegap cost per month vs AWS GameLift for ~1000 CCU of a 10-player shooter? need numbers for a pitch to a studio", "should_trigger": false},
+  {"query": "write a python script that parses my game server's json logs and plots concurrent players over time with matplotlib", "should_trigger": false},
+  {"query": "what's the difference between ClientRpc and ServerRpc in netcode for gameobjects, explain like i'm new", "should_trigger": false}
+]

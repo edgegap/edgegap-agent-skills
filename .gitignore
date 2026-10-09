@@ -1,0 +1,14 @@
+# eval/benchmark output
+*-workspace/
+*.skill
+
+# Unity / editor noise if someone opens a fixture
+Library/
+Temp/
+Logs/
+UserSettings/
+Builds/
+
+.DS_Store
+Thumbs.db
+__pycache__/

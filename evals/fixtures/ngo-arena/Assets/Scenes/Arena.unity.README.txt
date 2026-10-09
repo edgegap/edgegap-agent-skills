@@ -1,0 +1,1 @@
+(binary scene omitted in fixture: contains NetworkManager with UnityTransport 127.0.0.1:7777, PlayerPrefab=Player, ConnectionUI canvas, GameManager)

@@ -1,0 +1,63 @@
+{
+  "skill_name": "edgegap-unity",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a Unity 6 game using Netcode for GameObjects that works with host/client locally. How do I get it running on real dedicated servers with Edgegap so players can join from anywhere? The project is at fixtures/ngo-arena.",
+      "expected_output": "Converts host-based code to a headless dedicated server path, integrates Edgegap SDK matchmaking client with an NGO adapter, server lifecycle with self-stop, Dockerfile + Linux server build, app version (UDP gameport, registry creds), matchmaker config, MCP/token and dashboard guidance, no relay.",
+      "files": [
+        "fixtures/ngo-arena"
+      ],
+      "assertions": [
+        "Does not recommend or use Edgegap relays / Unity Relay / P2P hosting",
+        "Server build path calls StartServer (not StartHost) automatically in headless/server builds",
+        "Host-only game logic (GameManager IsHost coin spawn / win check) converted to server-authoritative (IsServer)",
+        "Headless-unsafe code (music.Play / camera access in GameManager) guarded for the dedicated server",
+        "Edgegap Unity SDK added to Packages/manifest.json pinned to 3.5.5 or newer",
+        "Client matchmaking uses the SDK GroupClient and connects to the assignment's external port",
+        "Server stops its own deployment via ARBITRIUM_DELETE_URL / self-stop when the match ends or is empty",
+        "Dockerfile provided and image built with --platform linux/amd64 and a unique (non-latest) tag",
+        "App version port is UDP with the internal port equal to the transport port, and the port name matches the client lookup",
+        "Registry credentials on the app version are called out as required",
+        "Matchmaker config is valid JSON and its profile name equals the client's profile",
+        "Edgegap API token is never written to project files; developer is told how to connect the Edgegap MCP / provide the token safely",
+        "Gives step-by-step dashboard instructions for creating the matchmaker and retrieving API URL + Auth Token"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I made a game in Unity. How do I put it online so people can play together?",
+      "expected_output": "Beginner-friendly explanation of dedicated server + matchmaker on Edgegap, recommends dedicated servers over relays/P2P, asks the few questions needed (netcode? platforms? players per match?), gives a clear step plan without drowning them.",
+      "files": [],
+      "assertions": [
+        "Recommends dedicated servers with matchmaking on Edgegap (not relay/P2P as the main path)",
+        "Asks whether the game already has multiplayer/netcode (and which)",
+        "Asks about target platforms (e.g. browser/WebGL) or players per match",
+        "Gives a short, ordered plan of the steps ahead",
+        "Response is under 700 words",
+        "Avoids unexplained jargon (terms like authoritative, container, matchmaker are explained or avoided)"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I want players in my Unity game to be able to click 'Play' and get put in a match with other people. How do I do that? My project is at fixtures/mirror-webgl.",
+      "expected_output": "Detects Mirror + SimpleWebTransport WebGL; integrates SDK 3.5.5 GroupClient with wss connection by URI, WS port with TLS Upgrade, allowed_cors_origins, no latency beacons/rule, server self-stop, matchmaker config and dashboard steps.",
+      "files": [
+        "fixtures/mirror-webgl"
+      ],
+      "assertions": [
+        "Edgegap Unity SDK pinned to 3.5.5 or newer (WebGL compile fix)",
+        "Client connects with wss:// to the assignment fqdn and external port via a URI (not ClientPortOption/fixed port)",
+        "App version port is WS with TLS Upgrade enabled",
+        "Matchmaker config includes allowed_cors_origins for the WebGL host origin(s)",
+        "No latencies rule in the profile and latency beacons disabled for WebGL",
+        "Server stops its own deployment via self-stop when the match ends or is empty",
+        "IL2CPP stripping addressed (link.xml or equivalent)",
+        "Detects that Build Settings has no scenes and adds the MirrorTanks scene",
+        "Matchmaker profile name equals the client's profile",
+        "Gives step-by-step dashboard instructions for creating the matchmaker and retrieving API URL + Auth Token",
+        "Does not recommend or use relays"
+      ]
+    }
+  ]
+}
