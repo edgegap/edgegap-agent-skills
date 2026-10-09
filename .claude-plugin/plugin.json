@@ -1,6 +1,6 @@
 {
   "name": "edgegap",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Get Unity multiplayer games online on Edgegap: dedicated servers, matchmaking and end-to-end debugging, driven by your coding agent.",
   "author": {
     "name": "Edgegap",
@@ -9,5 +9,16 @@
   "homepage": "https://docs.edgegap.com/unity",
   "repository": "https://github.com/edgegap/edgegap-agent-skills",
   "license": "Apache-2.0",
-  "keywords": ["edgegap", "unity", "multiplayer", "dedicated-server", "matchmaking", "netcode", "mirror", "fishnet", "webgl"]
+  "privacyPolicyUrl": "https://edgegap.com/legal",
+  "keywords": [
+    "edgegap",
+    "unity",
+    "multiplayer",
+    "dedicated-server",
+    "matchmaking",
+    "netcode",
+    "mirror",
+    "fishnet",
+    "webgl"
+  ]
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1 (2026-10-09)
+
+- Plugin icon (`.claude-plugin/icon.png`, Edgegap logo, 512×512) and `privacyPolicyUrl` for the Anthropic Directory listing.
+
 ## 0.1.0 (2026-10-09)
 
 First release.
