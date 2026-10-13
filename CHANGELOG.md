@@ -1,5 +1,26 @@
 # Changelog
 
+Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
+
+## 0.2.0 (unreleased)
+
+Pack version 0.2.0. The pack now covers any engine, not only Unity.
+
+- New skills:
+  - `edgegap` (entry point): server shape per game (per match, per player session for always-online single-player games, persistent), vocabulary, tiers and limits, and `references/agent-rules.md`, the one place that states when to use MCP tools versus HTTP and the safety rules (confirm before spending, tag what you start, stop only your own deployments by exact ID, secrets never in files, clients or servers).
+  - `edgegap-server-design`: the deployment lifecycle contract for any engine (injected `ARBITRIUM_*`/`MM_*` variables, `0.0.0.0` binding, readiness, self-stop, restart policy, SIGTERM and the termination grace period, logs, persistent worlds).
+  - `edgegap-containerize`: the container contract, a generic Dockerfile and variants, registry push, tags, app version fields, TLS Upgrade for browser clients.
+  - `edgegap-local-testing`: parity run, random-external-port test, drain test, two servers on one host, sizing, and a tagged smoke-test deployment.
+  - `edgegap-deployments-api`: backend allocation with `POST /v2/deployments`, webhooks, rate limits, error handling, retry safety without an idempotency key, reconciliation, and the Nakama, UGS, PlayFab and EOS integrations. `references/api-reference.md` is written from the published OpenAPI spec.
+  - `edgegap-launch`: launch checklist, blue/green rollouts, caching, cost control, observability, Private Fleets and persistence.
+  - `edgegap-troubleshoot`: symptom → cause → fix tables for every layer, any engine.
+- `edgegap-unity` (0.1.4): `metadata.version` added, a pointer to the backend and launch skills, always-online single-player games, and the free registry is now 10 GB.
+- `spec/`: snapshot of Edgegap's published OpenAPI specs. `scripts/check_spec.py` and a weekly workflow (`spec-drift.yml`) open an issue when the published spec changes.
+- `scripts/scan_private_refs.py` (run in CI): fails on personal paths, personal emails, real matchmaker or deployment hosts, registry robot accounts, and token-shaped strings.
+- `scripts/validate.py`: requires `metadata.version` on every skill, and checks relative links and skill names mentioned across skills.
+- Evals: `evals/routing-eval.json` (which skill should load for 20 prompts) and `evals/guardrails.json` (7 safety scenarios). Not yet run.
+- `SECURITY.md`, `CODE_OF_CONDUCT.md`, issue templates. README: skill map, `npx skills add` install for any agent.
+
 ## 0.1.3 (2026-10-09)
 
 - Directory review fixes: no example matchmaker URLs next to token arguments in the C# templates, the self-stop comment no longer names the injected key, the changelog no longer names the icon file, and the README explains which deployment variables the game server reads inside its Edgegap container.

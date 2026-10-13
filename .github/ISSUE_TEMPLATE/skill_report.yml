@@ -1,0 +1,46 @@
+name: Skill went wrong
+description: The agent did something wrong or got stuck while using an Edgegap skill.
+labels: ["skill-report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks! End-to-end reports are the most useful contribution.
+        **Never paste API tokens, registry credentials, matchmaker URLs or tokens, or deployment IDs from a live game.**
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Skill
+      options:
+        - edgegap
+        - edgegap-unity
+        - edgegap-server-design
+        - edgegap-containerize
+        - edgegap-local-testing
+        - edgegap-deployments-api
+        - edgegap-launch
+        - edgegap-troubleshoot
+        - not sure
+    validations:
+      required: true
+  - type: input
+    id: setup
+    attributes:
+      label: Setup
+      description: Engine and version, netcode/transport, target platforms, agent and model, plugin or skill-only install.
+      placeholder: Unreal 5.4, Linux server, Claude Code with the edgegap plugin 0.2.0
+    validations:
+      required: true
+  - type: textarea
+    id: prompt
+    attributes:
+      label: What you asked
+    validations:
+      required: true
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What went wrong
+      description: Where the agent went wrong, and what you expected instead. Logs welcome, with secrets removed.
+    validations:
+      required: true

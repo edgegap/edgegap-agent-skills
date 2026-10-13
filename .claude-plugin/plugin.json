@@ -1,12 +1,12 @@
 {
   "name": "edgegap",
-  "version": "0.1.3",
-  "description": "Get Unity multiplayer games online on Edgegap: dedicated servers, matchmaking and end-to-end debugging, driven by your coding agent.",
+  "version": "0.2.0",
+  "description": "Get multiplayer games online on Edgegap: dedicated servers, matchmaking, backend integration, launch and troubleshooting for Unity and any other engine, driven by your coding agent.",
   "author": {
     "name": "Edgegap",
     "url": "https://edgegap.com"
   },
-  "homepage": "https://docs.edgegap.com/unity",
+  "homepage": "https://docs.edgegap.com",
   "repository": "https://github.com/edgegap/edgegap-agent-skills",
   "license": "Apache-2.0",
   "privacyPolicyUrl": "https://edgegap.com/legal",
@@ -28,6 +28,11 @@
     "netcode",
     "mirror",
     "fishnet",
-    "webgl"
+    "webgl",
+    "unreal",
+    "godot",
+    "docker",
+    "game-server-hosting",
+    "deployments"
   ]
 }

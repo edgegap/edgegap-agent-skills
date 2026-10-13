@@ -159,4 +159,4 @@ With `FirstPlayerTimeoutSeconds = 120`, the lifecycle script stops a direct depl
 
 ## 8. Free tier limits
 
-1 concurrent deployment; deployments stop after 60 min; 2 apps; 2 app versions; 5 GB registry; 1.5 vCPU / 3 GB per deployment; matchmaker stops 3 h after each start (restart from dashboard). Errors: `You have reached you Application limit of 2`, `... Application Version limit of 2` → delete or reuse an old version (dashboard), or upgrade.
+1 concurrent deployment; deployments stop after 60 min; 2 apps; 2 app versions; 10 GB registry; 1.5 vCPU / 3 GB per deployment; matchmaker stops 3 h after each start (restart from dashboard). Errors: `You have reached you Application limit of 2`, `... Application Version limit of 2` → delete or reuse an old version (dashboard), or upgrade.

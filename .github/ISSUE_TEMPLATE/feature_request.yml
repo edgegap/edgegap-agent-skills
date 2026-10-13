@@ -1,0 +1,16 @@
+name: Request a skill or feature
+description: An engine, netcode, integration or workflow the skills should cover.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What should the agent be able to do?
+      placeholder: Take a Godot 4 game with ENet to Edgegap servers and the matchmaker.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it matters
+      description: Your project, and what you do by hand today.

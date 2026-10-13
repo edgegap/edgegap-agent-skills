@@ -2,11 +2,42 @@
 
 Skills that let a coding agent (Claude Code, and other agents that read `SKILL.md` skills) take a multiplayer game from "works on my machine" to **online play with dedicated servers and matchmaking on [Edgegap](https://edgegap.com)**, end to end.
 
+```
+Edgegap Agent Skills
+│
+├─ Start here
+│  └─ edgegap ····················· platform overview, server shape per game, safety rules for the MCP tools
+│
+├─ Engines
+│  └─ edgegap-unity ··············· Unity end to end: server build, matchmaker, client, e2e test
+│
+├─ Any engine
+│  ├─ edgegap-server-design ······· authoritative server and the deployment lifecycle contract
+│  ├─ edgegap-containerize ········ the container contract, Dockerfiles, registries, app versions
+│  ├─ edgegap-local-testing ······· parity tests on your machine, then one smoke-test deployment
+│  └─ edgegap-troubleshoot ········ pull errors, crash loops, OOM, clients that can't connect
+│
+├─ Your backend
+│  └─ edgegap-deployments-api ····· Deploy API, webhooks, cleanup; Nakama, PlayFab, UGS, EOS
+│
+└─ Going live
+   └─ edgegap-launch ·············· launch checklist, rollouts, caching, cost control, operations
+```
+
 | Skill | What it does |
 |---|---|
+| [`edgegap`](skills/edgegap/SKILL.md) | Starting point for any engine. Picks the server shape for any game, including always-online single-player games whose logic should stay off the client, explains apps, versions, deployments and the matchmaker, sets the safety rules for acting on an Edgegap account, and routes to the other skills. |
 | [`edgegap-unity`](skills/edgegap-unity/SKILL.md) | Unity games (Netcode for GameObjects, Mirror, FishNet, WebGL). Converts host/client code to a headless dedicated server, builds and containerizes the Linux server, deploys it on Edgegap, integrates the Edgegap matchmaker SDK in the client, writes the matchmaker config, then debugs until real players get matched onto a server. |
+| [`edgegap-server-design`](skills/edgegap-server-design/SKILL.md) | Engine-agnostic server design: authority, injected env vars, fixed port on `0.0.0.0`, readiness, self-stop at match end, SIGTERM draining, logging. |
+| [`edgegap-containerize`](skills/edgegap-containerize/SKILL.md) | Packages any server into a `linux/amd64` image, pushes it to the Edgegap registry or another one, and registers the app version with the right ports, credentials and restart policy. |
+| [`edgegap-local-testing`](skills/edgegap-local-testing/SKILL.md) | Parity `docker run`, the random-external-port test, the drain test, two servers on one host, resource sizing, then one tagged smoke-test deployment. |
+| [`edgegap-deployments-api`](skills/edgegap-deployments-api/SKILL.md) | Backend code that deploys servers for matches: player-based placement, env vars, tags, webhooks, rate limits, error handling, reconciliation. Covers keeping Nakama, PlayFab, Unity Matchmaker or EOS lobbies. |
+| [`edgegap-launch`](skills/edgegap-launch/SKILL.md) | Production checklist: tier limits, tokens, version settings, caching, log storage, blue/green rollouts, cost control, observability, Private Fleets for persistent servers. |
+| [`edgegap-troubleshoot`](skills/edgegap-troubleshoot/SKILL.md) | Symptom → cause → fix for images, registries, app versions, deployments, server processes, networking and the matchmaker. |
 
-Dedicated (authoritative) servers only. No relays.
+Dedicated (authoritative) servers by default. Relays only when the developer explicitly wants host/client.
+
+API facts in the skills come from Edgegap's published [OpenAPI spec](https://github.com/edgegap/openapi-specification). A snapshot lives in `spec/`, and a weekly CI job opens an issue when the published spec changes.
 
 ## What it looks like
 
@@ -35,16 +66,28 @@ You only handle the parts that need a human: secrets, a few dashboard clicks, an
 /plugin install edgegap@edgegap
 ```
 
-The plugin installs the skill **and** the hosted Edgegap MCP server. When you install and enable it, Claude Code asks for your [Edgegap API token](https://app.edgegap.com/user-settings?tab=tokens) (paste just the UUID). It is stored in your system's secure credential store (it's a `sensitive` plugin setting), never in your project, and sent only to the Edgegap MCP server.
+The plugin installs all the skills **and** the hosted Edgegap MCP server. When you install and enable it, Claude Code asks for your [Edgegap API token](https://app.edgegap.com/user-settings?tab=tokens) (paste just the UUID). It is stored in your system's secure credential store (it's a `sensitive` plugin setting), never in your project, and sent only to the Edgegap MCP server.
 
-### Claude Code: skill only
+### Any agent: the `skills` CLI
 
-Copy the skill into your user skills folder:
+Install every skill into the current project (Claude Code, Cursor, Copilot, Codex and other agents that read `SKILL.md`):
+
+```bash
+npx skills add edgegap/edgegap-agent-skills --skill "*"
+```
+
+Add `-g` to install for your user instead of one project, or pick skills, e.g. `--skill edgegap --skill edgegap-containerize`. Update later with `npx skills update`.
+
+### Claude Code: skills only, by hand
+
+Copy the skills into your user skills folder:
 
 ```bash
 git clone https://github.com/edgegap/edgegap-agent-skills
-cp -r edgegap-agent-skills/skills/edgegap-unity ~/.claude/skills/
+cp -r edgegap-agent-skills/skills/* ~/.claude/skills/
 ```
+
+Manual copies don't update themselves; copy again after pulling.
 
 Then add the Edgegap MCP server yourself:
 
@@ -54,7 +97,7 @@ claude mcp add --transport http edgegap https://mcp.edgegap.dev/mcp -H "Authoriz
 
 ### Other agents
 
-The skill is a plain folder: `SKILL.md`, plus `references/` and `assets/`. Point your agent at `skills/edgegap-unity/SKILL.md`. For the MCP server in other clients (Cursor, VS Code, Codex, Claude Desktop), see [edgegap-mcp](https://github.com/edgegap/edgegap-mcp).
+Each skill is a plain folder: `SKILL.md`, plus `references/` and sometimes `assets/`. Use the `skills` CLI above, or point your agent at `skills/edgegap/SKILL.md` (or `skills/edgegap-unity/SKILL.md` for Unity). For the MCP server in other clients (Cursor, VS Code, Codex, Claude Desktop), see [edgegap-mcp](https://github.com/edgegap/edgegap-mcp).
 
 > claude.ai and Claude Desktop *custom connectors* can't send an `Authorization` header, so they can't use the hosted MCP server. In Claude Desktop, use the local server (`npx -y @edgegap/mcp`) as described in the edgegap-mcp README.
 
@@ -64,6 +107,7 @@ Everything here happens only when you ask the agent to work on your game, and mo
 
 **Network**
 - **Hosted Edgegap MCP server**, `https://mcp.edgegap.dev/mcp`, operated by Edgegap. Every tool call sends your Edgegap API token in the `Authorization` header. The server uses it for that request against the Edgegap API (`https://api.edgegap.com`) and does not store it. Tools list and create applications and app versions, start, inspect and stop deployments, read deployment logs, list registry tags, and generate Dockerfiles and matchmaker configs. Deployments are billed to your Edgegap account outside the free tier.
+- **Edgegap API directly**, `https://api.edgegap.com`: only when the MCP server isn't connected and you give the agent a token for that purpose. Code the `edgegap-deployments-api` skill writes for your backend also calls it, at runtime, with your backend's token.
 - **Edgegap container registry**, `registry.edgegap.com`: `docker push` of your game server image, using the registry login you enter yourself with `docker login`.
 - **GitHub**: Unity Package Manager downloads the Edgegap Unity SDK (`https://github.com/edgegap/edgegap-unity-sdk.git#3.5.5`) when the skill adds it to your project.
 - **Docker Hub**: `docker build` pulls the `ubuntu:22.04` base image.
@@ -72,7 +116,7 @@ Everything here happens only when you ask the agent to work on your game, and mo
 
 **Local commands** (in your project folder): Unity in batch mode (`-executeMethod EdgegapServerBuild.Build`, `BuildClient`, `EdgegapSceneSetup.Setup`), `docker build`, `docker run` (local smoke test), `docker push`, `git`, `curl`, and a local static web server for WebGL tests.
 
-**Files it writes to your project**: C# scripts under `Assets/Edgegap/`, a `link.xml`, a `Dockerfile` and `.dockerignore`, `matchmaker-config.json`, a line in `Packages/manifest.json`, and edits to your scenes and netcode scripts.
+**Files it writes to your project**: C# scripts under `Assets/Edgegap/`, a `link.xml`, a `Dockerfile` and `.dockerignore`, `matchmaker-config.json`, a line in `Packages/manifest.json`, and edits to your scenes and netcode scripts (Unity). For other engines: a `Dockerfile`, `.dockerignore`, an optional start script, server lifecycle code (self-stop, SIGTERM handling), and, if you ask for it, backend code that calls the Deploy API.
 
 **Inside your game server (on Edgegap, not on your machine)**: the `EdgegapServerLifecycle` script added to your game reads the deployment variables Edgegap injects into the server container, including a one-time self-stop key, and uses them only to call Edgegap's own self-stop endpoint for that deployment when the match ends. The game client script calls only your matchmaker. Neither script talks to the MCP server.
 
@@ -94,7 +138,8 @@ Everything here happens only when you ask the agent to work on your game, and mo
 | FishNet 4 | Adapter provided, not yet compile-tested. |
 | Edgegap Unity SDK | 3.5.5+ (3.5.5 is the first that compiles for WebGL). |
 | Edgegap MCP | 0.3.3+ (`tls_upgrade`, `allowed_cors_origins`). Older servers work with dashboard fallbacks. |
-| Triggering | 20/20 on the included eval set: 10 should-trigger prompts, 10 near-misses. |
+| Triggering | `edgegap-unity`: 20/20 on its eval set (10 should-trigger prompts, 10 near-misses). The new engine-agnostic skills ship with a routing eval set (`evals/routing-eval.json`) and safety scenarios (`evals/guardrails.json`), not yet run. |
+| Engine-agnostic skills (0.2.0) | Written from the Edgegap docs and the published OpenAPI spec, and checked against the Unity end-to-end run. Not yet exercised end to end with Unreal, Godot or Node servers. |
 
 ## Security and cost
 
@@ -107,9 +152,12 @@ Everything here happens only when you ask the agent to work on your game, and mo
 ```
 .claude-plugin/        plugin + marketplace manifests
 .mcp.json              hosted Edgegap MCP server (token from the plugin's sensitive user setting)
-skills/edgegap-unity/  the skill: SKILL.md, references/, assets/ (C# templates, Dockerfile, matchmaker configs)
-evals/                 test prompts, trigger eval set and a small fixture project
-scripts/validate.py    checks used by CI
+skills/edgegap/        entry skill: routing, vocabulary, agent safety rules
+skills/edgegap-unity/  Unity skill: SKILL.md, references/, assets/ (C# templates, Dockerfile, matchmaker configs)
+skills/edgegap-*/      engine-agnostic skills (server design, containerize, testing, API, launch, troubleshoot)
+spec/                  snapshot of Edgegap's published OpenAPI specs (checked weekly by CI)
+evals/                 task evals, trigger and routing sets, safety scenarios, a small fixture project
+scripts/               validate.py, scan_private_refs.py, check_spec.py (all run by CI)
 ```
 
 ## Contributing

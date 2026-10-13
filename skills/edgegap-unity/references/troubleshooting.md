@@ -22,7 +22,7 @@ Work from the layer that failed. Always get evidence first (Unity build log, `do
 | `COPY failed ... Builds/EdgegapServer not found` | build the server first; run docker build from the project root; `.dockerignore` must not exclude `Builds/EdgegapServer` |
 | `docker build requires exactly 1 argument` | whitespace in tag/path |
 | push `401 Unauthorized` / `denied` | not logged in to registry.edgegap.com, or wrong project in the image path |
-| `exceed the configured upper limit` | registry full (5 GB free): delete old tags in the dashboard |
+| `exceed the configured upper limit` | registry full (10 GB free): delete old tags in the dashboard |
 | Local container exits immediately | `docker logs <id>`: missing `chmod +x`, wrong executable name (must match Dockerfile), crash on startup (often headless-unsafe code) |
 | `exec format error` / segfault / "not found" | image built for ARM: rebuild with `--platform linux/amd64` |
 
