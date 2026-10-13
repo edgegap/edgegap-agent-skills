@@ -1,6 +1,7 @@
 name: spec drift
 
-# Weekly: compare spec/ with the published Edgegap OpenAPI specs. On drift, open (or comment
+# Weekly: compare the published Edgegap OpenAPI specs with the commit pinned in
+# scripts/spec-pin.txt. On drift, open (or comment
 # on) one tracking issue so the skills' API facts get reviewed.
 on:
   schedule:
@@ -39,7 +40,7 @@ jobs:
             head -c 60000 report.txt
             echo '```'
             echo
-            echo 'To resolve: `python scripts/check_spec.py --update`, re-read the changed operations,'
+            echo 'To resolve: re-read the changed operations, then `python scripts/check_spec.py --update`;'
             echo 'fix skills/edgegap-deployments-api/references/api-reference.md and any affected skill,'
             echo 'bump their metadata.version, and add a CHANGELOG entry.'
           } > report.md

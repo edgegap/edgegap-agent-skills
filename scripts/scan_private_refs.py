@@ -9,8 +9,9 @@ Rules (each hit prints `path:line: rule: excerpt`):
   registry-user   a real Edgegap registry robot account (robot$<org>+...)
   secret-hex      a 32-character hex string, the shape of deployment delete/context tokens
   uuid            a UUID, the shape of Edgegap API and matchmaker tokens
+  token-literal   a long literal value assigned to a token/password/secret field
 
-Vendored third-party files (spec/) and this script are skipped. Known-safe examples are listed
+This script is skipped. Known-safe examples are listed
 in ALLOWED with the reason.
 """
 import re
@@ -18,7 +19,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SKIP_DIRS = {".git", "spec", "node_modules", "__pycache__"}
+SKIP_DIRS = {".git", "node_modules", "__pycache__"}
 SKIP_FILES = {"scripts/scan_private_refs.py"}
 TEXT_SUFFIXES = {".md", ".json", ".cs", ".txt", ".asset", ".yml", ".yaml", ".py", ".sh", ""}
 
@@ -39,6 +40,7 @@ RULES = [
     ("matchmaker-url", re.compile(r"\b[a-z0-9][a-z0-9-]{5,}(?:\.pr)?\.edgegap\.net\b")),
     ("registry-user", re.compile(r"robot\$(?!<)[a-z0-9][a-z0-9-]{3,}\+")),
     ("secret-hex", re.compile(r"\b[0-9a-f]{32}\b")),
+    ("token-literal", re.compile(r"(?i)(?:token|password|secret)[\"']?\s*[:=]\s*[\"']?(?![<$])[A-Za-z0-9_\-]{20,}")),
     ("uuid", re.compile(r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b")),
 ]
 

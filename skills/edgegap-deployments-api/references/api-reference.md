@@ -1,6 +1,6 @@
 # Deployments API reference (the parts a backend needs)
 
-Source: the published OpenAPI specs, https://github.com/edgegap/openapi-specification (`edgegap-v1-openapi.yaml`, `edgegap-v2-openapi.yaml`). A copy of the snapshot these notes were written from is in this repository's `spec/` folder, and a weekly CI job reports when the published spec changes. If the live API disagrees with this page, the live API wins.
+Source: the published OpenAPI specs, https://github.com/edgegap/openapi-specification (`edgegap-v1-openapi.yaml`, `edgegap-v2-openapi.yaml`). These notes were checked against the commit pinned in this repository's `scripts/spec-pin.txt`, and a weekly CI job reports when the published spec changes. If the live API disagrees with this page, the live API wins.
 
 Auth on every call: `Authorization: token <uuid>` (the Edgegap API token). `Content-Type: application/json`.
 

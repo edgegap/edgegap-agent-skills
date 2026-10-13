@@ -37,7 +37,7 @@ Edgegap Agent Skills
 
 Dedicated (authoritative) servers by default. Relays only when the developer explicitly wants host/client.
 
-API facts in the skills come from Edgegap's published [OpenAPI spec](https://github.com/edgegap/openapi-specification). A snapshot lives in `spec/`, and a weekly CI job opens an issue when the published spec changes.
+API facts in the skills come from Edgegap's published [OpenAPI spec](https://github.com/edgegap/openapi-specification). The commit they were checked against is pinned in `scripts/spec-pin.txt`, and a weekly CI job opens an issue when the published spec changes.
 
 ## What it looks like
 
@@ -107,7 +107,7 @@ Everything here happens only when you ask the agent to work on your game, and mo
 
 **Network**
 - **Hosted Edgegap MCP server**, `https://mcp.edgegap.dev/mcp`, operated by Edgegap. Every tool call sends your Edgegap API token in the `Authorization` header. The server uses it for that request against the Edgegap API (`https://api.edgegap.com`) and does not store it. Tools list and create applications and app versions, start, inspect and stop deployments, read deployment logs, list registry tags, and generate Dockerfiles and matchmaker configs. Deployments are billed to your Edgegap account outside the free tier.
-- **Edgegap API directly**, `https://api.edgegap.com`: only when the MCP server isn't connected and you give the agent a token for that purpose. Code the `edgegap-deployments-api` skill writes for your backend also calls it, at runtime, with your backend's token.
+- **Edgegap API from your backend**, `https://api.edgegap.com`: code the `edgegap-deployments-api` skill writes for your backend calls it at runtime, with the token from your backend's secret manager. The agent itself never calls it directly or reads a token from your machine.
 - **Edgegap container registry**, `registry.edgegap.com`: `docker push` of your game server image, using the registry login you enter yourself with `docker login`.
 - **GitHub**: Unity Package Manager downloads the Edgegap Unity SDK (`https://github.com/edgegap/edgegap-unity-sdk.git#3.5.5`) when the skill adds it to your project.
 - **Docker Hub**: `docker build` pulls the `ubuntu:22.04` base image.
@@ -155,7 +155,6 @@ Everything here happens only when you ask the agent to work on your game, and mo
 skills/edgegap/        entry skill: routing, vocabulary, agent safety rules
 skills/edgegap-unity/  Unity skill: SKILL.md, references/, assets/ (C# templates, Dockerfile, matchmaker configs)
 skills/edgegap-*/      engine-agnostic skills (server design, containerize, testing, API, launch, troubleshoot)
-spec/                  snapshot of Edgegap's published OpenAPI specs (checked weekly by CI)
 evals/                 task evals, trigger and routing sets, safety scenarios, a small fixture project
 scripts/               validate.py, scan_private_refs.py, check_spec.py (all run by CI)
 ```

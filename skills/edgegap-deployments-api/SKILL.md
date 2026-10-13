@@ -2,7 +2,7 @@
 name: edgegap-deployments-api
 description: 'Write backend code that starts, tracks and stops Edgegap game servers through the HTTP API: POST /v2/deployments with player IPs or coordinates, env vars and tags, ready/error/terminate webhooks, status polling within rate limits, stopping and cleaning up orphaned deployments, and handing players the address and external port. Use whenever building a custom matchmaker, allocator, lobby service or CI job for Edgegap, connecting Nakama, PlayFab, Unity Matchmaker (UGS Cloud Code), EOS lobbies or Steam lobbies to Edgegap servers, or when someone mentions api.edgegap.com, the Deploy API, deployment webhooks, request_id, or Edgegap error codes 422/429/410. Not for game clients, which must never hold the API token.'
 metadata:
-  version: "0.2.0"
+  version: "0.2.1"
 ---
 
 # Edgegap Deployments API for your backend
@@ -13,7 +13,7 @@ The code you write calls HTTP. When you act on Edgegap yourself while building i
 
 ## Where the token lives
 
-The Edgegap API token is organization-wide and cannot be scoped. It lives only in the backend's secret store or environment (`EDGEGAP_API_TOKEN`), never in a game client, never in a game server or its env vars, never in a lobby owner's client (EOS and Steam guides that call the API from the lobby owner are for prototypes only). Read the base URL from config too, so tests can point elsewhere.
+The Edgegap API token is organization-wide and cannot be scoped. It lives only in the backend's secret manager (loaded at startup by the backend, never read by you from the developer's machine), never in a game client, never in a game server or its env vars, never in a lobby owner's client (EOS and Steam guides that call the API from the lobby owner are for prototypes only). Read the base URL from config too, so tests can point elsewhere.
 
 ## The allocation flow
 
@@ -60,8 +60,8 @@ On stop, `410` means already terminated: treat it as done.
 ## Allocator sketch
 
 ```typescript
-const API = process.env.EDGEGAP_API_URL ?? "https://api.edgegap.com";
-const TOKEN = process.env.EDGEGAP_API_TOKEN!;            // backend secret, never shipped
+const API = config.edgegapApiUrl ?? "https://api.edgegap.com";
+const TOKEN = await secrets.get("edgegap-api-token");   // backend secret manager, never shipped
 const headers = { Authorization: `token ${TOKEN}`, "Content-Type": "application/json" };
 
 export async function allocate(match: Match): Promise<string> {
