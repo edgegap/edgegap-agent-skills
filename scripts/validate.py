@@ -37,6 +37,21 @@ def check_skill(skill_md: Path) -> None:
     for ref in re.findall(r"`((?:references|assets)/[^`*]+?)`", text):
         if not (skill_md.parent / ref.split(" ")[0]).exists():
             errors.append(f"{skill_md}: referenced file not found: {ref}")
+    if not re.search(r'^metadata:\n  version: "\d+\.\d+\.\d+"$', m.group(1), re.M):
+        errors.append(f"{skill_md}: frontmatter needs metadata.version as a quoted semver, e.g. version: \"0.2.0\"")
+
+
+def check_links() -> None:
+    """Every relative markdown link and every `edgegap-*` skill name mentioned must exist."""
+    skills = {p.parent.name for p in (ROOT / "skills").glob("*/SKILL.md")}
+    for md in (ROOT / "skills").rglob("*.md"):
+        text = md.read_text(encoding="utf-8")
+        for target in re.findall(r"\]\((?!https?://|#|mailto:)([^)\s]+)\)", text):
+            if not (md.parent / target.split("#")[0]).exists():
+                errors.append(f"{md.relative_to(ROOT)}: broken link {target}")
+        for name in set(re.findall(r"`(edgegap(?:-[a-z]+)*)`", text)):
+            if name not in skills:
+                errors.append(f"{md.relative_to(ROOT)}: mentions skill `{name}`, which doesn't exist")
 
 
 def check_json() -> None:
@@ -70,6 +85,7 @@ def check_secrets() -> None:
 
 for skill in sorted((ROOT / "skills").glob("*/SKILL.md")):
     check_skill(skill)
+check_links()
 check_json()
 check_manifests()
 check_secrets()

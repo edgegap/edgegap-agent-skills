@@ -1,6 +1,8 @@
 ---
 name: edgegap-unity
 description: 'Unity + Edgegap: get a Unity multiplayer game online with dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a Unity project: it has the Unity workflow, tested C# templates (matchmaker client, server self-stop), Linux server build, Dockerfile, matchmaker config and fixes for known pitfalls. Use when a Unity dev wants online play: "put my game online", "play with people over the internet", "works on LAN/same wifi but not online", "nobody should have to host", "click Play and get matched", how Fall Guys/Among Us match players, servers for a playtest, "where do I start with servers". Also for NGO, Mirror or FishNet host/client games moving to dedicated servers, WebGL multiplayer, or debugging Edgegap deployments, ports or matchmaking for a Unity game. Use even for beginners who never say Edgegap, servers or Docker. Not for Unreal/Godot/non-game backends.'
+metadata:
+  version: "0.1.4"
 ---
 
 # Edgegap for Unity: dedicated servers + matchmaking
@@ -28,7 +30,7 @@ Inspect, don't interrogate:
 
 Then ask, in a single message, only what you couldn't infer. Typically: players per match and teams; whether a browser (WebGL) build matters; whether they have an Edgegap account and Docker installed. Give your recommended defaults so they can just say "yes".
 
-**No multiplayer at all yet?** That's a bigger job: pick a netcode (`references/netcode.md` §1) and get two players working on localhost first. Say so honestly and scope it with the developer before touching Edgegap.
+**No multiplayer at all yet?** That's a bigger job: pick a netcode (`references/netcode.md` §1) and get two players working on localhost first. Say so honestly and scope it with the developer before touching Edgegap. A single-player game that should be always online (so its logic can't be decompiled and cracked from the client) follows the same path: the server owns the rules and state, the matchmaker profile allows one player per match, and the server stops itself when that player leaves.
 
 ## Phase 1: Make the game dedicated-server ready
 
@@ -103,5 +105,7 @@ Hand-off summary: what was built, where the files are, the app/version/matchmake
 - `references/matchmaker.md`: config schema, templates, dashboard steps, ticket/profile contract, injected env vars, matchmaker troubleshooting.
 - `references/troubleshooting.md`: symptom → fix tables for build, Docker, deployment, connection, SDK quirks.
 - `assets/unity/`: drop-in C# (matchmaking client, server lifecycle, DTOs, link.xml). `assets/unity/Editor/`: `EdgegapServerBuild` (Linux server + test client builds) and `EdgegapSceneSetup` (adds/configures the components from the command line). `assets/docker/`: Dockerfile + .dockerignore. `assets/matchmaker/`: config templates.
+
+Related skills in this pack, if installed: `edgegap-deployments-api` when the studio keeps its own backend or matchmaker (Nakama, PlayFab, UGS) instead of Edgegap's, and `edgegap-launch` before going live.
 
 Sources of truth if something here looks outdated: https://docs.edgegap.com/unity, https://github.com/edgegap/edgegap-unity-sdk (releases), and the reference sample https://github.com/edgegap/mirror-webgl.
