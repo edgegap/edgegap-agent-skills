@@ -2,7 +2,16 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
-## 0.2.0 (unreleased)
+## 0.2.1 (2026-10-13)
+
+Fixes the Anthropic Directory hold on 0.2.0.
+
+- The OpenAPI spec copies in `spec/` are gone: their examples contain token-shaped values, which the directory treats as shipped secrets. `scripts/spec-pin.txt` now records the upstream commit the skills were checked against, and `check_spec.py` diffs the published spec against it.
+- `scan_private_refs.py` also flags long literal values assigned to token, password or secret fields.
+- `edgegap` (0.2.1): without the MCP tools, the agent guides the developer through the dashboard instead of asking for the API token or reading it from their machine.
+- `edgegap-deployments-api` (0.2.1): the backend sketch loads the token from a secret manager instead of an environment variable.
+
+## 0.2.0 (2026-10-13)
 
 Pack version 0.2.0. The pack now covers any engine, not only Unity.
 
@@ -15,7 +24,7 @@ Pack version 0.2.0. The pack now covers any engine, not only Unity.
   - `edgegap-launch`: launch checklist, blue/green rollouts, caching, cost control, observability, Private Fleets and persistence.
   - `edgegap-troubleshoot`: symptom → cause → fix tables for every layer, any engine.
 - `edgegap-unity` (0.1.4): `metadata.version` added, a pointer to the backend and launch skills, always-online single-player games, and the free registry is now 10 GB.
-- `spec/`: snapshot of Edgegap's published OpenAPI specs. `scripts/check_spec.py` and a weekly workflow (`spec-drift.yml`) open an issue when the published spec changes.
+- `scripts/check_spec.py` and a weekly workflow (`spec-drift.yml`) open an issue when Edgegap's published OpenAPI spec changes from the commit pinned in `scripts/spec-pin.txt`.
 - `scripts/scan_private_refs.py` (run in CI): fails on personal paths, personal emails, real matchmaker or deployment hosts, registry robot accounts, and token-shaped strings.
 - `scripts/validate.py`: requires `metadata.version` on every skill, and checks relative links and skill names mentioned across skills.
 - Evals: `evals/routing-eval.json` (which skill should load for 20 prompts) and `evals/guardrails.json` (7 safety scenarios). Not yet run.

@@ -6,7 +6,7 @@ Thanks for helping. The most valuable contributions are **end-to-end reports**: 
 
 - Each `skills/<name>/SKILL.md` is a workflow. Keep it under ~500 lines and put details in `references/`.
 - The safety rules for acting on an Edgegap account live once, in `skills/edgegap/references/agent-rules.md`. Link to it instead of restating them.
-- API facts come from Edgegap's published OpenAPI spec (snapshot in `spec/`). If the live API disagrees, the live API wins: fix the skill and say so in the changelog.
+- API facts come from Edgegap's published OpenAPI spec (checked at the commit in `scripts/spec-pin.txt`). If the live API disagrees, the live API wins: fix the skill and say so in the changelog.
 - Every skill has `metadata.version` in its frontmatter. Bump it when you change the skill (patch: wording and fixes; minor: new guidance; major: changed workflow), and bump `Pack version:` in `skills/edgegap/SKILL.md` with each release.
 - The frontmatter `description` decides when agents load the skill. It must stay **under 1024 characters**, because longer descriptions get cut off or ignored. After changing it, re-run the trigger eval (below).
 - Explain *why* in instructions rather than adding MUSTs. Agents follow reasons better.
@@ -20,7 +20,7 @@ python scripts/scan_private_refs.py
 python scripts/check_spec.py
 ```
 
-`validate.py` checks skill frontmatter (name, description length, `metadata.version`), relative links and skill names across skills, every JSON file, and the plugin manifests. `scan_private_refs.py` fails on anything that must not be public: personal paths and emails, real matchmaker or deployment hosts, registry robot accounts, token-shaped strings. CI runs both on every pull request. `check_spec.py` compares `spec/` with the published Edgegap OpenAPI spec; a weekly workflow runs it and opens an issue on drift (`--update` refreshes the snapshot).
+`validate.py` checks skill frontmatter (name, description length, `metadata.version`), relative links and skill names across skills, every JSON file, and the plugin manifests. `scan_private_refs.py` fails on anything that must not be public: personal paths and emails, real matchmaker or deployment hosts, registry robot accounts, token-shaped strings. CI runs both on every pull request. `check_spec.py` diffs the published Edgegap OpenAPI spec against the pinned commit; a weekly workflow runs it and opens an issue on drift (`--update` moves the pin). Don't copy the specs into the repo: their examples contain token-shaped values, and the plugin directory rejects anything that looks like a shipped secret.
 
 If you change the C# templates or adapters, compile them in a real Unity project (Unity 6 LTS, SDK `https://github.com/edgegap/edgegap-unity-sdk.git#3.5.5`) with the netcode you touched, and build a Linux Dedicated Server once:
 
