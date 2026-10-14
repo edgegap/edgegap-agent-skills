@@ -2,6 +2,13 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.3.1 (2026-10-14)
+
+Shrinks the plugin so the directory scanner accepts it.
+
+- `.claude-plugin/icon.png`: 256×256, 256-colour palette, 23 KB (was 512×512 full colour, 162 KB). The pack unpacks to about 331 KB instead of 470 KB.
+- No skill content changes.
+
 ## 0.3.0 (2026-10-14)
 
 Adds Unreal Engine.
