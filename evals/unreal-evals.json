@@ -1,0 +1,31 @@
+{
+  "skill_name": "edgegap-unreal",
+  "constraints": "Environment constraints for this eval: you cannot run Unreal Engine builds, Docker, or Edgegap MCP tools, and you have no Edgegap account access. Make every code and config change directly in the project copy, and write HANDOFF.md in the outputs folder with the exact remaining steps (commands, dashboard clicks, what to verify) a developer must do, in order. Don't ask questions; make reasonable assumptions and state them in HANDOFF.md.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey, I've got an Unreal Engine 5.5 top-down multiplayer game (C++, made from the template) in the project folder. right now people connect by typing open <ip> in the console after I deploy a server by hand on Edgegap. I want players to just click Play and get put in a match with others near them, nobody hosting. can you set it up?",
+      "expected_output": "C++ matchmaker client with latency beacons, server self-stop, deps, target upgrade, quoted ini URL, matchmaker config with latency rule, Dockerfile running binary as non-root with stdout flags, handoff with packaging/registry/version/dashboard steps.",
+      "files": [
+        "fixtures/topdown-cpp"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "My game is Blueprint only (UE 5.5, it's in the project folder, no C++ at all). I'd like online matches on Edgegap with automatic matchmaking for 2-4 players. Is that even possible without C++? Please make whatever changes are needed.",
+      "expected_output": "Adds a C++ module + targets (incl. Server), uproject Modules, drop-in subsystems, Blueprint access path, ini, matchmaker config, Dockerfile, handoff noting source engine.",
+      "files": [
+        "fixtures/topdown-bp"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Our Unreal game's Edgegap setup is broken and I'm out of ideas. The project, our Dockerfile and some logs/notes are in the project folder. Matchmaking fails on the client, the latest deployment errors out with empty logs, and earlier servers took forever to stop. We re-pushed a fixed build under the same tag and nothing changed. Find and fix everything you can.",
+      "expected_output": "Finds: unquoted URL, unset auth token, missing module deps, old target settings, root user, sh -c without exec + .sh wrapper, env leaking delete token, missing -stdout flags, reused latest tag, no server self-stop.",
+      "files": [
+        "fixtures/broken-setup"
+      ]
+    }
+  ],
+  "notes": "Run on copies of https://github.com/edgegap/unreal-sample at main (before the matchmaker PR): fixture topdown-cpp is the repo without Content, topdown-bp removes Source/ and the uproject Modules, broken-setup plants the known pitfalls (unquoted URL, placeholder token, missing module deps, V2 targets, Dockerfile running the .sh as root via sh -c with env, reused latest tag, no server self-stop). Grade by inspecting files and compiling each output's editor target against a UE 5.5 source build."
+}

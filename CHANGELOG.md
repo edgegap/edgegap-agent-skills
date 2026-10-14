@@ -2,6 +2,19 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.3.0 (2026-10-14)
+
+Adds Unreal Engine.
+
+- New skill `edgegap-unreal` (0.1.0): Unreal Engine 5 games, C++ or Blueprint-only, end to end.
+  - Source engine and Linux cross-compile setup, with the fixes that cost hours: compiler pinning when a newer Visual Studio is installed, UE 5.5's missing `<chrono>` include, ShaderCompileWorker, the Windows path limit and old target build settings.
+  - Two drop-in C++ subsystems that need no changes to the game mode or player controller. The matchmaker client measures latency to the beacons, creates and polls a ticket and travels to the server; it adds a default overlay, console commands, Blueprint functions and an event. The server subsystem stops matchmaker deployments once they are empty.
+  - Linux server packaging, a Dockerfile that runs the server binary directly with `-stdout -FullStdOutLogOutput`, and a matchmaker template with a latency rule.
+  - Verified end to end on Edgegap with UE 5.5.4 and the unreal-sample project. Task evals: 100% of checks with the skill versus 70.5% without.
+- `edgegap` (0.3.0): routes Unreal Engine projects to `edgegap-unreal`.
+- `edgegap-unity` (0.1.5): description points Unreal projects to `edgegap-unreal`.
+- README, plugin and marketplace descriptions name Unreal Engine.
+
 ## 0.2.1 (2026-10-13)
 
 Fixes the Anthropic Directory hold on 0.2.0.

@@ -1,5 +1,5 @@
 [
-  {"query": "Unreal Engine 5.4 dedicated server: how do I package a linux server build and host it on edgegap?", "expected_skill": "edgegap"},
+  {"query": "Unreal Engine 5.4 dedicated server: how do I package a linux server build and host it on edgegap?", "expected_skill": "edgegap-unreal"},
   {"query": "I want to host my Godot 4 multiplayer shooter. I have the game but no server setup yet. Where do I start?", "expected_skill": "edgegap"},
   {"query": "I'm building a turn-based word game where players make a move every few hours. How should I host the multiplayer part?", "expected_skill": "edgegap"},
   {"query": "My single-player roguelike keeps getting cracked. Can I make it always online so the game logic runs on a server?", "expected_skill": "edgegap"},
@@ -19,5 +19,7 @@
   {"query": "My Unity game works when I play with my friend on the same wifi, but not over the internet. How do I fix that?", "expected_skill": "edgegap-unity"},
   {"query": "set up game-ci in github actions so my unity project's playmode tests run on every PR", "expected_skill": null},
   {"query": "write a python script that parses my game server's json logs and plots concurrent players", "expected_skill": null},
-  {"query": "add a local split-screen 2 player mode to my unity racing game using the new input system", "expected_skill": null}
+  {"query": "add a local split-screen 2 player mode to my unity racing game using the new input system", "expected_skill": null},
+  {"query": "my UE5 blueprint game only works with listen servers when friends join through Steam. I want proper matchmaking and nobody hosting, can that work without me writing C++?", "expected_skill": "edgegap-unreal"},
+  {"query": "Edgegap deployment of my Unreal server shows empty logs and the dashboard says Error after a few seconds. Dockerfile runs MultiplayerGameServer.sh", "expected_skill": "edgegap-unreal"}
 ]
