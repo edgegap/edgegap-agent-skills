@@ -2,6 +2,18 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.4.0 (2026-10-15)
+
+Adds FishNet.
+
+- New skill `edgegap-fishnet` (0.1.0): Unity games built on FishNet, end to end, from the verified run of [netcode-sample-unity-fishnet](https://github.com/edgegap/netcode-sample-unity-fishnet) (`Fishnet_v4.1.6R_WebGL_Matchmaker`, Unity 2021.3.45f2, FishNet 4.1.6R, Bayou, SDK 3.5.5).
+  - FishNet-ready templates from that run: `EdgegapMatchmakingClient` (Bayou `wss` to the fqdn, Tugboat to the IP), `EdgegapServerLifecycle` (port 7770, starts the server in every server build), `EdgegapPersistence` (keeps the Edgegap object across FishNet scene loads, so self-stop survives the menu → game switch), `EdgegapSceneSetup` that adds all three, and an example menu bridge with a direct-connection mode and an opt-in matchmaker mode.
+  - Covers Start On Headless versus the lifecycle auto start, ServerManager's frame rate, NetworkHudCanvas auto start, Multipass ports, FishNet 2.x/3.x, and removing the client-side Edgegap API calls and token from older FishNet samples.
+  - The SDK 3.5.5 fix Unity before 2022.3 needs (form-encoded POST bodies make every matchmaker ticket fail with HTTP 400), the lone-ticket timing seen on matchmaker 3.3.2, and WebSocket probes that keep a server alive.
+- `edgegap` (0.4.0): routes FishNet projects to `edgegap-fishnet`.
+- `edgegap-unity` (0.1.6): points FishNet projects to `edgegap-fishnet`; its FishNet adapter is now the verified one (sets Use WSS on Bayou), with notes on scene persistence and the SDK fix.
+- README, plugin and marketplace descriptions name FishNet; the verified table lists the FishNet end-to-end run.
+
 ## 0.3.1 (2026-10-14)
 
 Shrinks the plugin so the directory scanner accepts it.

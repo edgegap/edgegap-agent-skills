@@ -54,7 +54,7 @@ Use the port name `gameport` on the app version and in `EdgegapMatchmakingClient
 
 ## 4. Adapter snippets
 
-Paste these into the `#region NETCODE ADAPTER` of `EdgegapMatchmakingClient.cs` and `EdgegapServerLifecycle.cs`, and add the `using` lines at the top. The NGO and Mirror snippets, together with the templates, were compile-tested on Unity 6000.3 with NGO 2.4.3, Mirror 86.13 and SDK 3.5.5, including a Linux Dedicated Server build. The FishNet snippet has not been compiled. These APIs vary slightly between library versions. Check against the installed version (look at the package source in `Library/PackageCache` or `Assets/`) and fix compile errors from the actual API rather than guessing.
+Paste these into the `#region NETCODE ADAPTER` of `EdgegapMatchmakingClient.cs` and `EdgegapServerLifecycle.cs`, and add the `using` lines at the top. The NGO and Mirror snippets, together with the templates, were compile-tested on Unity 6000.3 with NGO 2.4.3, Mirror 86.13 and SDK 3.5.5, including a Linux Dedicated Server build. The FishNet snippet is the one verified end to end on Edgegap in the FishNet sample (FishNet 4.1.6R, Bayou, Unity 2021.3); the `edgegap-fishnet` skill has the complete FishNet workflow. These APIs vary slightly between library versions. Check against the installed version (look at the package source in `Library/PackageCache` or `Assets/`) and fix compile errors from the actual API rather than guessing.
 
 ### Netcode for GameObjects (1.x / 2.x, UnityTransport)
 
@@ -136,14 +136,19 @@ Mirror notes:
 
 ### FishNet (4.x)
 
-Client (`using FishNet; using FishNet.Managing; using FishNet.Transporting;`):
+Client (`using FishNet; using FishNet.Managing; using FishNet.Transporting; using FishNet.Transporting.Bayou;`):
 ```csharp
 private void StartClientConnection(string fqdn, string publicIp, ushort port)
 {
     NetworkManager nm = InstanceFinder.NetworkManager;
-    // Tugboat (UDP): IP. Bayou (WebSocket + TLS Upgrade): fqdn, and enable "Use WSS" on the Bayou client.
-    string host = nm.TransportManager.Transport.GetType().Name == "Bayou" ? fqdn : publicIp;
-    nm.ClientManager.StartConnection(host, port);
+    // Bayou (WebSocket + TLS Upgrade): wss to the fqdn. Tugboat (UDP): the IP.
+    if (nm.TransportManager.Transport is Bayou bayou)
+    {
+        bayou.SetUseWSS(UseSecureWebSocket);
+        nm.ClientManager.StartConnection(fqdn, port);
+        return;
+    }
+    nm.ClientManager.StartConnection(publicIp, port);
 }
 private bool IsClientConnecting() =>
     InstanceFinder.NetworkManager.TransportManager.Transport.GetConnectionState(false) == LocalConnectionState.Starting;
@@ -163,7 +168,7 @@ private void StartDedicatedServer(ushort port)
 private bool IsServerRunning() => InstanceFinder.NetworkManager != null && InstanceFinder.NetworkManager.ServerManager.Started;
 private int ConnectedPlayerCount() => InstanceFinder.NetworkManager.ServerManager.Clients.Count;
 ```
-FishNet notes: either use ServerManager's **Start On Headless** or `AutoStartServer`, not both. Enable **Reuse Server Address** on Tugboat. Leave the server bind address empty or `0.0.0.0`. Set any NetworkHudCanvases `Auto Start Type` to Disabled in client builds.
+FishNet notes: either use ServerManager's **Start On Headless** or `AutoStartServer`, not both (the verified setup turns Start On Headless off). Games that change scenes need the `Edgegap` object kept alive across loads (`EdgegapPersistence` in `edgegap-fishnet`). On Unity before 2022.3, SDK 3.5.5 form-encodes matchmaker POSTs and every ticket gets HTTP 400: see `edgegap-fishnet` troubleshooting. Enable **Reuse Server Address** on Tugboat. Leave the server bind address empty or `0.0.0.0`. Set any NetworkHudCanvases `Auto Start Type` to Disabled in client builds.
 
 ## 5. WebGL clients
 
