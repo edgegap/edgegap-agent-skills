@@ -1,7 +1,7 @@
 {
   "name": "edgegap",
-  "version": "0.5.0",
-  "description": "Get multiplayer games online on Edgegap: dedicated servers, matchmaking, backend integration, launch and troubleshooting for Unity (including FishNet and PurrNet), Unreal Engine and any other engine, driven by your coding agent.",
+  "version": "0.6.0",
+  "description": "Get multiplayer games online on Edgegap: dedicated servers, matchmaking, backend integration, launch and troubleshooting for Unity (including FishNet and PurrNet), Unreal Engine, Manus browser games and any other engine, driven by your coding agent.",
   "author": {
     "name": "Edgegap",
     "url": "https://edgegap.com"
@@ -29,6 +29,10 @@
     "mirror",
     "fishnet",
     "purrnet",
+    "manus",
+    "html5",
+    "websocket",
+    "steam",
     "webgl",
     "unreal",
     "godot",

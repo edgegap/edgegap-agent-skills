@@ -2,6 +2,18 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.6.0 (2026-10-15)
+
+Adds Manus browser games.
+
+- New skill `edgegap-manus` (0.1.0): browser games built with Manus, taken to an authoritative dedicated server and the Edgegap matchmaker.
+  - The Manus backend owns matchmaking: Steam OpenID sign-in verified server-side, join / status / cancel / leave routes that create tickets with `player_ip` (so servers are placed near players, not near the backend), modes as profiles, regions as an `intersection` rule, parties as group tickets, and a queue table whose primary key prevents duplicate tickets. Timeouts, cancel, reconnect and allocation failures (MATCH_FOUND ↔ SEARCHING flips, allocation timeout) are handled and mapped to UI states.
+  - Ed25519 join tokens: the backend signs, the game server verifies with a public key on the app version and checks request ID, `MM_TICKET_IDS`, expiry and replay.
+  - Node.js `ws` game server template (authoritative loop, input validation, reconnect, self-stop, SIGTERM), browser `MatchClient`, Dockerfile, GitHub Actions build to the Edgegap registry, matchmaker config, and phase-by-phase prompts to paste into Manus.
+  - Tested locally against a mock matchmaker and in Docker; not yet run end to end on Edgegap and Manus hosting.
+- `edgegap` (0.6.0): routes Manus games to `edgegap-manus`, and points JavaScript browser games at its templates.
+- README, plugin and marketplace descriptions name Manus.
+
 ## 0.5.0 (2026-10-15)
 
 Adds PurrNet.
