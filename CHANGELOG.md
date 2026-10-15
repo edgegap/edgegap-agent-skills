@@ -2,6 +2,17 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.5.0 (2026-10-15)
+
+Adds PurrNet.
+
+- New skill `edgegap-purrnet` (0.1.0): Unity games built on PurrNet, end to end, from the verified run of [PurrNet-Incremental-Sample](https://github.com/edgegap/PurrNet-Incremental-Sample) (Unity 6000.3.11f1, PurrNet `dev`, `UDPTransport`, SDK 3.5.5).
+  - Templates from that run, which add themselves at startup so scenes stay unchanged: `EdgegapBootstrap` (turns PurrNet's auto start off in builds, keeps the Editor's host + clone flow), `EdgegapServerLifecycle` (UDP 5000, self-stop), `EdgegapConnectPanel` (direct connection by default, Find Match when the matchmaker is on), `EdgegapMatchmakingClient`, and an `EdgegapSettings` asset, plus command-line flags for scripted two-client tests.
+  - PurrNet pitfalls: `[ObserversRpc]` server setup that needs `runLocally: true` on a dedicated server (the sample spawned no trees without it), the async `StartClient` that breaks naive retry loops, PurrNet's own Edgegap auto-setup, permissive network rules, and the untested WebGL path.
+- `edgegap` (0.5.0): routes PurrNet projects to `edgegap-purrnet`.
+- `edgegap-unity` (0.1.7): points PurrNet projects to `edgegap-purrnet`.
+- README, plugin and marketplace descriptions name PurrNet; the verified table lists the PurrNet end-to-end run.
+
 ## 0.4.0 (2026-10-15)
 
 Adds FishNet.

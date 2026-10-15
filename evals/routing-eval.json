@@ -20,6 +20,8 @@
   {"query": "My Unity game uses FishNet with Tugboat. Right now one player hosts. How do I get dedicated servers and a Find Match button on Edgegap?", "expected_skill": "edgegap-fishnet"},
   {"query": "fishnet bayou webgl build can't connect to my edgegap deployment, works on localhost", "expected_skill": "edgegap-fishnet"},
   {"query": "Unity 2021.3 project with the edgegap sdk, every matchmaker ticket returns 400 even though my profile name is right. We use fish-networking", "expected_skill": "edgegap-fishnet"},
+  {"query": "I made a co-op game with PurrNet and right now one player hosts. I want dedicated servers on Edgegap and a Find Match button.", "expected_skill": "edgegap-purrnet"},
+  {"query": "purrnet dedicated server on edgegap: players connect fine but none of the world objects spawn, in host mode everything works", "expected_skill": "edgegap-purrnet"},
   {"query": "Netcode for GameObjects game, I want Edgegap matchmaking and dedicated servers", "expected_skill": "edgegap-unity"},
   {"query": "set up game-ci in github actions so my unity project's playmode tests run on every PR", "expected_skill": null},
   {"query": "write a python script that parses my game server's json logs and plots concurrent players", "expected_skill": null},
