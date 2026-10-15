@@ -12,7 +12,8 @@ Edgegap Agent Skills
 │  ├─ edgegap-unity ··············· Unity end to end: server build, matchmaker, client, e2e test
 │  ├─ edgegap-fishnet ············· Unity + FishNet end to end, with templates verified on Edgegap
 │  ├─ edgegap-purrnet ············· Unity + PurrNet end to end, with templates verified on Edgegap
-│  └─ edgegap-unreal ·············· Unreal Engine end to end: source engine, Linux server, matchmaker, e2e test
+│  ├─ edgegap-unreal ·············· Unreal Engine end to end: source engine, Linux server, matchmaker, e2e test
+│  └─ edgegap-manus ··············· Manus browser games: Steam sign-in, backend matchmaking, Node.js WebSocket server
 │
 ├─ Any engine
 │  ├─ edgegap-server-design ······· authoritative server and the deployment lifecycle contract
@@ -34,6 +35,7 @@ Edgegap Agent Skills
 | [`edgegap-fishnet`](skills/edgegap-fishnet/SKILL.md) | Unity games built on FishNet (Tugboat, Bayou, WebGL). Ships the FishNet-ready matchmaker client, server self-stop and scene-change persistence from the end-to-end run of [netcode-sample-unity-fishnet](https://github.com/edgegap/netcode-sample-unity-fishnet), and covers Start On Headless, Bayou `wss` with TLS Upgrade, removing client-side Edgegap API calls from older samples, and the SDK fix that Unity 2021.3 needs for matchmaker tickets. |
 | [`edgegap-purrnet`](skills/edgegap-purrnet/SKILL.md) | Unity games built on PurrNet. Ships the templates from the end-to-end run of [PurrNet-Incremental-Sample](https://github.com/edgegap/PurrNet-Incremental-Sample): they add themselves at startup without scene edits (server start and self-stop, a connect panel with direct and matchmaker modes, a settings asset, command-line test flags). Covers PurrNet's auto start flags, the async `StartClient`, and `ObserversRpc` setup code that never runs on a dedicated server. |
 | [`edgegap-unreal`](skills/edgegap-unreal/SKILL.md) | Unreal Engine 5 games, C++ or Blueprint-only. Sets up the source engine and Linux cross-compile toolchain, makes the project dedicated-server ready, drops in two C++ subsystems (matchmaker client with latency beacons, server self-stop), packages and containerizes the Linux server, deploys it on Edgegap, writes the matchmaker config, then tests two clients end to end. |
+| [`edgegap-manus`](skills/edgegap-manus/SKILL.md) | Browser games built with [Manus](https://manus.im). The Manus backend signs players in with Steam, creates Edgegap matchmaker tickets (mode, region, party, player IP) and returns only the server address and a short-lived signed join token; the game rules move to an authoritative Node.js WebSocket server that runs on Edgegap with TLS Upgrade (`wss`) and stops itself. Includes duplicate-ticket prevention, timeouts, cancel, reconnect, allocation error handling, a GitHub Actions image build, and phase-by-phase prompts to paste into Manus. |
 | [`edgegap-server-design`](skills/edgegap-server-design/SKILL.md) | Engine-agnostic server design: authority, injected env vars, fixed port on `0.0.0.0`, readiness, self-stop at match end, SIGTERM draining, logging. |
 | [`edgegap-containerize`](skills/edgegap-containerize/SKILL.md) | Packages any server into a `linux/amd64` image, pushes it to the Edgegap registry or another one, and registers the app version with the right ports, credentials and restart policy. |
 | [`edgegap-local-testing`](skills/edgegap-local-testing/SKILL.md) | Parity `docker run`, the random-external-port test, the drain test, two servers on one host, resource sizing, then one tagged smoke-test deployment. |
@@ -103,7 +105,7 @@ claude mcp add --transport http edgegap https://mcp.edgegap.dev/mcp -H "Authoriz
 
 ### Other agents
 
-Each skill is a plain folder: `SKILL.md`, plus `references/` and sometimes `assets/`. Use the `skills` CLI above, or point your agent at `skills/edgegap/SKILL.md` (or `skills/edgegap-unity/SKILL.md` for Unity, `skills/edgegap-fishnet/SKILL.md` for FishNet, `skills/edgegap-purrnet/SKILL.md` for PurrNet, `skills/edgegap-unreal/SKILL.md` for Unreal Engine). For the MCP server in other clients (Cursor, VS Code, Codex, Claude Desktop), see [edgegap-mcp](https://github.com/edgegap/edgegap-mcp).
+Each skill is a plain folder: `SKILL.md`, plus `references/` and sometimes `assets/`. Use the `skills` CLI above, or point your agent at `skills/edgegap/SKILL.md` (or `skills/edgegap-unity/SKILL.md` for Unity, `skills/edgegap-fishnet/SKILL.md` for FishNet, `skills/edgegap-purrnet/SKILL.md` for PurrNet, `skills/edgegap-unreal/SKILL.md` for Unreal Engine, `skills/edgegap-manus/SKILL.md` for Manus games). Manus users can upload the `skills/edgegap-manus` folder in Manus (Skills → + Add). For the MCP server in other clients (Cursor, VS Code, Codex, Claude Desktop), see [edgegap-mcp](https://github.com/edgegap/edgegap-mcp).
 
 > claude.ai and Claude Desktop *custom connectors* can't send an `Authorization` header, so they can't use the hosted MCP server. In Claude Desktop, use the local server (`npx -y @edgegap/mcp`) as described in the edgegap-mcp README.
 
@@ -144,6 +146,7 @@ Everything here happens only when you ask the agent to work on your game, and mo
 | FishNet 4.1 + Bayou (WebGL) | **End-to-end verified** on Edgegap with [netcode-sample-unity-fishnet](https://github.com/edgegap/netcode-sample-unity-fishnet) (Unity 2021.3.45f2): two browser clients matched by the matchmaker, connected over `wss` with TLS Upgrade, played, and the server stopped itself; the no-player self-stop works too. The `edgegap-fishnet` templates are the files from that run. Tugboat (UDP) and Multipass compile but have not been run on Edgegap; FishNet 2.x/3.x are best effort. |
 | PurrNet + UDPTransport | **End-to-end verified** on Edgegap with [PurrNet-Incremental-Sample](https://github.com/edgegap/PurrNet-Incremental-Sample) (Unity 6000.3.11f1): two desktop clients played on the same server by direct connection and through the matchmaker (matched in about 35 s), and the server stopped itself both times. The `edgegap-purrnet` templates are the files from that run. `WebTransport` (WebGL) has not been run on Edgegap. |
 | Unreal Engine 5.5 (C++ subsystems) | **End-to-end verified** on Edgegap with the [unreal-sample](https://github.com/edgegap/unreal-sample) top-down project: two clients pinged the beacons, were matched under a latency rule in about 8 s, joined the same server, and the server stopped itself. The drop-in templates compile for the Win64 editor and as a Linux server (clang). Task evals: 3 scenarios (C++ project, Blueprint-only project, debugging a broken setup), 100% of checks with the skill versus 70.5% without, and only the with-skill outputs all compile against UE 5.5. |
+| Manus browser games (Node.js + WebSocket) | Templates tested locally against a mock matchmaker: backend flow (duplicate join, cancel, timeout, allocation failures), join tokens and their reject paths, reconnect, self-stop, and the Docker image. The browser client is type-checked only. Not yet run end to end on Edgegap and Manus hosting. |
 | Edgegap Unity SDK | 3.5.5+ (3.5.5 is the first that compiles for WebGL). |
 | Edgegap MCP | 0.3.3+ (`tls_upgrade`, `allowed_cors_origins`). Older servers work with dashboard fallbacks. |
 | Triggering | `edgegap-unity`: 20/20 on its eval set (10 should-trigger prompts, 10 near-misses). `edgegap-unreal`, `edgegap-fishnet` and `edgegap-purrnet`: not yet measured. The new engine-agnostic skills ship with a routing eval set (`evals/routing-eval.json`) and safety scenarios (`evals/guardrails.json`), not yet run. |
@@ -163,6 +166,7 @@ Everything here happens only when you ask the agent to work on your game, and mo
 skills/edgegap/        entry skill: routing, vocabulary, agent safety rules
 skills/edgegap-unity/  Unity skill: SKILL.md, references/, assets/ (C# templates, Dockerfile, matchmaker configs)
 skills/edgegap-fishnet/ FishNet skill: SKILL.md, references/, assets/ (FishNet-ready C# templates, Dockerfile, matchmaker config)
+skills/edgegap-manus/   Manus skill: SKILL.md, references/, assets/ (TypeScript backend, Node.js game server, browser client, Dockerfile, GitHub Actions, matchmaker config, Manus prompts)
 skills/edgegap-purrnet/ PurrNet skill: SKILL.md, references/, assets/ (runtime-bootstrapped C# templates, settings asset, Dockerfile, matchmaker config)
 skills/edgegap-unreal/ Unreal Engine skill: SKILL.md, references/, assets/ (C++ subsystems, ini, Dockerfile, matchmaker config)
 skills/edgegap-*/      engine-agnostic skills (server design, containerize, testing, API, launch, troubleshoot)
