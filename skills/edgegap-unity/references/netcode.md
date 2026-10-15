@@ -21,7 +21,7 @@ Without one, recommend:
 
 Get basic multiplayer working **locally** first: two players can move and see each other with one Editor running as server and one as client (Unity 6 Multiplayer Play Mode, or a second build). Don't containerize a game whose netcode doesn't work on localhost. Every later failure becomes ambiguous.
 
-Netcode Photon Fusion 2 / PurrNet / FishNet etc. also work on Edgegap. The same principles apply (server build, bind 0.0.0.0, fixed internal port, connect to external port). Write the adapter from that library's docs.
+PurrNet and FishNet have their own skills with verified templates (`edgegap-purrnet`, `edgegap-fishnet`). Photon Fusion 2 and other netcodes also work on Edgegap. The same principles apply (server build, bind 0.0.0.0, fixed internal port, connect to external port). Write the adapter from that library's docs.
 
 ## 2. Converting host/client (listen server) to a dedicated server
 
