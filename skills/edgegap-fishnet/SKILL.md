@@ -1,0 +1,107 @@
+---
+name: edgegap-fishnet
+description: 'FishNet (Fish-Networking) + Edgegap: take a Unity game built on FishNet to dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a FishNet project (Assets/FishNet, Tugboat, Bayou, Multipass, ServerManager, NetworkHudCanvas). It has FishNet-ready C# templates verified on Edgegap (matchmaker client, server self-stop, scene-change persistence), the Start On Headless and WebGL/Bayou wss setup, port 7770 app version, Dockerfile, matchmaker config and fixes for known pitfalls, including the SDK JSON bug on Unity before 2022.3. Use when a FishNet dev wants online play: "host my FishNet game", "players should not host", "works on LAN but not online", "Find Match button", "FishNet WebGL on Edgegap", moving off the old FishNet Edgegap samples that call the API from the client, or debugging FishNet deployments, ports or matchmaking. Other Unity netcodes (NGO, Mirror): edgegap-unity.'
+metadata:
+  version: "0.1.0"
+---
+
+# Edgegap for FishNet: dedicated servers + matchmaking
+
+Goal: a player clicks **Play**, the Edgegap matchmaker groups players, Edgegap starts a FishNet dedicated server near them, every client connects automatically, and the server stops itself when the match is over. Done means that loop works with real builds, not that the code compiles.
+
+This path was run end to end on Edgegap with [netcode-sample-unity-fishnet](https://github.com/edgegap/netcode-sample-unity-fishnet) (`Fishnet_v4.1.6R_WebGL_Matchmaker`: Unity 2021.3.45f2, FishNet 4.1.6R, Bayou, SDK 3.5.5): two WebGL tabs were matched, connected over `wss` with TLS Upgrade, played, and the server stopped itself. The templates in `assets/unity/` are the files from that run. When the developer wants a working reference, point them at that folder.
+
+Use **dedicated (authoritative) servers**, never relays, unless the developer explicitly wants host/client. A dedicated server owns the game state, so no player hosts, has a latency edge, or ends the match by quitting.
+
+## How to work
+
+- **Be the engineer.** Inspect the project, write the code, run the Unity batch builds, Docker and the Edgegap MCP tools, and read logs yourself. Hand the developer only Editor clicks, dashboard steps, secrets and playtesting.
+- **One layer at a time.** Local → Docker → direct Edgegap deploy → matchmaker. Each phase ends with a check, so a failure points at one layer.
+- **Secrets.** The Edgegap **API token** and **registry token** never go into files, git, the game client or chat. The **matchmaker Auth Token** is client-safe and ships in the client.
+- **Money.** Tag test deployments, stop the ones you start. Free tier runs one deployment at a time, so a forgotten test deployment silently blocks matchmaking.
+- Track the phases below as a todo list.
+
+## Phase 0: Understand the project
+
+Read, don't ask:
+- `ProjectSettings/ProjectVersion.txt`: the Unity version. **Before 2022.3, SDK 3.5.5 sends broken JSON to the matchmaker** (every ticket gets HTTP 400). Plan the fix from `references/troubleshooting.md` §1 now.
+- FishNet version: `Assets/FishNet/VERSION.txt` or the package in `Packages/manifest.json`. These templates target FishNet 4.x. For 2.x/3.x read `references/fishnet.md` §6.
+- The NetworkManager scene, its transport (Tugboat = UDP, Bayou = WebSocket, Multipass = both) and port (7770 by default), `ServerManager` **Start On Headless**, any `NetworkHudCanvas`, the `PlayerSpawner`, and scene changes through `SceneManager.LoadGlobalScenes`.
+- How the game connects today: grep `StartConnection`, `InstanceFinder`, `api.edgegap.com`, `Authorization`. Old FishNet Edgegap samples call the Edgegap API **from the client** with an API token. Remove that (`references/fishnet.md` §5) and tell the developer to rotate that token.
+- Targets: WebGL means Bayou and TLS Upgrade.
+
+Then ask, in one message, only what you couldn't infer: players per match, browser build or not, whether they have an Edgegap account and Docker. Offer defaults.
+
+## Phase 1: Make the FishNet game dedicated-server ready
+
+Read `references/fishnet.md`.
+1. Install the SDK: `"com.edgegap.unity-sdk": "https://github.com/edgegap/edgegap-unity-sdk.git#3.5.5"` in `Packages/manifest.json`. On Unity before 2022.3, embed and patch it instead (`references/troubleshooting.md` §1).
+2. Copy `assets/unity/*.cs` and `link.xml` into `Assets/Edgegap/`, and `assets/unity/Editor/*.cs` into `Assets/Edgegap/Editor/`. The FishNet adapters are already filled in. If the game's scripts live in an asmdef, reference `Edgegap.SDK` and FishNet's runtime asmdef from it.
+3. In the NetworkManager scene, turn **Start On Headless** off on `ServerManager`. `EdgegapServerLifecycle` starts the server in every server build, so the same scene serves client and server builds.
+4. Add the `Edgegap` object with the scene tool (project closed in the Editor):
+   `"<Unity>" -batchmode -quit -projectPath "<project>" -executeMethod EdgegapSceneSetup.Setup -edgegapScene <NetworkManager scene> -edgegapListenPort 7770 -edgegapAutoStart true -edgegapProfile casual -logFile setup.log`
+   It adds `EdgegapServerLifecycle`, `EdgegapMatchmakingClient` and `EdgegapPersistence`. Persistence keeps the object alive across FishNet scene loads (menu → battle → menu); without it the server's self-stop dies with the menu scene.
+5. Headless clean-up (`references/fishnet.md` §2): no `NetworkHudCanvas` auto start, no host-only player logic, client-only code guarded.
+
+✅ Check: a Linux server build or `-batchmode` instance logs `Edgegap Server | Starting server on 0.0.0.0:7770.`, and a client connects to it at `localhost:7770`.
+
+## Phase 2: Connect to Edgegap
+
+Make sure the developer has an Edgegap account, Docker running, and the Unity **Linux Build Support** + **Linux Dedicated Server Build Support** modules (plus **WebGL Build Support** for browsers). Get the Edgegap MCP connected (`references/deploy.md` §1). The header is exactly `Authorization: token <uuid>`.
+
+✅ Check: `edgegap_list_apps` succeeds.
+
+## Phase 3: Build, containerize, push
+
+Read `references/deploy.md` §2-3.
+1. `"<Unity>" -batchmode -quit -projectPath "<project>" -executeMethod EdgegapServerBuild.Build -logFile build-server.log` → `Builds/EdgegapServer/ServerBuild`.
+2. Copy `assets/docker/Dockerfile` and `.dockerignore` to the project root.
+3. The developer runs `docker login registry.edgegap.com`. You build and push `registry.edgegap.com/<project>/<image>:<tag>` with `--platform linux/amd64` and a fresh tag.
+4. Local smoke test: `docker run --rm -p 7770:7770 <image>` (Tugboat: `-p 7770:7770/udp`) and connect a client.
+
+✅ Check: `edgegap_list_registry_tags` shows the tag.
+
+## Phase 4: App version and a direct deploy
+
+Read `references/deploy.md` §4-5.
+1. App version port: name `gameport`, port `7770`, protocol **WS** with `"tls_upgrade": true` for Bayou, **UDP** for Tugboat. Registry credentials set. Verify with `edgegap_list_app_versions` (`registry_credentials_set: true`).
+2. `edgegap_deploy` near the developer, `edgegap_wait_for_deployment`, read the logs.
+3. Connect a real client directly to `<fqdn>:<external port>` (Bayou: Use WSS on). The example bridge in `assets/unity/Examples/MatchmakingSystem.cs` has a direct mode for exactly this.
+4. `edgegap_stop_deployment`.
+
+✅ Check: a client played on the Edgegap server. Don't build the matchmaker on an unproven server.
+
+## Phase 5: Matchmaker
+
+Read `references/matchmaker.md`.
+1. Start from `assets/matchmaker/casual-webgl.json` (2-4 players, no latency rule) or build one with `edgegap_build_matchmaker_config`. Set `application.name`/`version`, and `allowed_cors_origins` for every WebGL origin.
+2. Walk the developer through the dashboard: Create Matchmaker → upload → Create and Start → copy **API URL** and **Auth Token**.
+3. `GET <API URL>/monitor` with the token answers (DNS can take ~5 min).
+
+## Phase 6: Client integration
+
+1. Put the API URL and Auth Token on `EdgegapMatchmakingClient` (rerun `EdgegapSceneSetup` with `-edgegapBaseUrl` and `-edgegapAuthToken`, or set them in the inspector). Keep `UseLatencyBeacons` off unless the profile has a `latencies` rule; it is always off in WebGL.
+2. Wire the game's Play button to `FindMatch()` / `CancelMatchmaking()` and show `Status`. If the game has a menu, adapt `assets/unity/Examples/MatchmakingSystem.cs`: it switches between direct connection and the matchmaker and disables the matchmaking client entirely when the matchmaker is off. Otherwise the built-in OnGUI panel works for a first test.
+3. If the server changed, rebuild → push a new tag → new app version → matchmaker **Stop → Edit** `application.version` **→ Start**.
+
+## Phase 7: End-to-end test and hand-off
+
+1. `edgegap_list_deployments`: nothing of yours left running.
+2. Build the client: `-executeMethod EdgegapServerBuild.BuildClient -edgegapClientTarget webgl|win64|mac|linux`. Serve WebGL from an allowed origin (`python -m http.server 8080 --bind 127.0.0.1` in `Builds/Client/webgl`).
+3. **Test with two clients.** Two browser tabs (bring each to the front before clicking; background tabs throttle Unity), or two builds. Watch SEARCHING → MATCH_FOUND → HOST_ASSIGNED → connected. A lone ticket can wait until it nearly expires before it gets a server, even with a `min_team_size: 1` expansion (`references/matchmaker.md` §3).
+4. Server logs show `N matched player(s)`. Close both clients → `Stopping deployment: all players left` → the deployment disappears.
+5. Debug with `references/troubleshooting.md` until this passes.
+
+Hand-off: what was built and where, app/version/matchmaker names, how to ship a new build, free-tier caveats (matchmaker restarts every 3 h, one deployment at a time, 60-minute cap), and next steps (match end via `SelfStop`, ticket-ID validation with `MM_TICKET_IDS`, backfill, a production matchmaker tier).
+
+## Reference files
+
+- `references/fishnet.md`: FishNet server conversion, transports and ports, Start On Headless, scene changes, WebGL/Bayou, removing client-side API calls, FishNet 2.x/3.x notes.
+- `references/deploy.md`: MCP connection, server build, Docker and registry, app version for 7770, direct deploy and probes.
+- `references/matchmaker.md`: config, dashboard steps, ticket contract, injected variables, the lone-ticket quirk.
+- `references/troubleshooting.md`: the SDK fix for Unity before 2022.3, and symptom → fix tables.
+- `assets/unity/`: FishNet-ready `EdgegapMatchmakingClient`, `EdgegapServerLifecycle`, `EdgegapPersistence`, DTOs, `link.xml`; `Editor/` build and scene tools; `Examples/MatchmakingSystem.cs` menu bridge. `assets/docker/`: Dockerfile + .dockerignore. `assets/matchmaker/`: config template.
+
+Related skills in this pack, if installed: `edgegap-unity` for NGO or Mirror projects, `edgegap-deployments-api` when the studio keeps its own backend or matchmaker, `edgegap-launch` before going live.
+
+Sources of truth if something here looks outdated: https://docs.edgegap.com/unity, https://github.com/edgegap/edgegap-unity-sdk (releases), https://fish-networking.gitbook.io/docs, and the sample https://github.com/edgegap/netcode-sample-unity-fishnet.

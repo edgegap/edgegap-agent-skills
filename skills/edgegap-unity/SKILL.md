@@ -1,8 +1,8 @@
 ---
 name: edgegap-unity
-description: 'Unity + Edgegap: get a Unity multiplayer game online with dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a Unity project: it has the Unity workflow, tested C# templates (matchmaker client, server self-stop), Linux server build, Dockerfile, matchmaker config and fixes for known pitfalls. Use when a Unity dev wants online play: "put my game online", "play with people over the internet", "works on LAN/same wifi but not online", "nobody should have to host", "click Play and get matched", how Fall Guys/Among Us match players, servers for a playtest, "where do I start with servers". Also for NGO, Mirror or FishNet host/client games moving to dedicated servers, WebGL multiplayer, or debugging Edgegap deployments, ports or matchmaking for a Unity game. Use even for beginners who never say Edgegap, servers or Docker. Not for Unreal (edgegap-unreal), Godot or non-game backends.'
+description: 'Unity + Edgegap: get a Unity multiplayer game online with dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a Unity project: it has the Unity workflow, tested C# templates (matchmaker client, server self-stop), Linux server build, Dockerfile, matchmaker config and fixes for known pitfalls. Use when a Unity dev wants online play: "put my game online", "play with people over the internet", "works on LAN/same wifi but not online", "nobody should have to host", "click Play and get matched", how Fall Guys/Among Us match players, servers for a playtest, "where do I start with servers". Also for NGO or Mirror host/client games moving to dedicated servers, WebGL multiplayer, or debugging Edgegap deployments, ports or matchmaking for a Unity game. Use even for beginners who never say Edgegap, servers or Docker. Not for FishNet projects (edgegap-fishnet), Unreal (edgegap-unreal), Godot or non-game backends.'
 metadata:
-  version: "0.1.5"
+  version: "0.1.6"
 ---
 
 # Edgegap for Unity: dedicated servers + matchmaking
@@ -29,6 +29,8 @@ Inspect, don't interrogate:
 - Target platforms: WebGL in build profiles or mentioned? This changes the transport and matchmaker config.
 
 Then ask, in a single message, only what you couldn't infer. Typically: players per match and teams; whether a browser (WebGL) build matters; whether they have an Edgegap account and Docker installed. Give your recommended defaults so they can just say "yes".
+
+**FishNet project?** Load `edgegap-fishnet` instead: it has FishNet-ready templates verified end to end on Edgegap, plus FishNet-specific pitfalls.
 
 **No multiplayer at all yet?** That's a bigger job: pick a netcode (`references/netcode.md` §1) and get two players working on localhost first. Say so honestly and scope it with the developer before touching Edgegap. A single-player game that should be always online (so its logic can't be decompiled and cracked from the client) follows the same path: the server owns the rules and state, the matchmaker profile allows one player per match, and the server stops itself when that player leaves.
 
