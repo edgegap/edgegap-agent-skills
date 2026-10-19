@@ -24,14 +24,14 @@ Client ──Bayou wss://fqdn:external  /  Tugboat public_ip:external──▶ F
 Start from `assets/matchmaker/casual-webgl.json`:
 - `version` `3.3.2`, `inspect: true` for development (turn off for live), `max_deployment_retry_count: 3`.
 - `allowed_cors_origins`: every origin that serves a WebGL build, exact scheme + host + port, no path (e.g. `http://localhost:8080`, `https://<user>.itch.io`, `https://html-classic.itch.zone`).
-- Profile `casual`: one team of 2-4 players (`player_count` rule), tickets expire after 5 minutes, and an expansion lowers `min_team_size` to 1 after 30 s.
+- Profile `casual`: one team of 2-4 players (`player_count` rule), tickets expire after 5 minutes. No expansion: a match never starts with fewer players than the developer asked for. Only add an expansion that lowers `min_team_size` when the developer explicitly wants solo or smaller matches, and never below the game's real minimum (a race or duel with one player is not a match).
 - `application.name` / `version`: the app and version from Phase 4. They must exist and be active, or the dashboard rejects the config.
 
 Desktop-only (Tugboat) games can add a `latencies` rule for better placement; the client must then send beacons (`UseLatencyBeacons = true`). Never for WebGL, which can't ping beacons. `edgegap_build_matchmaker_config` generates configs too (pass `allowed_cors_origins` for WebGL). Save the result as `matchmaker-config.json` in the project root.
 
 ## 3. Lone tickets and testing
 
-In the verified run (matchmaker 3.3.2, free tier), a single ticket got `HOST_ASSIGNED` only when it neared its 5-minute expiration, not at the 30-second expansion. Two tickets matched within seconds. So:
+In the verified run (matchmaker 3.3.2, free tier, with a `min_team_size: 1` expansion at 30 s that the template no longer has), a single ticket got `HOST_ASSIGNED` only when it neared its 5-minute expiration, not at the expansion. Two tickets matched within seconds. So:
 - Run the end-to-end test with **two clients** (two browser tabs, or two builds).
 - Don't promise solo matchmaking after 30 s. If the game needs it, test it on the developer's tier, and consider a shorter `ticket_expiration_period` together with a client that retries.
 
@@ -49,7 +49,7 @@ Then set them on `EdgegapMatchmakingClient` (`BaseUrl`, `AuthToken`), or rerun `
 
 - The ticket's `profile` must equal a profile name (`EdgegapMatchmakingClient.Profile`).
 - Every rule except `player_count` needs a ticket attribute with the rule's name, and unknown attributes are rejected. A mismatch is HTTP 400 on `POST /groups`.
-- On Unity before 2022.3 with the stock SDK 3.5.5, **every** ticket gets HTTP 400 even with a correct profile: that is the SDK's form-encoded POST body (`troubleshooting.md` §1), not the config.
+- On Unity before 2022.3 with SDK 3.5.5 or older, **every** ticket gets HTTP 400 even with a correct profile: that is the SDK's form-encoded POST body, fixed in 3.5.6 (`troubleshooting.md` §1), not the config.
 
 ## 6. What the server receives
 

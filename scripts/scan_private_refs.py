@@ -30,6 +30,9 @@ ALLOWED = [
     ("f68e011bfb01.pr.edgegap.net", "example deployment URL from the Edgegap docs"),
     ("5fa53fa00a57.pr.edgegap.net", "example deployment URL from the Edgegap docs"),
     ("<request_id>.pr.edgegap.net", "placeholder"),
+    ("om-k2x9fj3q1a.edgegap.net", "fictional matchmaker in the broken-kartclash eval fixture"),
+    ("om-a1b2c3d4e5.edgegap.net", "fictional matchmaker in a FishNet routing eval query"),
+    ('Token = "PASTE_MATCHMAKER_AUTH_TOKEN', "placeholder in the broken-kartclash eval fixture"),
     ("<id>.edgegap.net", "placeholder"),
     ("dGhlIHNhbXBsZSBub25jZQ==", "RFC 6455 sample WebSocket key"),
 ]

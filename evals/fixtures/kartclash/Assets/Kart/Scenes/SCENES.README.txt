@@ -1,0 +1,19 @@
+Scene files are not included in this fixture. This is what the scenes contain (inspector values as set today).
+
+Lobby.unity (build index 0)
+- NetworkManager (FishNet NetworkManager)
+  - ServerManager: Start On Headless = true, Frame Rate = 0 (unlimited)
+  - ClientManager: defaults
+  - TimeManager: Tick Rate 30
+  - Tugboat: Port 7770, IPv4 Bind Address = (empty), Client Address = localhost, Maximum Clients = 8
+  - PlayerSpawner: Player Prefab = Kart (NetworkObject + KartController), spawns on client loaded start scenes
+  - ObserverManager: defaults
+- RaceManager (NetworkObject, RaceManager): music = LobbyMusic AudioSource
+- Canvas/ConnectionMenu (ConnectionMenu): Host button, Join button, IP InputField
+- Main Camera (LobbyCamera, ChaseCamera disabled)
+
+Track01.unity (build index 1)
+- Track geometry, FinishLine trigger (tag FinishLine), spawn points
+- Main Camera (ChaseCamera)
+
+Build Settings: Lobby, Track01. Platforms used today: Windows and macOS standalone.

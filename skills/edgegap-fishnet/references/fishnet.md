@@ -4,7 +4,7 @@ Contents
 1. Transports, ports and protocols
 2. Host/client → dedicated server
 3. Who starts the server: Start On Headless vs EdgegapServerLifecycle
-4. Scene changes and the Edgegap object
+4. Scene changes: the Edgegap object and the game's objects
 5. Removing client-side Edgegap API calls (old samples)
 6. FishNet 2.x and 3.x
 7. WebGL with Bayou
@@ -46,11 +46,24 @@ FishNet's `ServerManager` has **Start On Headless**: in a headless build it star
 
 Both on: the second start fails or logs that the server is already started. Both off: the server never listens, clients time out, and the process spins at 100% CPU. The shipped SpaceEdge scenes had Start On Headless off with nothing else starting the server, which is exactly that failure.
 
-## 4. Scene changes and the Edgegap object
+## 4. Scene changes: the Edgegap object and the game's objects
 
 FishNet games usually change scenes (menu → game → menu) with `SceneManager.LoadGlobalScenes`, which unloads the menu scene on the server and every client. Anything in the menu scene dies with it, including `EdgegapServerLifecycle` (no more self-stop, so the empty server bills until the 60-minute cap) and the client's matchmaking state.
 
 `EdgegapPersistence` on the `Edgegap` object fixes both: `DontDestroyOnLoad` keeps one instance alive, and when the menu scene loads again its fresh copy destroys itself, so the client keeps a single matchmaking client and its status. `EdgegapSceneSetup` adds it. If the game's NetworkManager itself is not persistent, put the `Edgegap` object in the scene that stays loaded instead.
+
+### The game's own objects across a scene replace
+
+The same unload destroys the **game's** networked objects in that scene: a match or race manager placed in the lobby scene, and players spawned while the lobby was active. Host builds hide this when the host's code reloads things locally; on a dedicated server the countdown, scoring and match-end logic (and any self-stop called from it) silently stop. Check every `LoadGlobalScenes` / `LoadConnectionScenes` with `ReplaceScenes = ReplaceOption.All` (or one that unloads the scene) and decide, per object:
+
+| Object | Survives the load? | What to do |
+|---|---|---|
+| Placed in the scene (scene object), e.g. a `RaceManager` in Lobby | No, and it **cannot** be moved: `MovedNetworkObjects` refuses scene objects (`cannot be moved as it is a scene object`) | Either put an instance in the destination scene (Track01 gets its own manager), or turn it into a prefab the server instantiates, calls `SetIsGlobal(true)` on right after `Instantiate`, and spawns with `ServerManager.Spawn`. Global objects live in DontDestroyOnLoad and survive every load. Add the prefab to the NetworkManager's spawnable prefabs. |
+| Spawned at runtime and root (player karts from `PlayerSpawner`) | No, unless moved | Pass them in `SceneLoadData.MovedNetworkObjects` (root objects only, not global), or despawn and respawn them in the new scene (e.g. at spawn points in `OnClientLoadedStartScenes` / `SceneManager.OnLoadEnd`). |
+| Global (`IsGlobal`) | Yes | Nothing; don't also list it in `MovedNetworkObjects` (refused for global objects). |
+| Client-only references to scene objects (`Camera.main`, UI) | Rebuilt per scene | Re-acquire after the load (e.g. the chase camera finds the local player on `OnLoadEnd`), and never assume a component exists on `Camera.main`: null-check `GetComponent`. |
+
+Code that moves server logic out of host-only paths (`IsHostStarted` → `OnStartServer`) must also survive this load, or the dedicated server never finishes a match. Write the fix, not only a warning in the hand-off.
 
 ## 5. Removing client-side Edgegap API calls
 

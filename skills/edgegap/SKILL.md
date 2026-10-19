@@ -7,7 +7,7 @@ metadata:
 
 # Edgegap
 
-Pack version: 0.6.0
+Pack version: 0.6.1
 
 Edgegap runs dedicated game servers. You push a **Linux container image** of your game server, register it as an **app version**, and ask for a **deployment** near a group of players. Edgegap picks the location with the best ping for that group, starts the container in seconds, and returns a URL (`<id>.pr.edgegap.net`), a public IP, and an external port per internal port. Players connect. The match ends, the server stops, billing stops.
 

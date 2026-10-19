@@ -1,4 +1,4 @@
-// Edgegap matchmaking ticket data. Requires com.edgegap.unity-sdk 3.5.5+.
+// Edgegap matchmaking ticket data. Requires com.edgegap.unity-sdk 3.5.6+ (3.5.5 breaks tickets on Unity < 2022.3).
 // The profile name sent in each ticket must equal a profile name in the matchmaker config,
 // and every attribute's JSON name must equal the rule attribute name in that profile.
 using System.Collections.Generic;
