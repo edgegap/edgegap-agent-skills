@@ -1,0 +1,22 @@
+[
+  {"query": "My Unity game uses FishNet with Tugboat. Right now one player hosts. How do I get dedicated servers and a Find Match button on Edgegap?", "expected_skill": "edgegap-fishnet"},
+  {"query": "fishnet bayou webgl build can't connect to my edgegap deployment, works on localhost", "expected_skill": "edgegap-fishnet"},
+  {"query": "Unity 2021.3 project with the edgegap sdk, every matchmaker ticket returns 400 even though my profile name is right. We use fish-networking", "expected_skill": "edgegap-fishnet"},
+  {"query": "my fishnet game server runs fine locally with tugboat on port 7770. how do i containerize it and get matchmaking working on edgegap? project is in D:/dev/kartclash", "expected_skill": "edgegap-fishnet"},
+  {"query": "we built our co-op dungeon crawler on Fish-Net and right now the host's PC is the server through FishySteamworks. players hate it when the host rage quits and the run ends. we want real servers in EU and NA, 4 players per dungeon. what's the path from here?", "expected_skill": "edgegap-fishnet"},
+  {"query": "i started from the old edgegap fishnet sample and just noticed MatchmakingSystem.cs has our edgegap api token in it and deploys servers from the client. how should this be done properly?", "expected_skill": "edgegap-fishnet"},
+  {"query": "FishNet 3.11 project on Unity 2021. the headless linux server build starts on edgegap but sits at 100% cpu and nobody can connect. ServerManager Start On Headless is unchecked, does that matter?", "expected_skill": "edgegap-fishnet"},
+  {"query": "our edgegap servers for the fishnet game never shut down after a match. we go MainMenu -> Battle with SceneManager.LoadGlobalScenes and the self stop script is on an object in the menu", "expected_skill": "edgegap-fishnet"},
+  {"query": "using FishNet Multipass with Tugboat for desktop and Bayou for WebGL. what ports and protocols do I put on the Edgegap app version so both work?", "expected_skill": "edgegap-fishnet"},
+  {"query": "add a Find Match button to my FishNet game, our edgegap matchmaker is already running at https://om-a1b2c3d4e5.edgegap.net and the profile is called ranked", "expected_skill": "edgegap-fishnet"},
+  {"query": "FishNet 4: my SyncVar<int> health changes on the server but the health bar never updates on clients. what am I doing wrong?", "expected_skill": null},
+  {"query": "client side prediction in fishnet v4 with rigidbody karts jitters a lot when two players collide, how do I smooth it", "expected_skill": null},
+  {"query": "I want my FishNet game to stay peer to peer with FishySteamworks, no servers at all. how do I do Steam lobby invites so friends join the host?", "expected_skill": null},
+  {"query": "compare FishNet vs Mirror vs Netcode for GameObjects for a 32 player shooter, which should we pick?", "expected_skill": null},
+  {"query": "We use Netcode for GameObjects in Unity 6 and want Edgegap dedicated servers with matchmaking so players click Play and get matched", "expected_skill": "edgegap-unity"},
+  {"query": "my mirror webgl game on edgegap: players can't connect over wss, it works with ws locally", "expected_skill": "edgegap-unity"},
+  {"query": "PurrNet game with UDPTransport. want dedicated servers on edgegap and a Find Match button instead of someone hosting", "expected_skill": "edgegap-purrnet"},
+  {"query": "Unreal Engine 5.5 listen server game, how do I move it to Edgegap dedicated servers with matchmaking?", "expected_skill": "edgegap-unreal"},
+  {"query": "edgegap deployment goes to Error with 'image could not be pulled', our server is written in Go and the push to registry.edgegap.com worked", "expected_skill": "edgegap-troubleshoot"},
+  {"query": "browser game I built with Manus, node ws server, I need matchmaking and servers on edgegap so strangers can play together", "expected_skill": "edgegap-manus"}
+]

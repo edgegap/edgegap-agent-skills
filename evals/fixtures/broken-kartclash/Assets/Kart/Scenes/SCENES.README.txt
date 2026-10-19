@@ -1,0 +1,16 @@
+Scene files are not included in this fixture. This is what the scenes contain (inspector values as set today).
+
+Lobby.unity (build index 0)
+- NetworkManager (FishNet NetworkManager)
+  - ServerManager: Start On Headless = true, Frame Rate = 0 (unlimited)
+  - Tugboat: Port 7770, IPv4 Bind Address = 127.0.0.1, Client Address = localhost, Maximum Clients = 8
+  - PlayerSpawner: Player Prefab = Kart
+- RaceManager (NetworkObject, RaceManager)
+- Online (ServerBoot, MatchClient, QuickPlay)
+- Canvas: Find Match button -> MatchClient.FindMatch, status label bound to MatchClient.Status
+- Main Camera (LobbyCamera)
+
+Track01.unity (build index 1)
+- Track geometry, FinishLine trigger, spawn points, Main Camera (ChaseCamera)
+
+RaceManager loads Track01 with LoadGlobalScenes(ReplaceScenes = All) when the race starts.

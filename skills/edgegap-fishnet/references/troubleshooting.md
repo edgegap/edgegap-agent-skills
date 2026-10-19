@@ -11,28 +11,13 @@ Get evidence first: the Unity build log, `docker logs`, `edgegap_get_deployment_
 
 ## 1. Unity before 2022.3: every matchmaker ticket gets HTTP 400
 
-SDK 3.5.5's `SafeHttpRequest.Post` uses `UnityWebRequest.Post(url, string)`. Before Unity 2022.3 that overload form-encodes the string, so the JSON ticket arrives URL-encoded and the matchmaker answers 400 to every `POST /groups`, whatever the profile. The monitor call (a GET) still works, which makes it look like a config problem. Upstream fix proposed in https://github.com/edgegap/edgegap-unity-sdk/pull/68; check whether a newer SDK release includes it before patching.
+SDK 3.5.5 and older send tickets with `UnityWebRequest.Post(url, string)`. Before Unity 2022.3 that overload form-encodes the string, so the JSON ticket arrives URL-encoded and the matchmaker answers 400 to every `POST /groups`, whatever the profile. The monitor call (a GET) still works, which makes it look like a config problem.
 
-Fix on Unity 2021.3 (verified in the FishNet sample):
-1. Embed the package: copy `Library/PackageCache/com.edgegap.unity-sdk@<hash>` to `Packages/com.edgegap.unity-sdk`, and remove the `com.edgegap.unity-sdk` line from `Packages/manifest.json`.
-2. In `Packages/com.edgegap.unity-sdk/Runtime/SafeHttpRequest.cs`, `Post(...)` has an `#else` branch for older Unity versions:
-   ```csharp
-   #else
-               UnityWebRequest request = UnityWebRequest.Post(url, body);
-               request.SetRequestHeader("Content-Type", "application/json");
-   #endif
-   ```
-   Replace the `UnityWebRequest.Post(url, body)` line (keep the `SetRequestHeader` line) with:
-   ```csharp
-               // UnityWebRequest.Post(url, string) form-encodes the body before Unity 2022.3,
-               // which the matchmaker rejects with HTTP 400, so send the JSON raw.
-               UnityWebRequest request = new UnityWebRequest(url, UnityWebRequest.kHttpVerbPOST)
-               {
-                   uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(body)),
-                   downloadHandler = new DownloadHandlerBuffer(),
-               };
-   ```
-3. Tell the developer the SDK is now embedded: upgrading means re-copying and re-patching, or moving to the git package once the fix ships (or the project moves to 2022.3+).
+Fix: SDK **3.5.6** (released 2026-10-15) sends the body as raw bytes on older Unity versions. Set `"com.edgegap.unity-sdk": "https://github.com/edgegap/edgegap-unity-sdk.git#3.5.6"` in `Packages/manifest.json`.
+- If the project embedded and hand-patched an older SDK (a `Packages/com.edgegap.unity-sdk` folder), delete that folder and use the git package instead, so later SDK updates apply.
+- Hand-written ticket code has the same bug if it calls `UnityWebRequest.Post(url, jsonString)` on Unity before 2022.3: send `new UploadHandlerRaw(Encoding.UTF8.GetBytes(json))` with `Content-Type: application/json` instead.
+
+The verified FishNet run used 3.5.5 with this exact change patched in; 3.5.6 ships the same change (checked in the SDK source) but has not been run end to end on Edgegap yet.
 
 ## 2. Server
 
@@ -63,7 +48,7 @@ In order:
 
 | Symptom | Cause / fix |
 |---|---|
-| 400 on every ticket, Unity < 2022.3 | §1 |
+| 400 on every ticket, Unity < 2022.3 | SDK older than 3.5.6 (§1) |
 | 400 on tickets, Unity 2022.3+ | Profile name or attributes don't match the config (`matchmaker.md` §5) |
 | 401 | Wrong Auth Token, or a `Bearer`/`token` prefix was added |
 | CORS error in the browser | Origin missing from `allowed_cors_origins` |

@@ -109,7 +109,11 @@ namespace SpaceEdge
             _matchmaker.FindMatch();
         }
 
-        public void CancelMatch() => _matchmaker?.CancelMatchmaking();
+        public void CancelMatch()
+        {
+            // == null, not ?.: _matchmaker is a Unity component and ?. skips Unity's destroyed-object check.
+            if (_matchmaker != null) _matchmaker.CancelMatchmaking();
+        }
 
         private void ConnectDirectly()
         {

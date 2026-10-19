@@ -1,0 +1,88 @@
+{
+  "skill_name": "edgegap-fishnet",
+  "constraints": "Environment constraints for this eval: you cannot run Unity, Docker, or Edgegap MCP tools, and you have no Edgegap account access. Make every code and config change directly in the project copy, and write HANDOFF.md in the outputs folder with the exact remaining steps (commands, Editor and dashboard clicks, what to verify) a developer must do, in order. Don't ask questions; make reasonable assumptions and state them in HANDOFF.md.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "old-sample-webgl-migration",
+      "prompt": "Our FishNet space shooter (WebGL, Bayou) is based on the old Edgegap FishNet sample, the project is in the folder. Right now MatchmakingSystem deploys a server straight from the browser with our Edgegap API token, which our lead says is a security problem. We want proper matchmaking instead: 2-4 players open the game in the browser, click Start Game and land in the same match on a dedicated server. Please set it up.",
+      "expected_output": "Removes client-side API calls and token (rotate), matchmaker client over the SDK with the pre-2022.3 JSON fix, server lifecycle that starts the server (Start On Headless was off) and self-stops across the MainMenu->BattleScene load, Bayou wss to fqdn, WS + tls_upgrade app version on 7770, matchmaker config with CORS origins and matching profile, Dockerfile for amd64 with a unique tag, dashboard steps.",
+      "files": [
+        "fixtures/spaceedge-webgl"
+      ],
+      "assertions": [
+        "Client-side Edgegap API calls (api.edgegap.com deploy/status) and the API token field are removed from the client code",
+        "Developer is told to revoke/rotate the API token that shipped in the client",
+        "Uses the Edgegap matchmaker (tickets) from the client instead of deploying from the client",
+        "Ticket creation works on Unity 2021.3 as delivered: SDK 3.5.6+ in the manifest, or raw-bytes UploadHandler in the project's own code (instructions alone don't count)",
+        "Server start is fixed: Start On Headless (currently off) enabled, or a lifecycle component starts the server in server builds, without double-starting",
+        "Server self-stops via ARBITRIUM_DELETE_URL/TOKEN when empty, and the component survives the MainMenu -> BattleScene scene load (DontDestroyOnLoad/persistence)",
+        "WebGL client connects with WSS to the deployment fqdn and the external port of the assignment",
+        "App version port is WS on 7770 with tls_upgrade true",
+        "Matchmaker config is valid JSON, team size 2-4, allowed_cors_origins set, and its profile name equals the client's profile",
+        "No matchmaker expansion lowers min_team_size below 2 (no solo matches)",
+        "No latency/beacon rule required for WebGL (beacons off or no latencies rule)",
+        "Docker build uses --platform linux/amd64",
+        "Each build is pushed under a new unique tag (not latest, not a fixed reused tag)",
+        "No Edgegap API token or registry token written to any project file",
+        "HANDOFF.md gives dashboard steps to create/start the matchmaker and copy API URL + Auth Token",
+        "Delivered project compiles as a Linux dedicated server with no manual pre-step (no unrun embed/patch script; checked by a Unity batch compile)"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "kartclash-host-to-dedicated",
+      "prompt": "my fishnet kart racer is in the project folder (unity 6, tugboat). right now one guy presses Host and his friends join by IP. I want a Find Match button instead, up to 6 racers, nobody hosting, servers near the players (we have people in NA and EU). desktop only. can you set it up on edgegap?",
+      "expected_output": "Edgegap SDK, server-only start path reconciled with Start On Headless, IsHost logic moved to the server, headless guards, persistence across Track01 load, self-stop, Tugboat UDP 7770 app version, client connects to public IP + external port, matchmaker config max 6 with a latency rule and beacons on, Dockerfile amd64 unique tag, no relay, dashboard steps.",
+      "files": [
+        "fixtures/kartclash"
+      ],
+      "assertions": [
+        "Does not recommend or use relays / host-client / P2P",
+        "Edgegap Unity SDK added to Packages/manifest.json at 3.5.5 or newer",
+        "Server builds start only the server (no client/host), and Start On Headless is turned off or the custom auto start is skipped so the server is not started twice",
+        "Host-only race logic (IsHostStarted lobby loop / win check in RaceManager) moved to server-side (OnStartServer / IsServerStarted)",
+        "RaceManager's server logic (lobby wait, countdown, win check) and the player karts survive LoadGlobalScenes(ReplaceScenes.All) to Track01 on the dedicated server (global/spawned manager or a manager in Track01; karts moved or respawned), fixed in code not only flagged",
+        "Edgegap server object persists across LoadGlobalScenes(ReplaceScenes.All) to Track01 (DontDestroyOnLoad / persistence component)",
+        "Server stops its own deployment via ARBITRIUM_DELETE_URL/TOKEN when empty or no one joins",
+        "Client connects with Tugboat to the assignment's public IP and the external port of the named game port",
+        "App version port is UDP with internal port 7770 and a name matching the client's port lookup",
+        "Matchmaker config is valid JSON, max team size 6, profile name equals the client's profile",
+        "No matchmaker expansion lowers min_team_size below 2 (a race needs 2+)",
+        "Matchmaker config has a latency rule and the client measures beacon latencies (servers near players)",
+        "Docker build uses --platform linux/amd64",
+        "Each build is pushed under a new unique tag (not latest, not a fixed reused tag)",
+        "No Edgegap API token written to project files; the matchmaker Auth Token is the only token in the client",
+        "HANDOFF.md gives dashboard steps to create/start the matchmaker and copy API URL + Auth Token",
+        "Delivered project compiles as a Linux dedicated server with no manual pre-step (no unrun embed/patch script; checked by a Unity batch compile)"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "broken-kartclash-debug",
+      "prompt": "our fishnet game on edgegap is half working and I'm stuck. Find Match fails instantly with a 400, when I deploy directly the deployment says Ready but nobody can connect, and old test servers ran for hours after everyone left. I also re-pushed a fixed server build and nothing changed. project, notes and logs are in the folder. find and fix everything you can.",
+      "expected_output": "Finds and fixes: form-encoded POST on Unity 2021.3 (400), profile case mismatch, internal vs external port, Tugboat bound to 127.0.0.1, app version 7777/TCP vs 7770/UDP, double server start, ServerBoot destroyed by the Track01 scene load, hard-coded API token in QuickPlay (remove, rotate), reused latest tag, Dockerfile missing -batchmode -nographics.",
+      "files": [
+        "fixtures/broken-kartclash"
+      ],
+      "assertions": [
+        "Identifies the 400 as the JSON body being form-encoded by UnityWebRequest.Post(url, string) on Unity 2021.3 and fixes it as delivered (raw bytes in the project's code, or SDK 3.5.6+ in the manifest; HANDOFF instructions alone don't count)",
+        "Fixes the profile name mismatch (client 'Casual' vs matchmaker 'casual')",
+        "Client connects to the assignment's external port, not the internal one",
+        "Tugboat IPv4 bind address changed from 127.0.0.1 to empty / 0.0.0.0",
+        "App version port corrected to 7770 UDP (from 7777 TCP)",
+        "Removes the double server start (Start On Headless + ServerBoot.StartConnection)",
+        "Explains the servers that never stopped: ServerBoot lives in the Lobby scene and is destroyed by LoadGlobalScenes(ReplaceScenes.All); fixes with DontDestroyOnLoad/persistence",
+        "RaceManager's race logic and the karts survive the Track01 load on the dedicated server (no MovedNetworkObjects on scene objects), fixed in code",
+        "KartController no longer throws a NullReferenceException on Camera.main.GetComponent<ChaseCamera>() in the Lobby (camera re-acquired or null-checked)",
+        "Removes the hard-coded API token and client-side deploy in QuickPlay and tells the developer to revoke/rotate it",
+        "Explains the re-push had no effect because the latest tag was reused/cached; switches to unique tags and a new app version",
+        "Dockerfile runs the server with -batchmode -nographics (and fixes EXPOSE/port or non-root)",
+        "Docker build uses --platform linux/amd64",
+        "HANDOFF.md lists the remaining steps in order",
+        "Delivered project compiles as a Linux dedicated server with no manual pre-step (no unrun embed/patch script; checked by a Unity batch compile)"
+      ]
+    }
+  ],
+  "notes": "Fixture spaceedge-webgl is edgegap/netcode-sample-unity-fishnet main (125c6a2) Fishnet_v4.1.6R_WebGL without Assets/Starfield Skybox (art only). kartclash and broken-kartclash are synthetic, with FishNet 4.1.6R runtime copied from that sample (Demos removed) and scenes described in Assets/Kart/Scenes/SCENES.README.txt. broken-kartclash plants the pitfalls listed in assertions. In this repo, kartclash and broken-kartclash ship without Assets/FishNet: copy FishNet 4.1.6R's Assets/FishNet (without Demos) into them before running. spaceedge-webgl is not in the repo (47 MB); export it from edgegap/netcode-sample-unity-fishnet main. The token in broken-kartclash QuickPlay.cs is fake. The last assertion is checked with a Unity batch compile (Linux Dedicated Server target). Results: iteration 1 (old assertions) 97% vs 90%; iteration 2 (these assertions, skill 0.2.0) 100% vs 86%; routing 60/60."
+}
