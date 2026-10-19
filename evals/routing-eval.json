@@ -32,5 +32,8 @@
   {"query": "my UE5 blueprint game only works with listen servers when friends join through Steam. I want proper matchmaking and nobody hosting, can that work without me writing C++?", "expected_skill": "edgegap-unreal"},
   {"query": "Edgegap deployment of my Unreal server shows empty logs and the dashboard says Error after a few seconds. Dockerfile runs MultiplayerGameServer.sh", "expected_skill": "edgegap-unreal"},
   {"query": "I made a little arena game with Manus and want my friends to play it online together with a Find Match button. How?", "expected_skill": "edgegap-manus"},
-  {"query": "My Manus web game has Steam login. Players get matched but connecting to the server fails with mixed content, ws:// blocked from https", "expected_skill": "edgegap-manus"}
+  {"query": "My Manus web game has Steam login. Players get matched but connecting to the server fails with mixed content, ws:// blocked from https", "expected_skill": "edgegap-manus"},
+  {"query": "My UE5 game runs on Edgegap dedicated servers with the matchmaker. I want team voice chat with EOS so only teammates hear each other. How?", "expected_skill": "edgegap-eos-voice"},
+  {"query": "add push to talk voice chat to my unreal multiplayer game hosted on edgegap, ideally free and cross-platform", "expected_skill": "edgegap-eos-voice"},
+  {"query": "EOS voice works with lobbies but how do I make my dedicated server hand out room tokens? the server is linux and the EOS SDK says no voice on linux", "expected_skill": "edgegap-eos-voice"}
 ]

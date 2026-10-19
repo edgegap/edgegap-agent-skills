@@ -2,6 +2,18 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.8.0 (2026-10-19)
+
+Adds in-game voice chat.
+
+- New skill `edgegap-eos-voice` (0.1.0): EOS Voice for an Unreal Engine game on Edgegap dedicated servers, with the game server as the trusted server.
+  - Client: EOS Connect device ID login on the EOSVoiceChat plugin's own EOS platform (the plugin doesn't log players in), ID token, join and leave, `VoiceMute`.
+  - Server: verifies the ID token (RS256 against Epic's JWKS: `sub`, `pfdid`, `aud`, `exp`, `iss`) with the OpenSSL that ships with Unreal, picks a match room or a team room by matching the player's IP to the matchmaker's `MM_TICKET_*` variables, calls the EOS Voice Web API (EOS Voice doesn't support Linux) with the player's IP, sends each token to its owner only, and removes players on logout, which revokes their token.
+  - A replicated component added at login carries the RPCs, so the game mode and player controller don't change. Voice is off by default and turns on in the server when the `EOS_VOICE_*` variables are on the app version.
+  - Verified with [unreal-sample](https://github.com/edgegap/unreal-sample) (UE 5.5.4, EOS SDK 1.16): a local two-client test, and two clients matched onto one Edgegap deployment in the same team room, hearing each other (fake audio input), with the leaving player removed (`204`).
+  - Pitfalls from the run: a Server RPC sent in the frame the component replicates drops the connection; two clients on one PC share a device ID; Git Bash rewrites `/Game/...` map paths; packaging rebuilds the engine when UAT picks a newer MSVC.
+- `edgegap` (0.8.0) routes voice chat questions to it; `edgegap-unreal` (0.1.1) points to it.
+
 ## 0.7.1 (2026-10-19)
 
 Matchmaker expansion stages, and the 0.6.1 fixes carried over to `edgegap-unity` and `edgegap-purrnet`, which share the FishNet templates.
