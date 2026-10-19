@@ -26,7 +26,7 @@ Client ──connect fqdn/public_ip : external port──▶ Dedicated server (e
 
 Ask only what you can't infer from the game:
 - Players per match (min/max), and teams? (1 team = co-op / free-for-all / battle royale; 2 teams = 2v2 etc.)
-- Should a lone player eventually get a server alone? For first tests, yes: an expansion that lowers `min_team_size` to 1 after ~30 s lets one person test end to end.
+- The real minimum per match. Never start a match below it: don't add an expansion that lowers `min_team_size` unless the developer explicitly wants solo or smaller matches, and never below the game's real minimum (a duel or race with one player is not a match). Test end to end with two clients instead.
 - Platforms: any WebGL client → no `latencies` rule for that profile + `allowed_cors_origins`.
 - Desktop/mobile only → a `latencies` rule (beacons) is fine and improves placement, but the client must then send beacons in every ticket (`UseLatencyBeacons = true`).
 - Skill/mode/map filters? Each adds a rule and a matching ticket attribute. Skip them for the first end-to-end run and add them afterwards.
@@ -38,7 +38,7 @@ Top level: `version` ("3.3.2"), `inspect` (true in dev: enables `GET /inspect/ti
 Profile: `ticket_expiration_period` ("5m"; unmatched tickets become CANCELLED), `ticket_removal_period` ("1m"), `group_inactivity_removal_period` ("5m"), `application {name, version}`, `rules {initial, expansions}`.
 
 Rule types in `rules.initial` (each `{ "type": ..., "attributes": {...} }`, rule names are free-form; the name is also the ticket attribute key):
-- `player_count` (required, exactly once): `team_count`, `min_team_size`, `max_team_size`. Fills to max if possible, otherwise makes a partial match (≥ min) when the expansion stage/expiration elapses. Never below min.
+- `player_count` (required, exactly once): `team_count`, `min_team_size`, `max_team_size`. Fills to max if possible, otherwise makes a partial match (≥ min) only when an expansion stage or the expiration elapses. Never below min. So a profile with `min_team_size < max_team_size` needs at least one expansion stage, even one that repeats the initial `min_team_size`: without it, two players wait until their tickets expire. Measured on matchmaker 3.3.2 (2026-10-19, `min 2 / max 8`): with no `expansions`, two tickets stayed `SEARCHING` and matched exactly at the 5-minute expiry; with `"15": {"match_size": {"min_team_size": 2}}` two clients were matched and connected within 40 s of launch.
 - `latencies` (optional, once): `difference` (max ms difference between players to the same beacon), `max_latency` (beacons above are discarded). Ticket attribute: `{"Chicago": 12.3, ...}`.
 - `number_difference`: `max_difference`. Ticket attribute: a number (e.g. `elo_rating`).
 - `string_equality`: no attributes. Ticket attribute: a string; case-sensitive exact match.
@@ -52,7 +52,7 @@ Duration strings: `"30s"`, `"5m"`. Validate the final JSON (`python -m json.tool
 
 Write the final file as `matchmaker-config.json` in the project root (it contains no secrets). Replace `application.name`/`version` with the real ones.
 
-**Casual, WebGL-safe (no beacons), solo after 30 s**: the verified end-to-end shape (`assets/matchmaker/casual.json`):
+**Casual, WebGL-safe (no beacons), 2-4 players**: the verified end-to-end shape, with a 15 s expansion stage that keeps `min_team_size` at 2 instead of the solo expansion it was tested with (`assets/matchmaker/casual.json`):
 ```json
 {
   "version": "3.3.2",
@@ -73,7 +73,7 @@ Write the final file as `matchmaker-config.json` in the project root (it contain
           }
         },
         "expansions": {
-          "30": { "match_size": { "min_team_size": 1 } }
+          "15": { "match_size": { "min_team_size": 2 } }
         }
       }
     }
@@ -86,9 +86,9 @@ Remove `allowed_cors_origins` if there is no WebGL client.
 ```json
 "beacons": { "type": "latencies", "attributes": { "difference": 100, "max_latency": 200 } }
 ```
-to `initial`, `team_count: 2`, `min_team_size: 2`, `max_team_size: 2`, and expansions that relax latency (`"30": {"beacons": {"max_latency": 300}}`) and allow `min_team_size: 1` late for testing.
+to `initial`, `team_count: 2`, `min_team_size: 2`, `max_team_size: 2`, and an expansion that relaxes latency (`"30": {"beacons": {"max_latency": 300}}`). Match size stays 2v2.
 
-Prefer generating with `edgegap_build_matchmaker_config` (it also checks the app version exists and has ports). It takes `profile_name`, `application`, `version`, `team_count`, `min_team_size`, `max_team_size`, optional `max_latency_ms`, `latency_difference_ms`, `expansions[{after_seconds, min_team_size?, max_latency_ms?}]`, `ticket_expiration`, and `allowed_cors_origins` (needed for WebGL; older MCP servers without this field: add the top-level key to the JSON yourself).
+Prefer generating with `edgegap_build_matchmaker_config` (it also checks the app version exists and has ports). It takes `profile_name`, `application`, `version`, `team_count`, `min_team_size`, `max_team_size`, optional `max_latency_ms`, `latency_difference_ms`, `expansions[{after_seconds, min_team_size?, max_latency_ms?}]` (when min < max, pass at least `{after_seconds: 15, min_team_size: <the real minimum>}`), `ticket_expiration`, and `allowed_cors_origins` (needed for WebGL; older MCP servers without this field: add the top-level key to the JSON yourself).
 
 ## 5. Creating the matchmaker in the dashboard
 
@@ -129,7 +129,8 @@ The server should allow ~60 s for matched players to connect before giving up on
 | CORS error in browser console | origin missing from `allowed_cors_origins` (scheme + host + port exactly) |
 | 400 on create group | profile name or attributes don't match the config (section 6) |
 | 401 | wrong matchmaker token, or "Bearer "/"token " prefix added (send it raw) |
-| Stuck in SEARCHING | not enough compatible tickets; for solo tests add the `min_team_size: 1` expansion, check latency rule isn't excluding players |
+| Two players stay SEARCHING for ~5 minutes, then match | the profile has `min_team_size < max_team_size` and no expansion stage, so the matchmaker waits to fill `max_team_size` (section 3). Add one that keeps `min_team_size`, e.g. `"15": {"match_size": {"min_team_size": 2}}` |
+| Stuck in SEARCHING | not enough compatible tickets: expected for a lone ticket, so test with two clients; check latency rule isn't excluding players |
 | Flips MATCH_FOUND ↔ SEARCHING | deployment can't start: free tier allows **1 concurrent deployment**. Stop leftover test deployments (`edgegap_list_deployments`, `edgegap_stop_deployment`). Also check the app version (registry credentials, image tag) by doing a direct deploy |
 | Straight to CANCELLED | ticket expired; raise `ticket_expiration_period` or add expansions |
 | Matches at random times ignoring player count | stale tickets from earlier tests: restart the matchmaker |

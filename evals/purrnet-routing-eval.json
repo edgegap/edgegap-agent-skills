@@ -1,0 +1,22 @@
+[
+  {"query": "PurrNet game with UDPTransport. want dedicated servers on edgegap and a Find Match button instead of someone hosting", "expected_skill": "edgegap-purrnet"},
+  {"query": "i'm building on the PurrNet incremental sample. how do I run it as a headless server on edgegap so nobody has to host?", "expected_skill": "edgegap-purrnet"},
+  {"query": "my purrnet dedicated server on edgegap starts fine but the world is empty for clients, no trees spawn. works when I host in the editor", "expected_skill": "edgegap-purrnet"},
+  {"query": "purrnet client never connects to my edgegap deployment, it calls StartClient then my retry loop gives up instantly every time", "expected_skill": "edgegap-purrnet"},
+  {"query": "We use PurrNet (dev.purrnet.purrnet) in Unity 6 with ParrelSync for testing. We need matchmaking for 4-player co-op and servers in EU and NA. Where do we start?", "expected_skill": "edgegap-purrnet"},
+  {"query": "purrnet NetworkManager keeps starting a client that connects to 127.0.0.1 in my build, I want it to wait for the edgegap matchmaker instead", "expected_skill": "edgegap-purrnet"},
+  {"query": "what app version port and protocol do I need on edgegap for a purrnet game using UDPTransport on port 5000?", "expected_skill": "edgegap-purrnet"},
+  {"query": "purrnet WebTransport webgl build, how do I host the server on edgegap with wss?", "expected_skill": "edgegap-purrnet"},
+  {"query": "my purrnet servers on edgegap never shut down after players leave, how do I make them stop themselves?", "expected_skill": "edgegap-purrnet"},
+  {"query": "moving my PurrNet party game from a player host to Edgegap dedicated servers, the round logic is all behind isHost checks", "expected_skill": "edgegap-purrnet"},
+  {"query": "PurrNet SyncVar<int> score isn't updating on clients when the server changes it, what am I missing?", "expected_skill": null},
+  {"query": "how do I set up PurrNet's network rules so only the owner can move their player but the server validates hits?", "expected_skill": null},
+  {"query": "PurrNet vs FishNet vs Mirror for a small co-op game, which is easiest to learn?", "expected_skill": null},
+  {"query": "purrnet steam transport: how do I invite friends through Steam so they join my lobby? we want to stay peer to peer", "expected_skill": null},
+  {"query": "My Unity game uses FishNet with Tugboat. Right now one player hosts. How do I get dedicated servers and a Find Match button on Edgegap?", "expected_skill": "edgegap-fishnet"},
+  {"query": "We use Netcode for GameObjects in Unity 6 and want Edgegap dedicated servers with matchmaking so players click Play and get matched", "expected_skill": "edgegap-unity"},
+  {"query": "Unreal Engine 5.5 listen server game, how do I move it to Edgegap dedicated servers with matchmaking?", "expected_skill": "edgegap-unreal"},
+  {"query": "my edgegap deployment goes to Error with 'image could not be pulled', our server is a Go binary and the push to registry.edgegap.com worked", "expected_skill": "edgegap-troubleshoot"},
+  {"query": "write me a Dockerfile for my Rust game server so I can push it to registry.edgegap.com", "expected_skill": "edgegap-containerize"},
+  {"query": "browser game I built with Manus, node ws server, I need matchmaking and servers on edgegap so strangers can play together", "expected_skill": "edgegap-manus"}
+]

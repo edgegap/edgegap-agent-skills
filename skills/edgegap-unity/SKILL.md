@@ -2,7 +2,7 @@
 name: edgegap-unity
 description: 'Unity + Edgegap: get a Unity multiplayer game online with dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a Unity project: it has the Unity workflow, tested C# templates (matchmaker client, server self-stop), Linux server build, Dockerfile, matchmaker config and fixes for known pitfalls. Use when a Unity dev wants online play: "put my game online", "play with people over the internet", "works on LAN/same wifi but not online", "nobody should have to host", "click Play and get matched", how Fall Guys/Among Us match players, servers for a playtest, "where do I start with servers". Also for Mirror host/client games moving to dedicated servers, WebGL multiplayer, or debugging Edgegap deployments, ports or matchmaking for a Unity game. Use even for beginners who never say Edgegap, servers or Docker. Not for NGO (edgegap-ngo), FishNet (edgegap-fishnet) or PurrNet (edgegap-purrnet) projects, Unreal (edgegap-unreal), Godot or non-game backends.'
 metadata:
-  version: "0.1.8"
+  version: "0.1.9"
 ---
 
 # Edgegap for Unity: dedicated servers + matchmaking
@@ -39,7 +39,7 @@ Then ask, in a single message, only what you couldn't infer. Typically: players 
 Read `references/netcode.md`.
 1. Convert host/client assumptions to a headless server path (§2): server builds call `StartServer`, players spawn on client connect, no local player on the server, headless-unsafe code guarded.
 2. Server listens on `0.0.0.0` at a fixed internal port (7777 typical; WebSocket transports often 7778).
-3. Install the Edgegap SDK. Add `"com.edgegap.unity-sdk": "https://github.com/edgegap/edgegap-unity-sdk.git#3.5.5"` to `Packages/manifest.json` (3.5.5+ required for WebGL; needs git). Newtonsoft comes with it.
+3. Install the Edgegap SDK. Add `"com.edgegap.unity-sdk": "https://github.com/edgegap/edgegap-unity-sdk.git#3.5.6"` to `Packages/manifest.json` (needs git), on every Unity version. Newtonsoft comes with it. Older SDKs fail WebGL builds and, on Unity before 2022.3, every matchmaker ticket (`references/troubleshooting.md`). If the project already has an embedded, hand-patched SDK (a `Packages/com.edgegap.unity-sdk` folder), delete it and use the git package.
 4. Copy `assets/unity/EdgegapMatchmakingDTOs.cs`, `EdgegapServerLifecycle.cs`, `EdgegapMatchmakingClient.cs`, `link.xml` and `Editor/*.cs` into `Assets/Edgegap/` (the Editor scripts go in `Assets/Edgegap/Editor/`). Fill both `NETCODE ADAPTER` regions with the snippets for the project's netcode (§4). If the project's code lives in an asmdef, put these scripts in or reference it from that asmdef, and reference `Edgegap.SDK`.
 5. Add both components to the network scene with `EdgegapSceneSetup` instead of hand-editing scene YAML (project closed in the Editor):
    `"<Unity>" -batchmode -quit -projectPath "<project>" -executeMethod EdgegapSceneSetup.Setup -edgegapListenPort <port> -edgegapAutoStart <false if the netcode already auto-starts headless> -edgegapProfile <profile> -logFile setup.log`
@@ -77,7 +77,7 @@ Read `references/deploy.md` §5-6.
 ## Phase 5: Matchmaker
 
 Read `references/matchmaker.md`.
-1. Design the profile from the answers in Phase 0. For the first run, use a profile where a lone player gets a server after ~30 s, so one person can test.
+1. Design the profile from the answers in Phase 0. Keep `min_team_size` at the game's real minimum: no expansion that lowers it unless the developer explicitly wants solo or smaller matches. If `min_team_size < max_team_size`, add an expansion stage (15 s) that keeps it, or two players wait until their tickets expire (`references/matchmaker.md`). Plan the first test with two clients.
 2. Generate it with `edgegap_build_matchmaker_config` (or from `assets/matchmaker/*.json`). For WebGL pass `allowed_cors_origins` (every origin that serves the build, e.g. `http://localhost:8080`). Validate the JSON and save it as `matchmaker-config.json` in the project root.
 3. Walk the developer through the dashboard (§5): Create Matchmaker → upload → Create and Start → copy **API URL** + **Auth Token**.
 4. Check `GET <API URL>/monitor` with the token responds (DNS can take ~5 min).
@@ -93,7 +93,7 @@ Read `references/matchmaker.md`.
 ## Phase 7: End-to-end test and hand-off
 
 1. Make sure no test deployment is running (`edgegap_list_deployments`).
-2. Build the client with `-executeMethod EdgegapServerBuild.BuildClient -edgegapClientTarget webgl|win64|mac|linux` (output `Builds/Client/<target>`). For WebGL, serve it from an origin listed in `allowed_cors_origins`, e.g. `python -m http.server 8080 --bind 127.0.0.1` in `Builds/Client/webgl` and open `http://localhost:8080`. If you have a browser tool you can run the two-tab test yourself: open two tabs and bring each to the front before clicking (background tabs throttle Unity WebGL and can miss clicks), then click Find Match in both. Otherwise the developer runs two clients (Editor + build, two builds, or two browser tabs). Watch: SEARCHING → MATCH_FOUND → HOST_ASSIGNED → connected, both in the same match. A solo client should get a server after the expansion delay.
+2. Build the client with `-executeMethod EdgegapServerBuild.BuildClient -edgegapClientTarget webgl|win64|mac|linux` (output `Builds/Client/<target>`). For WebGL, serve it from an origin listed in `allowed_cors_origins`, e.g. `python -m http.server 8080 --bind 127.0.0.1` in `Builds/Client/webgl` and open `http://localhost:8080`. If you have a browser tool you can run the two-tab test yourself: open two tabs and bring each to the front before clicking (background tabs throttle Unity WebGL and can miss clicks), then click Find Match in both. Otherwise the developer runs two clients (Editor + build, two builds, or two browser tabs). Watch: SEARCHING → MATCH_FOUND → HOST_ASSIGNED → connected, both in the same match. A lone client stays in SEARCHING until a second one joins (or its ticket expires): that is expected.
 3. While it runs: `edgegap_list_deployments` shows the matchmaker's deployment (tagged with ticket IDs); read its logs and confirm `N matched player(s)`.
 4. Leave the match → server logs "Stopping deployment" → deployment disappears. That proves self-stop, which protects the developer's bill.
 5. Debug with `references/troubleshooting.md` until this passes. Fix the root cause rather than working around it.

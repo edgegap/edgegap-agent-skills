@@ -38,10 +38,11 @@ In order:
 
 | Symptom | Cause / fix |
 |---|---|
-| 400 on every ticket, Unity before 2022.3 | §4 |
+| 400 on every ticket, Unity before 2022.3 | SDK older than 3.5.6 (§4) |
 | 400 on tickets, Unity 2022.3+ | Profile name or attributes don't match the config |
 | 401 | Wrong Auth Token, or a `Bearer`/`token` prefix |
 | Matchmaker deploys another game's server | The wrong `matchmaker-config.json` was uploaded: give the full path, check `application.name` |
+| Two players stay `SEARCHING` for ~5 minutes, then match | The profile has no expansion stage, so the matchmaker waits to fill `max_team_size` (`matchmaker.md` §6). Add one that keeps `min_team_size`, e.g. `"15": {"match_size": {"min_team_size": 2}}` |
 | A lone player waits ~5 minutes | Expected on matchmaker 3.3.2 free tier: test with two clients |
 | Flips MATCH_FOUND ↔ SEARCHING | Free tier's one deployment is busy (stop test deployments), or the version can't deploy (registry credentials; do a direct deploy) |
 | New build not used | `application.version` not updated (Stop → Edit → Start) |
@@ -51,7 +52,7 @@ In order:
 
 | Symptom | Cause / fix |
 |---|---|
-| Unity before 2022.3: every matchmaker POST gets HTTP 400 | SDK 3.5.5 sends JSON through `UnityWebRequest.Post(url, string)`, which form-encodes it on old Unity. Embed the SDK (copy it from `Library/PackageCache` to `Packages/`, drop the manifest line) and in `Runtime/SafeHttpRequest.cs`'s `#else` branch replace `UnityWebRequest.Post(url, body)` with `new UnityWebRequest(url, UnityWebRequest.kHttpVerbPOST) { uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(body)), downloadHandler = new DownloadHandlerBuffer() }`, keeping the Content-Type header. Upstream fix: https://github.com/edgegap/edgegap-unity-sdk/pull/68 (check for a newer release first) |
+| Unity before 2022.3: every matchmaker POST gets HTTP 400 | SDK 3.5.5 and older send JSON through `UnityWebRequest.Post(url, string)`, which form-encodes it on old Unity. Pin `https://github.com/edgegap/edgegap-unity-sdk.git#3.5.6`, which sends it raw. If the project embedded and hand-patched an older SDK (`Packages/com.edgegap.unity-sdk`), delete that folder and use the git package so later updates apply |
 | `type or namespace 'Edgegap'` / `'PurrNet'` not found | asmdef missing references to `Edgegap.SDK` or PurrNet's runtime asmdef |
 | Settings asset shows "missing script" | `EdgegapSettings.cs.meta` wasn't copied with the script; copy it, or recreate the asset with **Assets → Create → Edgegap → Settings** in `Assets/Edgegap/Resources/` |
 | `No Resources/EdgegapSettings asset, using defaults` | The asset isn't in a `Resources` folder or isn't named `EdgegapSettings` |

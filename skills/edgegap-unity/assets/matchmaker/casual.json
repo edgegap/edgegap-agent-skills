@@ -17,7 +17,7 @@
           }
         },
         "expansions": {
-          "30": { "match_size": { "min_team_size": 1 } }
+          "15": { "match_size": { "min_team_size": 2 } }
         }
       }
     }

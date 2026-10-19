@@ -6,7 +6,7 @@ Contents
 3. Creating the matchmaker in the dashboard
 4. Ticket ↔ profile contract
 5. What the server receives
-6. Lone tickets and testing
+6. Expansion stages, lone tickets and testing
 7. Shipping a new build
 
 ## 1. How it fits together
@@ -23,7 +23,7 @@ Client ──UDPTransport public_ip:external──▶ PurrNet server (env: MM_MA
 
 Start from `assets/matchmaker/casual.json`:
 - `version` `3.3.2`, `inspect: true` for development (off for live), `max_deployment_retry_count: 3`.
-- Profile `casual`: one team of 2-4 players, tickets expire after 5 minutes, an expansion lowers `min_team_size` to 1 after 30 s.
+- Profile `casual`: one team of 2-4 players, tickets expire after 5 minutes, and an expansion stage at 15 s that keeps `min_team_size` at 2 (§6). A match never starts with fewer players than the developer asked for. Only lower `min_team_size` in an expansion when the developer explicitly wants solo or smaller matches, and never below the game's real minimum.
 - `application.name` / `version`: the app and version from Phase 4, which must exist and be active.
 - Desktop-only games can add a `latencies` rule for better placement, with `UseLatencyBeacons` on in `EdgegapSettings`. WebGL clients: no `latencies` rule, and add `allowed_cors_origins`.
 
@@ -43,7 +43,7 @@ Put both on `EdgegapSettings` and tick **Use Edgegap Matchmaker** (or use the co
 
 - The ticket's `profile` equals `EdgegapSettings.Profile`.
 - Every rule except `player_count` needs a ticket attribute with the rule's name; unknown attributes are rejected. A mismatch is HTTP 400 on `POST /groups`.
-- On Unity before 2022.3, SDK 3.5.5 form-encodes the ticket and every POST gets 400 (`troubleshooting.md` §4).
+- On Unity before 2022.3, SDK 3.5.5 and older form-encode the ticket and every POST gets 400, even with a correct profile: fixed in 3.5.6 (`troubleshooting.md` §4), not the config.
 
 ## 5. What the server receives
 
@@ -51,9 +51,11 @@ Matchmaker deployments get `MM_MATCH_ID`, `MM_MATCH_PROFILE`, `MM_EXPANSION`, `M
 
 To validate joiners, send `EdgegapMatchmakingClient.TicketId` to the server (a PurrNet authenticator or a first `ServerRpc`) and kick connections whose ticket isn't in `MM_TICKET_IDS`. Optional for a first playtest.
 
-## 6. Lone tickets and testing
+## 6. Expansion stages, lone tickets and testing
 
-On matchmaker 3.3.2 (free tier), a single ticket may only get a server near its 5-minute expiry rather than at the 30 s expansion. Two tickets matched in about 35 s in the verified run. Test with **two clients**.
+The matchmaker fills a match up to `max_team_size` when it can, and only makes a **partial** match (at least `min_team_size`) when an expansion stage elapses or the tickets expire. Measured on matchmaker 3.3.2 (2026-10-19, `min 2 / max 8`): with no `expansions`, two tickets stayed `SEARCHING` and matched exactly at the 5-minute expiry; with `"15": {"match_size": {"min_team_size": 2}}` two clients were matched and connected within 40 s of launch. So give every profile with `min_team_size < max_team_size` at least one expansion stage, even one that repeats the initial `min_team_size`, as the template does; with `edgegap_build_matchmaker_config`, pass `expansions: [{after_seconds: 15, min_team_size: <the real minimum>}]`.
+
+On matchmaker 3.3.2 (free tier, with a `min_team_size: 1` expansion at 30 s that the template no longer has), a single ticket may only get a server near its 5-minute expiry rather than at the expansion. Two tickets matched in about 35 s in the verified run. Test with **two clients**.
 
 ## 7. Shipping a new build
 

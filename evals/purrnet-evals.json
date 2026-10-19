@@ -1,0 +1,85 @@
+{
+  "skill_name": "edgegap-purrnet",
+  "constraints": "Environment constraints for this eval: you cannot run Unity, Docker, or Edgegap MCP tools, and you have no Edgegap account access. Make every code and config change directly in the project copy, and write HANDOFF.md in the outputs folder with the exact remaining steps (commands, Editor and dashboard clicks, what to verify) a developer must do, in order. Don't ask questions; make reasonable assumptions and state them in HANDOFF.md.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "incremental-host-to-dedicated",
+      "prompt": "This is the PurrNet Incremental sample (it's in the project folder), we're using it as the base for our co-op game. Right now in builds one player ends up hosting. We want nobody to host: players click Play, get matched with others and land on a dedicated server on Edgegap. Windows clients. Can you set it up?",
+      "expected_output": "SDK 3.5.6+, auto start flags off in builds (Editor host+clone kept), server-only start on the UDP port, InitSeed runLocally fix, async StartClient handled, self-stop, UDP app version on the transport port, client to public_ip + external port, matchmaker config, Dockerfile amd64 unique tag, dashboard steps.",
+      "files": [
+        "fixtures/incremental"
+      ],
+      "assertions": [
+        "Does not recommend or use relays / host-client / P2P",
+        "Edgegap Unity SDK in Packages/manifest.json at 3.5.6 or newer",
+        "PurrNet NetworkManager auto start is turned off in builds (NetworkManager.DisableFlags() before the scene loads, or Start Server/Client Flags changed), so client builds don't auto-connect to 127.0.0.1 and the server isn't started twice",
+        "The Editor host + ParrelSync clone workflow keeps working (auto start only disabled in builds, or the change is explicitly scoped)",
+        "Server builds call StartServer (not StartHost) on the transport port the app version uses",
+        "ResourceSpawner.InitSeed (ObserversRpc that seeds the server's world) gets runLocally: true or an equivalent so it runs on a dedicated server",
+        "Client connect code waits for PurrNet's async StartClient (doesn't treat the initial Disconnected state as a failed attempt)",
+        "Server stops its own deployment via ARBITRIUM_DELETE_URL/TOKEN when empty or when nobody joins",
+        "Client connects UDPTransport to the assignment's public_ip (or fqdn) and the external port of the named game port",
+        "App version port is UDP, internal port equal to the UDPTransport port, name matching the client's port lookup",
+        "Matchmaker config is valid JSON and its profile name equals the client's profile",
+        "Docker build uses --platform linux/amd64",
+        "Each build is pushed under a new unique tag (not latest, not a fixed reused tag)",
+        "No Edgegap API token written to project files; the matchmaker Auth Token is the only token in the client",
+        "HANDOFF.md gives dashboard steps to create/start the matchmaker and copy API URL + Auth Token",
+        "Delivered project compiles as a Linux dedicated server with no manual pre-step (checked by a Unity batch compile)"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "orbitbrawl-host-to-dedicated",
+      "prompt": "my purrnet party brawler is in the project folder (unity 6, UDPTransport). 2-4 players, right now someone hosts and presses Start Round. I want a Find Match button, nobody hosting, a dedicated server that runs the rounds by itself. desktop only. set it up on edgegap please",
+      "expected_output": "SDK 3.5.6+, auto start flags off in builds, isHost logic moved to the server, SetupRound runLocally / server-side pickup spawn, headless guards, server-driven round start, self-stop, async StartClient, UDP 5000 app version, client to public_ip + external port, matchmaker 2-4 no solo expansion, Dockerfile amd64 unique tag, dashboard steps.",
+      "files": [
+        "fixtures/orbitbrawl"
+      ],
+      "assertions": [
+        "Does not recommend or use relays / host-client / P2P",
+        "Edgegap Unity SDK in Packages/manifest.json at 3.5.6 or newer",
+        "PurrNet NetworkManager auto start is turned off in builds (DisableFlags or flags changed), so client builds don't auto-connect to 127.0.0.1 and the server isn't started twice",
+        "isHost-gated round logic in RoundManager (SetupRound call, EndRound scene load) runs on the dedicated server (isServer / server-side code)",
+        "Pickups actually spawn on a dedicated server: SetupRound gets runLocally: true, or the server spawns them outside the ObserversRpc",
+        "Headless-unsafe code in RoundManager.OnSpawned (arenaMusic.Play, Camera.main) guarded so it doesn't run on the dedicated server",
+        "The round starts without a host: the server starts it when the matched players (or enough players) have joined, replacing the host-only Start Round button",
+        "Server stops its own deployment via ARBITRIUM_DELETE_URL/TOKEN when empty or after the match ends",
+        "Client connect code waits for PurrNet's async StartClient (doesn't treat the initial Disconnected state as a failed attempt)",
+        "Client connects UDPTransport to the assignment's public_ip (or fqdn) and the external port of the named game port",
+        "App version port is UDP with internal port 5000 (the UDPTransport port) and a name matching the client's port lookup",
+        "Matchmaker config is valid JSON, max team size 4, profile name equals the client's profile, and no expansion lowers min_team_size below 2",
+        "Docker build uses --platform linux/amd64",
+        "Each build is pushed under a new unique tag (not latest, not a fixed reused tag)",
+        "No Edgegap API token written to project files; the matchmaker Auth Token is the only token in the client",
+        "HANDOFF.md gives dashboard steps to create/start the matchmaker and copy API URL + Auth Token",
+        "Delivered project compiles as a Linux dedicated server with no manual pre-step (checked by a Unity batch compile)"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "broken-orbitbrawl-debug",
+      "prompt": "our purrnet game on edgegap is a mess. Find Match fails with a 400, connecting straight to a deployment gives up after 5 attempts in about a second, when we did get in the arena was empty and the round never ended, servers run until the 24h limit, our security review flagged the server image, and re-pushing a fixed build changed nothing. notes and logs are in the folder. find and fix what you can.",
+      "expected_output": "Finds and fixes: ticket missing the 'beacons' attribute for the latency rule, port 5000 vs 7777, async StartClient retry loop, internal port, auto start flags (double start, client auto-connect), SetupRound without runLocally, self-stop in OnApplicationQuit only, API token baked into the Dockerfile (remove, rotate, use ARBITRIUM_DELETE_URL), reused latest tag.",
+      "files": [
+        "fixtures/broken-orbitbrawl"
+      ],
+      "assertions": [
+        "Identifies the 400 as the ticket missing the 'beacons' attribute required by the latencies rule, and fixes it (client measures beacons and sends them, or the rule is removed with a stated reason)",
+        "Aligns the ports: UDPTransport 5000 vs app version 7777 (and Dockerfile EXPOSE) made consistent",
+        "Fixes the connect loop: waits for PurrNet's async StartClient to leave Disconnected before judging the attempt",
+        "Client connects to the assignment's external port, not the internal one",
+        "Turns PurrNet auto start off in builds (DisableFlags or flags changed): removes the double server start and the client build's auto-connect to 127.0.0.1",
+        "Explains the empty arena: SetupRound is an ObserversRpc without runLocally, so it never runs on a dedicated server; fixes it",
+        "Replaces the OnApplicationQuit self-stop with a self-stop via ARBITRIUM_DELETE_URL/TOKEN when the server is empty or the match ends",
+        "Removes the Edgegap API token from the Dockerfile/image and tells the developer to revoke/rotate it",
+        "Explains the re-push had no effect because the latest tag was reused/cached; switches to unique tags and a new app version",
+        "Docker build uses --platform linux/amd64",
+        "HANDOFF.md lists the remaining steps in order",
+        "Delivered project compiles as a Linux dedicated server with no manual pre-step (checked by a Unity batch compile)"
+      ]
+    }
+  ],
+  "notes": "Fixture incremental is PurrNet/PurrNet-Incremental-Sample at cf53faa (before the Edgegap integration), PurrNet from git #dev. orbitbrawl and broken-orbitbrawl are synthetic (Unity 6000.3.11f1, PurrNet #dev, UDPTransport 5000), scenes described in Assets/Brawl/Scenes/SCENES.README.txt. The token in broken-orbitbrawl's Dockerfile is fake. In this repo the token in broken-orbitbrawl's Dockerfile is a placeholder. incremental is not in the repo (21 MB); export it with `git archive cf53faa` from edgegap/PurrNet-Incremental-Sample. The last assertion is checked with a Unity batch compile (Linux Dedicated Server target). Results 2026-10-19 (skill 0.1.1): 100% with the skill vs 85% without; routing 60/60."
+}

@@ -2,12 +2,12 @@
 name: edgegap
 description: 'Start here for hosting a game on Edgegap (dedicated game servers + matchmaking, Docker image in, server address out) when the engine is not Unity or Unreal, is unknown, or the question is about the platform itself. Use when someone wants to host or deploy a game server, wants a single-player or co-op game to be always online or harder to crack, decompile or pirate, asks how players will connect to matches, wants dedicated servers for a Godot, web/Node or custom-engine game, compares hosting options, or asks what Edgegap apps, versions, deployments, fleets or matchmakers are, even if they never say "hosting". It picks the right server shape for the game (per match, per player session, or persistent), explains the vocabulary and safety rules for the Edgegap MCP tools, and sends the agent to the right edgegap-* skill. For a Unity project, load edgegap-unity directly instead (NGO: edgegap-ngo, FishNet: edgegap-fishnet, PurrNet: edgegap-purrnet); for Unreal Engine, edgegap-unreal; for a Manus game, edgegap-manus.'
 metadata:
-  version: "0.7.0"
+  version: "0.7.1"
 ---
 
 # Edgegap
 
-Pack version: 0.7.0
+Pack version: 0.7.1
 
 Edgegap runs dedicated game servers. You push a **Linux container image** of your game server, register it as an **app version**, and ask for a **deployment** near a group of players. Edgegap picks the location with the best ping for that group, starts the container in seconds, and returns a URL (`<id>.pr.edgegap.net`), a public IP, and an external port per internal port. Players connect. The match ends, the server stops, billing stops.
 

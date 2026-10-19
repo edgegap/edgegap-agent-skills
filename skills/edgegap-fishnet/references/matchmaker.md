@@ -3,7 +3,7 @@
 Contents
 1. How it fits together
 2. The config
-3. Lone tickets and testing
+3. Expansion stages, lone tickets and testing
 4. Creating the matchmaker in the dashboard
 5. Ticket ↔ profile contract
 6. What the server receives
@@ -24,14 +24,18 @@ Client ──Bayou wss://fqdn:external  /  Tugboat public_ip:external──▶ F
 Start from `assets/matchmaker/casual-webgl.json`:
 - `version` `3.3.2`, `inspect: true` for development (turn off for live), `max_deployment_retry_count: 3`.
 - `allowed_cors_origins`: every origin that serves a WebGL build, exact scheme + host + port, no path (e.g. `http://localhost:8080`, `https://<user>.itch.io`, `https://html-classic.itch.zone`).
-- Profile `casual`: one team of 2-4 players (`player_count` rule), tickets expire after 5 minutes. No expansion: a match never starts with fewer players than the developer asked for. Only add an expansion that lowers `min_team_size` when the developer explicitly wants solo or smaller matches, and never below the game's real minimum (a race or duel with one player is not a match).
+- Profile `casual`: one team of 2-4 players (`player_count` rule), tickets expire after 5 minutes, and an expansion stage at 15 s that keeps `min_team_size` at 2 (§3). A match never starts with fewer players than the developer asked for. Only lower `min_team_size` in an expansion when the developer explicitly wants solo or smaller matches, and never below the game's real minimum (a race or duel with one player is not a match).
 - `application.name` / `version`: the app and version from Phase 4. They must exist and be active, or the dashboard rejects the config.
 
 Desktop-only (Tugboat) games can add a `latencies` rule for better placement; the client must then send beacons (`UseLatencyBeacons = true`). Never for WebGL, which can't ping beacons. `edgegap_build_matchmaker_config` generates configs too (pass `allowed_cors_origins` for WebGL). Save the result as `matchmaker-config.json` in the project root.
 
-## 3. Lone tickets and testing
+## 3. Expansion stages, lone tickets and testing
 
-In the verified run (matchmaker 3.3.2, free tier, with a `min_team_size: 1` expansion at 30 s that the template no longer has), a single ticket got `HOST_ASSIGNED` only when it neared its 5-minute expiration, not at the expansion. Two tickets matched within seconds. So:
+The matchmaker fills a match up to `max_team_size` when it can, and only makes a **partial** match (at least `min_team_size`, fewer than `max_team_size`) when an expansion stage elapses or the tickets expire. Measured on matchmaker 3.3.2 (2026-10-19, with `min 2 / max 8`): with no `expansions`, two tickets stayed `SEARCHING` and matched exactly at the 5-minute expiry; with `"15": {"match_size": {"min_team_size": 2}}` two clients were matched and connected within 40 s of launch. So:
+- Give every profile with `min_team_size < max_team_size` at least one expansion stage, even one that repeats the initial `min_team_size`, as the template does. Without it, two FishNet players wait about 5 minutes. A profile with `min_team_size == max_team_size` doesn't need one.
+- When generating with `edgegap_build_matchmaker_config`, pass `expansions: [{after_seconds: 15, min_team_size: <the real minimum>}]`.
+
+In the original FishNet run (with a `min_team_size: 1` expansion at 30 s that the template no longer has), a single ticket got `HOST_ASSIGNED` only when it neared its 5-minute expiration, not at the expansion. Two tickets matched within seconds. So:
 - Run the end-to-end test with **two clients** (two browser tabs, or two builds).
 - Don't promise solo matchmaking after 30 s. If the game needs it, test it on the developer's tier, and consider a shorter `ticket_expiration_period` together with a client that retries.
 

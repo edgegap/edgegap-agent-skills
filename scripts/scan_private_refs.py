@@ -32,6 +32,7 @@ ALLOWED = [
     ("<request_id>.pr.edgegap.net", "placeholder"),
     ("om-k2x9fj3q1a.edgegap.net", "fictional matchmaker in the broken-kartclash eval fixture"),
     ("om-a1b2c3d4e5.edgegap.net", "fictional matchmaker in a FishNet routing eval query"),
+    ("om-p7q2w9z4x1.edgegap.net", "fictional matchmaker in the broken-orbitbrawl eval fixture"),
     ('Token = "PASTE_MATCHMAKER_AUTH_TOKEN', "placeholder in the broken-kartclash eval fixture"),
     ("<id>.edgegap.net", "placeholder"),
     ("dGhlIHNhbXBsZSBub25jZQ==", "RFC 6455 sample WebSocket key"),
