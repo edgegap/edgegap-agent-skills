@@ -2,7 +2,7 @@
 name: edgegap-purrnet
 description: 'PurrNet + Edgegap: take a Unity game built on PurrNet to dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a PurrNet project (dev.purrnet.purrnet, NetworkManager start flags, UDPTransport, WebTransport, ParrelSync clones). It has PurrNet-ready C# templates verified on Edgegap that add themselves at runtime without editing scenes (server start and self-stop, connect panel with direct and matchmaker modes, settings asset), port 5000 UDP app version, Dockerfile, matchmaker config, and fixes for PurrNet pitfalls: auto start flags, the async StartClient, ObserversRpc that never runs on a dedicated server. Use when a PurrNet dev wants online play: "host my PurrNet game", "nobody should host", "works with a host but not online", "Find Match button", or is debugging PurrNet deployments, ports or matchmaking on Edgegap. Other Unity netcodes: edgegap-unity (NGO, Mirror) or edgegap-fishnet.'
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Edgegap for PurrNet: dedicated servers + matchmaking
@@ -25,7 +25,7 @@ Use **dedicated (authoritative) servers**, not a player host, unless the develop
 ## Phase 0: Understand the project
 
 Read, don't ask:
-- `ProjectSettings/ProjectVersion.txt` (Unity 6 tested; the SDK needs 2021.3+, and before 2022.3 its POST bodies break matchmaking, `references/troubleshooting.md` §4).
+- `ProjectSettings/ProjectVersion.txt` (Unity 6 tested; the SDK needs 2021.3+, and before 2022.3 it must be 3.5.6 or newer: older versions break every matchmaker ticket there, `references/troubleshooting.md` §4).
 - `Packages/manifest.json`: `dev.purrnet.purrnet` (git URL and branch), any `com.edgegap.*` package. With `com.edgegap.unity-servers-plugin` installed, PurrNet's transports also auto-configure their port on Edgegap (`references/purrnet.md` §6).
 - The scene with PurrNet's `NetworkManager`: its transport (`UDPTransport` = UDP, `WebTransport` = WebSocket, `CompositeTransport`), port (`serverPort`, 5000 on UDP by default), network rules, and **Start Server Flags / Start Client Flags**.
 - How the game connects today: host in the Editor plus a ParrelSync clone is PurrNet's default. Grep `StartServer`, `StartClient`, `StartHost`, `isHost`.
@@ -37,7 +37,7 @@ Then ask, in one message, only what you couldn't infer: players per match, platf
 ## Phase 1: Make the game dedicated-server ready
 
 Read `references/purrnet.md`.
-1. Add the SDK: `"com.edgegap.unity-sdk": "https://github.com/edgegap/edgegap-unity-sdk.git#3.5.5"` in `Packages/manifest.json`.
+1. Add the SDK: `"com.edgegap.unity-sdk": "https://github.com/edgegap/edgegap-unity-sdk.git#3.5.6"` in `Packages/manifest.json`, on every Unity version. Nothing to embed or patch; if the project already has an embedded, hand-patched SDK (`Packages/com.edgegap.unity-sdk`), delete it and use the git package.
 2. Copy `assets/unity/*.cs`, `EdgegapSettings.cs.meta` and `link.xml` to `Assets/Edgegap/`, `assets/unity/Editor/EdgegapServerBuild.cs` to `Assets/Edgegap/Editor/`, and `assets/unity/Resources/EdgegapSettings.asset` to `Assets/Edgegap/Resources/`. Copy the `.meta` too: the asset finds its script by that GUID. If the game's scripts live in an asmdef, reference `Edgegap.SDK` and PurrNet's runtime asmdef from it.
 3. Set `ListenPort` / `DirectPort` on the settings asset to the transport's port if it isn't 5000.
 4. Fix server-only logic that assumed a host (`references/purrnet.md` §3): `[ObserversRpc(runLocally: true, ...)]` where the server must run the RPC body too, players spawned for remote clients, client-only code guarded.

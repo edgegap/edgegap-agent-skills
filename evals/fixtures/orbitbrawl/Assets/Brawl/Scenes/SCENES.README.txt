@@ -1,0 +1,20 @@
+Scene files are not included in this fixture. This is what the scenes contain (inspector values as set today).
+
+Lobby.unity (build index 0)
+- NetworkManager (PurrNet NetworkManager, DontDestroyOnLoad)
+  - Start Server Flags: ServerBuild | Editor   (PurrNet default)
+  - Start Client Flags: ClientBuild | Editor | Clone   (PurrNet default)
+  - Transport: UDPTransport, Server Port 5000, Address 127.0.0.1
+  - Network Rules: default (owner-authoritative)
+  - Network Prefabs: Brawler, Pickup
+  - PlayerSpawner: Brawler prefab, spawns on player joined
+- Canvas/LobbyMenu (LobbyMenu): Host, Join, IP field, Start Round (host only)
+- Main Camera (ArenaCamera)
+
+Arena.unity (build index 1)
+- RoundManager (NetworkIdentity, RoundManager), arenaMusic = ArenaMusic AudioSource
+- Arena floor, OutOfBounds trigger volume (tag OutOfBounds) around the platform
+- Main Camera (ArenaCamera)
+
+Development uses ParrelSync: the Editor starts a host, a clone joins it.
+Build Settings: Lobby, Arena. Platforms used today: Windows and macOS standalone.
