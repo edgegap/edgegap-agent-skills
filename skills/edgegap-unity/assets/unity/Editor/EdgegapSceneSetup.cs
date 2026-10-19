@@ -34,13 +34,23 @@ public static class EdgegapSceneSetup
         Apply(scenePath);
     }
 
+    private static T GetOrAdd<T>(GameObject go) where T : Component
+    {
+        T component = go.GetComponent<T>();
+        if (component == null) component = go.AddComponent<T>();
+        return component;
+    }
+
     private static void Apply(string scenePath)
     {
         var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
 
-        GameObject go = scene.GetRootGameObjects().FirstOrDefault(g => g.name == "Edgegap") ?? new GameObject("Edgegap");
-        var server = go.GetComponent<EdgegapServerLifecycle>() ?? go.AddComponent<EdgegapServerLifecycle>();
-        var client = go.GetComponent<EdgegapMatchmakingClient>() ?? go.AddComponent<EdgegapMatchmakingClient>();
+        // Explicit == null checks, not ??: Unity overloads == for destroyed or missing objects
+        // (the Editor can return a "fake null" from GetComponent), and ?? bypasses that overload.
+        GameObject go = scene.GetRootGameObjects().FirstOrDefault(g => g.name == "Edgegap");
+        if (go == null) go = new GameObject("Edgegap");
+        var server = GetOrAdd<EdgegapServerLifecycle>(go);
+        var client = GetOrAdd<EdgegapMatchmakingClient>(go);
 
         if (ushort.TryParse(Arg("-edgegapListenPort"), out ushort port)) server.ListenPort = port;
         if (bool.TryParse(Arg("-edgegapAutoStart"), out bool autoStart)) server.AutoStartServer = autoStart;

@@ -23,7 +23,7 @@ Client ──UDPTransport public_ip:external──▶ PurrNet server (env: MM_MA
 
 Start from `assets/matchmaker/casual.json`:
 - `version` `3.3.2`, `inspect: true` for development (off for live), `max_deployment_retry_count: 3`.
-- Profile `casual`: one team of 2-4 players, tickets expire after 5 minutes, an expansion lowers `min_team_size` to 1 after 30 s.
+- Profile `casual`: one team of 2-4 players, tickets expire after 5 minutes. No expansion: a match never starts with fewer players than the developer asked for. Only add an expansion that lowers `min_team_size` when the developer explicitly wants solo or smaller matches, and never below the game's real minimum.
 - `application.name` / `version`: the app and version from Phase 4, which must exist and be active.
 - Desktop-only games can add a `latencies` rule for better placement, with `UseLatencyBeacons` on in `EdgegapSettings`. WebGL clients: no `latencies` rule, and add `allowed_cors_origins`.
 
@@ -43,7 +43,7 @@ Put both on `EdgegapSettings` and tick **Use Edgegap Matchmaker** (or use the co
 
 - The ticket's `profile` equals `EdgegapSettings.Profile`.
 - Every rule except `player_count` needs a ticket attribute with the rule's name; unknown attributes are rejected. A mismatch is HTTP 400 on `POST /groups`.
-- On Unity before 2022.3, SDK 3.5.5 form-encodes the ticket and every POST gets 400 (`troubleshooting.md` §4).
+- On Unity before 2022.3, SDK 3.5.5 and older form-encode the ticket and every POST gets 400, even with a correct profile: fixed in 3.5.6 (`troubleshooting.md` §4), not the config.
 
 ## 5. What the server receives
 
@@ -53,7 +53,7 @@ To validate joiners, send `EdgegapMatchmakingClient.TicketId` to the server (a P
 
 ## 6. Lone tickets and testing
 
-On matchmaker 3.3.2 (free tier), a single ticket may only get a server near its 5-minute expiry rather than at the 30 s expansion. Two tickets matched in about 35 s in the verified run. Test with **two clients**.
+On matchmaker 3.3.2 (free tier, with a `min_team_size: 1` expansion at 30 s that the template no longer has), a single ticket may only get a server near its 5-minute expiry rather than at the expansion. Two tickets matched in about 35 s in the verified run. Test with **two clients**.
 
 ## 7. Shipping a new build
 

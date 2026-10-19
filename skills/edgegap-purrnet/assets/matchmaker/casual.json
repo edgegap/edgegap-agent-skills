@@ -21,13 +21,6 @@
               "max_team_size": 4
             }
           }
-        },
-        "expansions": {
-          "30": {
-            "match_size": {
-              "min_team_size": 1
-            }
-          }
         }
       }
     }

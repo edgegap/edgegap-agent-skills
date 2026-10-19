@@ -20,8 +20,7 @@
           }
         },
         "expansions": {
-          "30": { "beacons": { "max_latency": 300 } },
-          "90": { "match_size": { "min_team_size": 1 } }
+          "30": { "beacons": { "max_latency": 300 } }
         }
       }
     }

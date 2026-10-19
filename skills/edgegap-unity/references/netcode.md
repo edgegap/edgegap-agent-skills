@@ -168,7 +168,7 @@ private void StartDedicatedServer(ushort port)
 private bool IsServerRunning() => InstanceFinder.NetworkManager != null && InstanceFinder.NetworkManager.ServerManager.Started;
 private int ConnectedPlayerCount() => InstanceFinder.NetworkManager.ServerManager.Clients.Count;
 ```
-FishNet notes: either use ServerManager's **Start On Headless** or `AutoStartServer`, not both (the verified setup turns Start On Headless off). Games that change scenes need the `Edgegap` object kept alive across loads (`EdgegapPersistence` in `edgegap-fishnet`). On Unity before 2022.3, SDK 3.5.5 form-encodes matchmaker POSTs and every ticket gets HTTP 400: see `edgegap-fishnet` troubleshooting. Enable **Reuse Server Address** on Tugboat. Leave the server bind address empty or `0.0.0.0`. Set any NetworkHudCanvases `Auto Start Type` to Disabled in client builds.
+FishNet notes: either use ServerManager's **Start On Headless** or `AutoStartServer`, not both (the verified setup turns Start On Headless off). Games that change scenes need the `Edgegap` object kept alive across loads (`EdgegapPersistence` in `edgegap-fishnet`). On Unity before 2022.3, SDK 3.5.5 and older form-encode matchmaker POSTs and every ticket gets HTTP 400: use SDK 3.5.6+ (`troubleshooting.md`). Enable **Reuse Server Address** on Tugboat. Leave the server bind address empty or `0.0.0.0`. Set any NetworkHudCanvases `Auto Start Type` to Disabled in client builds.
 
 ## 5. WebGL clients
 
@@ -179,7 +179,7 @@ Browsers can't open UDP sockets or send ICMP pings. For a WebGL client:
   - Set it with `"tls_upgrade": true` on the WS port in `edgegap_create_app_version` (MCP 0.3.3+), or tick **TLS Upgrade** on the port in the dashboard.
 - Matchmaker config needs `allowed_cors_origins` listing every origin that serves the build (e.g. `http://localhost:8080`, `https://<user>.itch.io`, `https://html-classic.itch.zone`). Otherwise the browser blocks matchmaker calls.
 - No latency beacons: keep `UseLatencyBeacons` off and use a profile **without** a `latencies` rule. The matchmaker then places the server from player IPs.
-- SDK must be **3.5.5+**. Older versions fail the WebGL build with `CS0234` in `Runtime/Ping.cs`.
+- SDK must be **3.5.6** (the pinned version). Versions before 3.5.5 fail the WebGL build with `CS0234` in `Runtime/Ping.cs`.
 - IL2CPP stripping: include `link.xml` from `assets/unity/`.
 - Player Settings > Publishing: Compression **Gzip** with **Decompression Fallback** for hosts that don't set encoding headers (itch.io).
 - NGO WebGL path (UnityTransport WebSockets + TLS Upgrade): client `UseWebSockets = true`, `UseEncryption = true`, `SetClientSecrets(fqdn)`; server `UseWebSockets = true`, no encryption. This path has **not** been verified on Edgegap the way Mirror's has. Test it early, and suggest Mirror if it fights you.

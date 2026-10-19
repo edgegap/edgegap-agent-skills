@@ -4,14 +4,23 @@ Each skill also carries its own `metadata.version` in its frontmatter, and the `
 
 ## 0.6.1 (2026-10-19)
 
-Fixes in `edgegap-fishnet` found by its first task evals.
+Fixes in `edgegap-fishnet` found by its first task evals, carried over to `edgegap-unity` and `edgegap-purrnet`, which share its templates.
 
 - `edgegap-fishnet` (0.2.0):
   - Pins Edgegap Unity SDK 3.5.6, which fixes the form-encoded ticket body on Unity before 2022.3. The embed-and-patch steps for 3.5.5 are gone; an embedded, hand-patched SDK should be replaced by the git package.
   - New guidance for `LoadGlobalScenes` with `ReplaceScenes.All`: the game's match manager and players die with the replaced scene on a dedicated server. Scene objects can't be moved with `MovedNetworkObjects`, so spawn the manager as a global prefab (`SetIsGlobal(true)` after `Instantiate`) or give the next scene its own; move or respawn players.
   - The matchmaker template no longer lowers `min_team_size` to 1 after 30 s, so it never starts a match below the requested size.
   - `EdgegapSceneSetup` and the example bridge use explicit `== null` checks instead of `??` / `?.` on Unity objects.
+- `edgegap-unity` (0.1.8):
+  - Pins Edgegap Unity SDK 3.5.6, and a new troubleshooting row for HTTP 400 on every ticket on Unity before 2022.3 (SDK 3.5.5 or older): replace an embedded, hand-patched SDK with the git package.
+  - The `casual` and `teams-latency` matchmaker templates no longer lower `min_team_size` to 1; the matchmaker reference and the end-to-end test no longer promise a solo match.
+  - `EdgegapSceneSetup` uses explicit `== null` checks instead of `??` on Unity objects.
+- `edgegap-purrnet` (0.1.1):
+  - Pins Edgegap Unity SDK 3.5.6; the embed-and-patch fix for Unity before 2022.3 is gone, replaced by the SDK version.
+  - The matchmaker template no longer lowers `min_team_size` to 1 after 30 s.
+  - Transport log messages use explicit `!= null` checks instead of `?.` on the transport component.
 - Evals: `evals/fishnet-evals.json` (3 tasks, with fixtures `kartclash` and `broken-kartclash`) and `evals/fishnet-routing-eval.json` (20 queries). Results: routing 60/60; tasks 100% with the skill vs 86% without (iteration 2), all outputs compile as Linux dedicated servers.
+- Evals: `evals/purrnet-evals.json` (3 tasks, with fixtures `orbitbrawl` and `broken-orbitbrawl`) and `evals/purrnet-routing-eval.json` (20 queries). Results with `edgegap-purrnet` 0.1.1: routing 60/60; tasks 100% with the skill vs 85% without, all outputs compile as Linux dedicated servers.
 
 ## 0.6.0 (2026-10-15)
 

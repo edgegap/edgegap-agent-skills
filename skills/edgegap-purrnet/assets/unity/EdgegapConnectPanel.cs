@@ -92,7 +92,7 @@ public class EdgegapConnectPanel : MonoBehaviour
         }
         else
         {
-            Debug.LogError($"Edgegap | Transport is {Network.transport?.GetType().Name}, expected UDPTransport.");
+            Debug.LogError($"Edgegap | Transport is {(Network.transport != null ? Network.transport.GetType().Name : "none")}, expected UDPTransport.");
         }
 
         StartCoroutine(ConnectRoutine(_address.Trim(), port));

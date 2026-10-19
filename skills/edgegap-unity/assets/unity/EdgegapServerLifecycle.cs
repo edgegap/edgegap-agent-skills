@@ -1,4 +1,4 @@
-// Edgegap dedicated server lifecycle. Requires com.edgegap.unity-sdk 3.5.5+.
+// Edgegap dedicated server lifecycle. Requires com.edgegap.unity-sdk 3.5.6+ (3.5.5 breaks tickets on Unity < 2022.3).
 // On the server build only: starts the netcode server headless, reads the variables Edgegap and
 // the matchmaker inject, and stops its own deployment when the match is over (empty servers cost money).
 // Netcode-specific code lives only in the "NETCODE ADAPTER" region at the bottom.
@@ -62,7 +62,7 @@ public class EdgegapServerLifecycle : MonoBehaviour
 
         IDictionary env = Environment.GetEnvironmentVariables();
 
-        // Check before parsing: SDK 3.5.5's DeploymentEnvironmentDTO throws a NullReferenceException
+        // Check before parsing: SDK 3.5.6's DeploymentEnvironmentDTO (and older) throws a NullReferenceException
         // when ARBITRIUM_PORTS_MAPPING is missing, which is the case outside Edgegap (local runs).
         if (string.IsNullOrEmpty(env["ARBITRIUM_REQUEST_ID"] as string))
         {
