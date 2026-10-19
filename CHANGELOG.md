@@ -2,6 +2,19 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.7.0 (2026-10-19)
+
+Adds Netcode for GameObjects.
+
+- New skill `edgegap-ngo` (0.1.0): Unity games built on Netcode for GameObjects, end to end, from the verified run of [netcode-sample-unity-ngo-bossroom](https://github.com/edgegap/netcode-sample-unity-ngo-bossroom) (Boss Room, Unity 6000.0.54f1, NGO 1.13.0, UnityTransport UDP, SDK 3.5.6).
+  - Templates that add themselves at startup so scenes stay unchanged: `EdgegapBootstrap`, `EdgegapServerLifecycle` (starts the NGO server on the Edgegap internal port, or only watches a server the game starts itself; self-stop), `EdgegapMatchmakingClient` (Find Match panel, connects to the public IP), an `EdgegapSettings` asset, and command-line flags for scripted two-client tests. The generic plain-NGO server start and direct connection were tested locally (Docker server, two clients) and the generic matchmaker adapter compiles; the Boss Room `ConnectionManager` adapter, server starter and test driver in `Examples/BossRoom/` are the files from the Edgegap run.
+  - NGO pitfalls: host-only logic, connection payloads and approval, debug/release build checks, Relay leftovers, UnityTransport needing an IP, client-only code throwing on the server, two local clients sharing a player id, a UGS Matchmaker client that breaks compilation.
+  - Matchmaker: a profile with `min_team_size < max_team_size` needs an expansion stage, or a partial match only starts when the tickets expire (measured: 5 minutes without one, under 40 s with one).
+- `edgegap` (0.7.0): routes NGO projects to `edgegap-ngo`.
+- `edgegap-unity` (0.1.8): points NGO projects to `edgegap-ngo`; keeps Mirror, WebGL and other netcodes.
+- README, plugin and marketplace descriptions name NGO; the verified table lists the Boss Room end-to-end run.
+- Evals: NGO queries in `evals/routing-eval.json`.
+
 ## 0.6.1 (2026-10-19)
 
 Fixes in `edgegap-fishnet` found by its first task evals.
