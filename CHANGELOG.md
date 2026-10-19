@@ -2,6 +2,25 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.7.1 (2026-10-19)
+
+Matchmaker expansion stages, and the 0.6.1 fixes carried over to `edgegap-unity` and `edgegap-purrnet`, which share the FishNet templates.
+
+- Matchmaker templates: a profile with `min_team_size < max_team_size` needs an expansion stage, or a partial match only starts when the tickets expire. Measured on matchmaker 3.3.2: two tickets waited 5 minutes without one, and matched within 40 s with `"15": {"match_size": {"min_team_size": 2}}`. The FishNet, Unity and PurrNet `casual` templates now have that stage. It keeps `min_team_size` at 2, so a match still never starts below the requested size. The matchmaker references explain the rule, and troubleshooting has a row for two players stuck in `SEARCHING` for about 5 minutes.
+- `edgegap-fishnet` (0.2.1): the expansion stage in `casual-webgl.json`, `references/matchmaker.md` §3 and troubleshooting.
+- `edgegap-unity` (0.1.9):
+  - The expansion stage in `casual.json`. `teams-latency.json` is unchanged: at 2v2, min and max are equal, so it can't make a partial match.
+  - Pins Edgegap Unity SDK 3.5.6, and a new troubleshooting row for HTTP 400 on every ticket on Unity before 2022.3 (SDK 3.5.5 or older): replace an embedded, hand-patched SDK with the git package.
+  - The `casual` and `teams-latency` matchmaker templates no longer lower `min_team_size` to 1; the matchmaker reference and the end-to-end test no longer promise a solo match.
+  - `EdgegapSceneSetup` uses explicit `== null` checks instead of `??` on Unity objects.
+- `edgegap-purrnet` (0.1.1):
+  - The expansion stage in `casual.json`.
+  - Pins Edgegap Unity SDK 3.5.6; the embed-and-patch fix for Unity before 2022.3 is gone, replaced by the SDK version.
+  - The matchmaker template no longer lowers `min_team_size` to 1 after 30 s.
+  - Transport log messages use explicit `!= null` checks instead of `?.` on the transport component.
+- `edgegap` (0.7.1): pack version.
+- Evals: `evals/purrnet-evals.json` (3 tasks, with fixtures `orbitbrawl` and `broken-orbitbrawl`) and `evals/purrnet-routing-eval.json` (20 queries). Results with `edgegap-purrnet` 0.1.1 (before the expansion stage): routing 60/60; tasks 100% with the skill vs 85% without, all outputs compile as Linux dedicated servers.
+
 ## 0.7.0 (2026-10-19)
 
 Adds Netcode for GameObjects.
@@ -17,23 +36,14 @@ Adds Netcode for GameObjects.
 
 ## 0.6.1 (2026-10-19)
 
-Fixes in `edgegap-fishnet` found by its first task evals, carried over to `edgegap-unity` and `edgegap-purrnet`, which share its templates.
+Fixes in `edgegap-fishnet` found by its first task evals.
 
 - `edgegap-fishnet` (0.2.0):
   - Pins Edgegap Unity SDK 3.5.6, which fixes the form-encoded ticket body on Unity before 2022.3. The embed-and-patch steps for 3.5.5 are gone; an embedded, hand-patched SDK should be replaced by the git package.
   - New guidance for `LoadGlobalScenes` with `ReplaceScenes.All`: the game's match manager and players die with the replaced scene on a dedicated server. Scene objects can't be moved with `MovedNetworkObjects`, so spawn the manager as a global prefab (`SetIsGlobal(true)` after `Instantiate`) or give the next scene its own; move or respawn players.
   - The matchmaker template no longer lowers `min_team_size` to 1 after 30 s, so it never starts a match below the requested size.
   - `EdgegapSceneSetup` and the example bridge use explicit `== null` checks instead of `??` / `?.` on Unity objects.
-- `edgegap-unity` (0.1.8):
-  - Pins Edgegap Unity SDK 3.5.6, and a new troubleshooting row for HTTP 400 on every ticket on Unity before 2022.3 (SDK 3.5.5 or older): replace an embedded, hand-patched SDK with the git package.
-  - The `casual` and `teams-latency` matchmaker templates no longer lower `min_team_size` to 1; the matchmaker reference and the end-to-end test no longer promise a solo match.
-  - `EdgegapSceneSetup` uses explicit `== null` checks instead of `??` on Unity objects.
-- `edgegap-purrnet` (0.1.1):
-  - Pins Edgegap Unity SDK 3.5.6; the embed-and-patch fix for Unity before 2022.3 is gone, replaced by the SDK version.
-  - The matchmaker template no longer lowers `min_team_size` to 1 after 30 s.
-  - Transport log messages use explicit `!= null` checks instead of `?.` on the transport component.
 - Evals: `evals/fishnet-evals.json` (3 tasks, with fixtures `kartclash` and `broken-kartclash`) and `evals/fishnet-routing-eval.json` (20 queries). Results: routing 60/60; tasks 100% with the skill vs 86% without (iteration 2), all outputs compile as Linux dedicated servers.
-- Evals: `evals/purrnet-evals.json` (3 tasks, with fixtures `orbitbrawl` and `broken-orbitbrawl`) and `evals/purrnet-routing-eval.json` (20 queries). Results with `edgegap-purrnet` 0.1.1: routing 60/60; tasks 100% with the skill vs 85% without, all outputs compile as Linux dedicated servers.
 
 ## 0.6.0 (2026-10-15)
 

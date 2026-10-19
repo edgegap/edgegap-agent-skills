@@ -75,7 +75,7 @@ Read `references/deploy.md` §4-5.
 ## Phase 5: Matchmaker
 
 Read `references/matchmaker.md`.
-1. `assets/matchmaker/casual.json` (2-4 players) with the app name and version, or `edgegap_build_matchmaker_config`. Save as `matchmaker-config.json` in the project root. If other `matchmaker-config.json` files exist on the machine, give the developer the full path to upload.
+1. `assets/matchmaker/casual.json` (2-4 players, a 15 s expansion stage that keeps `min_team_size` at 2: without one, two players wait about 5 minutes) with the app name and version, or `edgegap_build_matchmaker_config`. Save as `matchmaker-config.json` in the project root. If other `matchmaker-config.json` files exist on the machine, give the developer the full path to upload.
 2. Dashboard: Create Matchmaker → upload → Create and Start → copy **API URL** and **Auth Token**.
 3. `GET <API URL>/monitor` with the token answers.
 
@@ -99,7 +99,7 @@ Hand-off: what was built and where, app/version/matchmaker names, how to ship a 
 
 - `references/purrnet.md`: start flags and the bootstrap, transports and ports, host-only logic (ObserversRpc `runLocally`), the async `StartClient`, scene reloads, PurrNet's own Edgegap auto-setup, network rules, WebGL.
 - `references/deploy.md`: MCP connection, server and client builds, Docker and registry, app version for UDP 5000, direct deploy, command-line test flags.
-- `references/matchmaker.md`: config, dashboard steps, ticket contract, injected variables, lone tickets.
+- `references/matchmaker.md`: config, dashboard steps, ticket contract, injected variables, why a profile needs an expansion stage, lone tickets.
 - `references/troubleshooting.md`: symptom → fix tables.
 - `assets/unity/`: `EdgegapBootstrap`, `EdgegapSettings` (+ `.meta`, `Resources/EdgegapSettings.asset`), `EdgegapServerLifecycle`, `EdgegapConnectPanel`, `EdgegapMatchmakingClient`, DTOs, `link.xml`, `Editor/EdgegapServerBuild`. `assets/docker/`, `assets/matchmaker/`.
 
