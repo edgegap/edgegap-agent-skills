@@ -22,7 +22,7 @@ python scripts/check_spec.py
 
 `validate.py` checks skill frontmatter (name, description length, `metadata.version`), relative links and skill names across skills, every JSON file, and the plugin manifests. `scan_private_refs.py` fails on anything that must not be public: personal paths and emails, real matchmaker or deployment hosts, registry robot accounts, token-shaped strings. CI runs both on every pull request. `check_spec.py` diffs the published Edgegap OpenAPI spec against the pinned commit; a weekly workflow runs it and opens an issue on drift (`--update` moves the pin). Don't copy the specs into the repo: their examples contain token-shaped values, and the plugin directory rejects anything that looks like a shipped secret.
 
-If you change the C# templates or adapters, compile them in a real Unity project (Unity 6 LTS, SDK `https://github.com/edgegap/edgegap-unity-sdk.git#3.5.5`) with the netcode you touched, and build a Linux Dedicated Server once:
+If you change the C# templates or adapters, compile them in a real Unity project (Unity 6 LTS, SDK `https://github.com/edgegap/edgegap-unity-sdk.git`, the latest) with the netcode you touched, and build a Linux Dedicated Server once:
 
 ```bash
 <Unity> -batchmode -quit -projectPath <project> -executeMethod EdgegapServerBuild.Build -logFile -

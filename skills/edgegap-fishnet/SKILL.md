@@ -2,7 +2,7 @@
 name: edgegap-fishnet
 description: 'FishNet (Fish-Networking) + Edgegap: take a Unity game built on FishNet to dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a FishNet project (Assets/FishNet, Tugboat, Bayou, Multipass, ServerManager, NetworkHudCanvas). It has FishNet-ready C# templates verified on Edgegap (matchmaker client, server self-stop, scene-change persistence), the Start On Headless and WebGL/Bayou wss setup, port 7770 app version, Dockerfile, matchmaker config and fixes for known pitfalls, including the SDK JSON bug on Unity before 2022.3. Use when a FishNet dev wants online play: "host my FishNet game", "players should not host", "works on LAN but not online", "Find Match button", "FishNet WebGL on Edgegap", moving off the old FishNet Edgegap samples that call the API from the client, or debugging FishNet deployments, ports or matchmaking. Other Unity netcodes (NGO, Mirror): edgegap-unity.'
 metadata:
-  version: "0.2.1"
+  version: "0.2.2"
 ---
 
 # Edgegap for FishNet: dedicated servers + matchmaking
@@ -24,7 +24,7 @@ Use **dedicated (authoritative) servers**, never relays, unless the developer ex
 ## Phase 0: Understand the project
 
 Read, don't ask:
-- `ProjectSettings/ProjectVersion.txt`: the Unity version. **Before 2022.3, the SDK must be 3.5.6 or newer**: 3.5.5 and older send broken JSON to the matchmaker there (every ticket gets HTTP 400). If the project already has an embedded, hand-patched SDK, replace it with the 3.5.6 git package (`references/troubleshooting.md` §1).
+- `ProjectSettings/ProjectVersion.txt`: the Unity version. **Before 2022.3, the SDK must be 3.5.6 or newer**: 3.5.5 and older send broken JSON to the matchmaker there (every ticket gets HTTP 400). If the project already has an embedded, hand-patched SDK, replace it with the git package (latest) (`references/troubleshooting.md` §1).
 - FishNet version: `Assets/FishNet/VERSION.txt` or the package in `Packages/manifest.json`. These templates target FishNet 4.x. For 2.x/3.x read `references/fishnet.md` §6.
 - The NetworkManager scene, its transport (Tugboat = UDP, Bayou = WebSocket, Multipass = both) and port (7770 by default), `ServerManager` **Start On Headless**, any `NetworkHudCanvas`, the `PlayerSpawner`, and scene changes through `SceneManager.LoadGlobalScenes`.
 - How the game connects today: grep `StartConnection`, `InstanceFinder`, `api.edgegap.com`, `Authorization`. Old FishNet Edgegap samples call the Edgegap API **from the client** with an API token. Remove that (`references/fishnet.md` §5) and tell the developer to rotate that token.
@@ -35,7 +35,7 @@ Then ask, in one message, only what you couldn't infer: players per match, brows
 ## Phase 1: Make the FishNet game dedicated-server ready
 
 Read `references/fishnet.md`.
-1. Install the SDK: `"com.edgegap.unity-sdk": "https://github.com/edgegap/edgegap-unity-sdk.git#3.5.6"` in `Packages/manifest.json`, on every Unity version. Nothing to embed or patch.
+1. Install the SDK: `"com.edgegap.unity-sdk": "https://github.com/edgegap/edgegap-unity-sdk.git"` in `Packages/manifest.json`, on every Unity version. No `#tag`: that installs the latest SDK (3.5.6+). Never pin an exact version. Nothing to embed or patch.
 2. Copy `assets/unity/*.cs` and `link.xml` into `Assets/Edgegap/`, and `assets/unity/Editor/*.cs` into `Assets/Edgegap/Editor/`. The FishNet adapters are already filled in. If the game's scripts live in an asmdef, reference `Edgegap.SDK` and FishNet's runtime asmdef from it.
 3. In the NetworkManager scene, turn **Start On Headless** off on `ServerManager`. `EdgegapServerLifecycle` starts the server in every server build, so the same scene serves client and server builds.
 4. Add the `Edgegap` object with the scene tool (project closed in the Editor):

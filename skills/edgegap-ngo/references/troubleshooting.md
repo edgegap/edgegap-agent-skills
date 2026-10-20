@@ -52,7 +52,7 @@ In order:
 | Symptom | Cause / fix |
 |---|---|
 | `The type or namespace name 'Matchmaker' does not exist in the namespace 'Unity.Services'` | Leftover UGS Matchmaker code without `com.unity.services.matchmaker`. With Edgegap's matchmaker it isn't needed: remove that code |
-| Unity before 2022.3: every matchmaker POST gets HTTP 400 | SDK 3.5.5 form-encodes JSON there. Use SDK 3.5.6+ (`#main` or a `#3.5.6` tag) |
+| Unity before 2022.3: every matchmaker POST gets HTTP 400 | SDK 3.5.5 form-encodes JSON there. Use the SDK git URL with no `#tag` (the latest; 3.5.6+ fixes it) |
 | `type or namespace 'Edgegap'` / `'Unity.Netcode'` not found | The scripts sit in an asmdef without references to `Edgegap.SDK`, `Unity.Netcode.Runtime` and `Unity.Networking.Transport`; or the SDK isn't in `Packages/manifest.json` |
 | Settings asset shows "missing script" | `EdgegapSettings.cs.meta` wasn't copied with the script; copy it, or recreate the asset with **Assets → Create → Edgegap → Settings** in `Assets/Edgegap/Resources/` |
 | `No Resources/EdgegapSettings asset, using defaults` | The asset isn't in a `Resources` folder or isn't named `EdgegapSettings` |
