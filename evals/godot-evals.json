@@ -1,0 +1,89 @@
+{
+  "skill_name": "edgegap-godot",
+  "constraints": "Environment constraints for this eval: you cannot run Godot, Docker, or Edgegap MCP tools, and you have no Edgegap account access. Make every code and config change directly in the project copy, and write HANDOFF.md in the outputs folder with the exact remaining steps (commands, editor and dashboard clicks, what to verify) a developer must do, in order. Don't ask questions; make reasonable assumptions and state them in HANDOFF.md.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "skyarena-host-to-dedicated",
+      "prompt": "Sky Arena (it's in the project folder) is our Godot 4 arena game. Right now one player hosts and the others type an IP. We want nobody to host: players click Find Match, get matched 2-4 per game and play on an Edgegap dedicated server. Windows and Linux clients. Can you set it up?",
+      "expected_output": "Server launch that starts ENet at boot on all interfaces with no player for peer 1, match start without the host's Start button, self-stop via ARBITRIUM_DELETE_URL with the raw token, a /tickets matchmaker client with the raw Auth Token, joining public_ip/fqdn + external port without join_game's IP/name validation silently refusing, flush_stdout_on_print, a Linux dedicated server export preset, an amd64 Dockerfile with tini, a UDP app version, a matchmaker config with an expansion stage, unique tags, dashboard steps.",
+      "files": [
+        "fixtures/skyarena"
+      ],
+      "assertions": [
+        "Does not recommend or use relays / host-client / P2P",
+        "A server launch (dedicated_server feature, a --server user argument or the Edgegap env) creates the ENet server at boot without the menu, and no player is spawned or listed for peer 1 on the dedicated server",
+        "The server binds all interfaces (not 127.0.0.1) on one fixed port, equal to the app version's internal port and the Dockerfile EXPOSE",
+        "The round starts on the server without anyone pressing Start (when the matched players from MM_TICKET_IDS are in, or after a grace timer)",
+        "The server stops its own deployment by sending DELETE to ARBITRIUM_DELETE_URL with the raw ARBITRIUM_DELETE_TOKEN (no Bearer) after the match ends, and when nobody joins or everyone left",
+        "Client matchmaking: POST /tickets with the profile, polls GET /tickets/{id} until HOST_ASSIGNED, raw Authorization header with the matchmaker Auth Token",
+        "The client connects to the assignment's public_ip or fqdn and the EXTERNAL port of the named game port, not the 9050 constant",
+        "The matched client's join can't be silently refused by join_game's checks (is_valid_ip_address on an fqdn, or a name shorter than 2 characters): the checks are adapted or a valid IP and default name are passed",
+        "application/run/flush_stdout_on_print is turned on (otherwise server logs stay empty on Edgegap)",
+        "A Linux x86_64 dedicated server export preset is added, with the export command",
+        "Dockerfile targets linux/amd64, runs the server with --headless, and runs it under an init that forwards SIGTERM (tini, dumb-init or equivalent) or explains the PID 1 issue",
+        "Dockerfile and start command don't print the environment",
+        "App version port is UDP with the internal port equal to the server port and a name matching the client's port lookup",
+        "Matchmaker config is valid JSON, its profile name equals the client's profile, team size 2-4, and it has an expansion stage",
+        "Each build is pushed under a new unique tag (not latest, not a fixed reused tag)",
+        "No Edgegap API token written to project files; the matchmaker Auth Token is the only token in the client",
+        "HANDOFF.md gives dashboard steps to create/start the matchmaker and copy the API URL + Auth Token",
+        "The delivered project loads in Godot 4.7.2 with no script errors, as a client and as a server launch (checked by running it headless)"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "pixelparty-web-wss",
+      "prompt": "Pixel Party is our Godot browser party game on itch.io (project folder). Hosting from a player doesn't work from itch and needs port forwarding. Put it on Edgegap: dedicated servers, players click Play and get matched 3-8 per game. Web is the main platform, Windows too.",
+      "expected_output": "Keeps WebSocketMultiplayerPeer, a server launch with no host player, rounds without the host's Start, self-stop, wss://fqdn:external with TLS Upgrade on a WS port, allowed_cors_origins for the itch origins and no latencies rule, the export allowlists extended with the new scripts, a Linux dedicated server preset, flush_stdout_on_print, a Dockerfile with tini, matchmaker 3-8 with an expansion stage.",
+      "files": [
+        "fixtures/pixelparty"
+      ],
+      "assertions": [
+        "Does not recommend or use relays / host-client / P2P",
+        "Keeps WebSocketMultiplayerPeer for every client (ENet doesn't run in web exports)",
+        "A server launch creates the WebSocket server at boot on a fixed port on all interfaces, and the dedicated server isn't in the roster as a player (no roster[1])",
+        "Rounds start on the server without anyone pressing Start",
+        "The server stops its own deployment via ARBITRIUM_DELETE_URL with the raw ARBITRIUM_DELETE_TOKEN when the match ends, nobody joins, or everyone left",
+        "Clients connect with wss://<fqdn>:<external port> from the assignment",
+        "App version port protocol WS with TLS Upgrade on (or TLS termination explained so the server stays plain ws)",
+        "Matchmaker config has allowed_cors_origins covering the itch.io page origins (https://pixelparty-team.itch.io and https://html-classic.itch.zone)",
+        "Matchmaker config has no latencies rule (browsers can't ping beacons)",
+        "The Web and Windows export allowlists (export_files) include the new scripts, or the presets switch to all_resources",
+        "A Linux x86_64 dedicated server export preset is added that also exports the new scripts",
+        "application/run/flush_stdout_on_print is turned on",
+        "Dockerfile targets linux/amd64, runs the server with --headless, exposes the TCP port, and runs it under an init that forwards SIGTERM (tini, dumb-init or equivalent) or explains the PID 1 issue",
+        "Client matchmaking: POST /tickets, polls GET /tickets/{id}, raw Authorization header",
+        "Matchmaker profile is 3-8 players and has an expansion stage",
+        "No Edgegap API token written to project files; the matchmaker Auth Token is the only token in the client",
+        "HANDOFF.md gives dashboard steps to create/start the matchmaker and copy the API URL + Auth Token",
+        "The delivered project loads in Godot 4.7.2 with no script errors, as a client and as a server launch (checked by running it headless)"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "broken-skyarena-debug",
+      "prompt": "our godot game on edgegap is half working. notes are in EDGEGAP-NOTES.md in the project folder: find match does nothing in the exported build, players get stuck on Joining, logs are empty, servers never stop, matching takes 5 minutes and security flagged the image. find and fix what you can.",
+      "expected_output": "Finds and fixes: export allowlist drops edgegap/matchmaking.gd, bind 127.0.0.1, join_game rejects the fqdn and empty name and uses internal port 9050, no flush_stdout_on_print, self-stop only in _exit_tree with Bearer, server never starts the round and adds a Server player, Dockerfile prints env and has no tini/platform, app version port TCP instead of UDP, latest tag reused, no expansion stage.",
+      "files": [
+        "fixtures/broken-skyarena"
+      ],
+      "assertions": [
+        "Export allowlist: edgegap/matchmaking.gd (and any new script) added to export_files or the presets switched to all_resources, identified as the reason Find Match does nothing in the export",
+        "Server no longer binds 127.0.0.1 (all interfaces)",
+        "Client join fixed: the fqdn no longer rejected by is_valid_ip_address (or public_ip used), the empty name no longer blocks the join, and the EXTERNAL port from the assignment is used instead of Network.PORT",
+        "application/run/flush_stdout_on_print turned on, identified as the reason logs are empty",
+        "Self-stop runs at match end / when empty / when nobody joins (not only in _exit_tree) and sends the raw token without 'Bearer'",
+        "The dedicated server starts the round by itself (no host Start button needed) and no longer adds a 'Server' player for peer 1",
+        "Dockerfile no longer prints the environment (identified as the security finding: it leaks ARBITRIUM_DELETE_TOKEN)",
+        "Image built for linux/amd64 (--platform or FROM --platform)",
+        "Dockerfile runs the server under an init that forwards SIGTERM (tini, dumb-init or equivalent) instead of sh -c as PID 1",
+        "App version port changed to UDP (ENet), not TCP",
+        "Unique image tags with a new app version and matchmaker version update instead of re-pushing latest",
+        "Matchmaker config gets an expansion stage (the 5-minute match)",
+        "HANDOFF.md maps each symptom to its cause and fix",
+        "The delivered project loads in Godot 4.7.2 with no script errors, as a client and as a server launch (checked by running it headless)"
+      ]
+    }
+  ]
+}
