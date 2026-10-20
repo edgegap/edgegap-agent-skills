@@ -2,6 +2,20 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.10.0 (2026-10-20)
+
+Adds Photon's Simple FPS sample.
+
+- New skill `edgegap-fusion-simplefps` (0.1.0): Photon's Simple FPS Multiplayer (Fusion 2) sample as dedicated servers on Edgegap, joined from the sample's Party menu by deployment FQDN and Photon region. Verified end to end on 2026-10-20 (Simple FPS 2.1.1, Fusion 2.1.1 build 2177, Unity 6000.3.11f1): the kit, copied into an unmodified Simple FPS project, built an IL2CPP server that ran in Newark (`us`). Two headless clients joined through the Party menu with CT Direct (11 to 29 ms), two players, Deathmatch loaded and no exceptions on either side.
+  - A drop-in kit that edits no Simple FPS or Fusion file. `EdgegapFusionBootstrap` (a `FusionBootstrap` subclass) starts a server automatically in server builds, names the session `<request_id>.pr.edgegap.net`, marks the scene active on load, optionally fixes the region (`PHOTON_REGION`, not tested yet) and logs the session and region. `EdgegapPartyMenu` (a `FusionMenuUIParty` subclass) joins by FQDN, kept as typed, and region. Also a server-only scene loader, an editor setup and IL2CPP builds (with an automatic retry on the intermittent `No Linux sysroot found`), a Dockerfile and start script that never print the environment, and helper scripts.
+  - Measured traps of the usual manual setup, both of which make clients throw `NullReferenceException` in `Player.FixedUpdateNetwork` every tick. A server built with only the Deathmatch scene sends build index 0, which is Startup on clients. A server scene that isn't active on load leaves clients with Startup active, so `SceneObjects` finds no `Gameplay`.
+  - Headless test clients that type into the Party menu's Join card and press Join, a probe that logs CT, players and the runner's scene, and `scripts/test-clients.sh`.
+- `edgegap-fusion` (0.1.1) sends Simple FPS projects to `edgegap-fusion-simplefps`. Its description is slightly shorter, to stay under 1024 characters.
+- `edgegap` (0.10.0) routes Simple FPS to `edgegap-fusion-simplefps`.
+- README: new skill, verified table row. CONTRIBUTING: the licence rule covers Simple FPS.
+- Evals: `evals/fusion-simplefps-routing-eval.json` (16 queries: 8 Simple FPS hosting, 4 other Fusion, 4 Simple FPS gameplay near-misses). With the whole pack, 3 runs each: 47/48. The miss: a Simple FPS lag-compensation question loaded `edgegap-fusion-simplefps` once in 3 runs.
+  - `evals/fusion-routing-eval.json` rerun with the 0.10.0 pack: 56/60 (57/60 at 0.9.0). The BR200 lag-compensation near-miss still loads `edgegap-fusion` 3 times out of 3. A generic Fusion project query loaded no skill once in 3 runs. No Fusion query loaded `edgegap-fusion-simplefps`.
+
 ## 0.9.1 (2026-10-20)
 
 Stops pinning an exact Edgegap Unity SDK version.

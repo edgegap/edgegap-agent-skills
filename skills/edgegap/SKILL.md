@@ -2,12 +2,12 @@
 name: edgegap
 description: 'Start here for hosting a game on Edgegap (dedicated game servers + matchmaking) when the engine is not Unity or Unreal, is unknown, or the question is about the platform itself. Use when someone wants to host or deploy a game server, wants a single-player or co-op game to be always online or harder to crack, decompile or pirate, asks how players will connect to matches, wants dedicated servers for a Godot, web/Node or custom-engine game, compares hosting options, or asks what Edgegap apps, versions, deployments, fleets or matchmakers are, even if they never say "hosting". It picks the right server shape for the game (per match, per player session, or persistent), explains the vocabulary and safety rules for the Edgegap MCP tools, and sends the agent to the right edgegap-* skill. For a Unity project, load edgegap-unity directly instead (NGO: edgegap-ngo, FishNet: edgegap-fishnet, PurrNet: edgegap-purrnet, Fusion: edgegap-fusion); for Unreal Engine, edgegap-unreal; for a Manus game, edgegap-manus.'
 metadata:
-  version: "0.9.1"
+  version: "0.10.0"
 ---
 
 # Edgegap
 
-Pack version: 0.9.1
+Pack version: 0.10.0
 
 Edgegap runs dedicated game servers. You push a **Linux container image** of your game server, register it as an **app version**, and ask for a **deployment** near a group of players. Edgegap picks the location with the best ping for that group, starts the container in seconds, and returns a URL (`<id>.pr.edgegap.net`), a public IP, and an external port per internal port. Players connect. The match ends, the server stops, billing stops.
 
@@ -49,6 +49,7 @@ No engine skill for Godot yet. For a JavaScript browser game, `edgegap-manus` ha
 | Anything for a Unity project that uses FishNet | `edgegap-fishnet` |
 | Anything for a Unity project that uses PurrNet | `edgegap-purrnet` |
 | Anything for a Unity project that uses Photon Fusion 2, including Photon's BR200 sample | `edgegap-fusion` |
+| Photon's Simple FPS (Fusion 2) sample: dedicated servers, joining a deployment from its Party menu | `edgegap-fusion-simplefps` |
 | Anything for an Unreal Engine project | `edgegap-unreal` |
 | Voice chat (EOS Voice) in an Unreal game hosted on Edgegap | `edgegap-eos-voice` |
 | A browser game built with Manus (manus.im): Steam sign-in, backend matchmaking, WebSocket server | `edgegap-manus` |
