@@ -1,0 +1,13 @@
+deployment 31d8e0c2aa47 (rocket-rumble v2), 1 ticket
+2026-10-16T18:40:11Z Rocket Rumble listening on 2567
+2026-10-16T18:40:11Z [edgegap] request id 31d8e0c2aa47
+2026-10-16T18:40:19Z [arena] Kq0pZ2 joined (1 players)
+2026-10-16T18:44:52Z [arena] Kq0pZ2 dropped (consented=false), waiting 30s for reconnection
+2026-10-16T18:44:52Z [edgegap] 0 players, stopping in 5s
+2026-10-16T18:44:57Z [edgegap] stopping deployment 31d8e0c2aa47
+2026-10-16T18:44:57Z [edgegap] stop request: 200
+2026-10-16T18:44:58Z npm error path /app
+2026-10-16T18:44:58Z npm error command failed
+2026-10-16T18:44:58Z npm error signal SIGTERM
+2026-10-16T18:44:58Z npm error command sh -c tsx src/index.ts
+(client, 18:45:03) reconnect failed: room "f7Kx91Qz" not found

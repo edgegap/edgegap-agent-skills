@@ -1,0 +1,7 @@
+deployment 9f2c41ab7e10 (rocket-rumble v2), created by matchmaker, 2 tickets
+2026-10-14T09:12:03Z > rocket-rumble-server@0.9.0 start
+2026-10-14T09:12:03Z > tsx src/index.ts
+2026-10-14T09:12:05Z Rocket Rumble listening on 2567
+2026-10-14T09:12:05Z [edgegap] request id 9f2c41ab7e10
+(no further output)
+2026-10-15T09:12:03Z deployment reached max duration (1440 min), terminated
