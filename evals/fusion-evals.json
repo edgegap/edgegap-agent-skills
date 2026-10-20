@@ -1,0 +1,76 @@
+{
+  "skill_name": "edgegap-fusion",
+  "constraints": "Environment constraints for this eval: you cannot run Unity, Docker, or Edgegap MCP tools, and you have no Edgegap or Photon account access. The Photon Fusion SDK and BR200 files are not in the project copy (they are licensed); work from what is there and what you know. Make every code and config change directly in the project copy, and write HANDOFF.md in the outputs folder with the exact remaining steps (commands, Editor and dashboard clicks, what to verify) a developer must do, in order. Don't ask questions; make reasonable assumptions and state them in HANDOFF.md.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "br200-dedicated-setup",
+      "prompt": "We bought Photon's BR200 battle royale template (Fusion 2) and the project is in the folder, untouched. We want real dedicated servers on Edgegap instead of a player hosting: one server per match, close to the players (we have players in NA and EU), and the server should go away when the match is over. Our team builds on Windows. Can you set it up so we can deploy it?",
+      "expected_output": "Keeps BR200 code unchanged and drives it with command-line options from a start script: -dedicatedServer, bind -ip 0.0.0.0 (or no ip) -port 7777, session name from ARBITRIUM_REQUEST_ID/FQDN, Photon region matched to the deployment location; IL2CPP server kept, Linux toolchain + sysroot packages added for Unity 6000.3 on Windows; Dockerfile amd64, non-root, never prints env; app version 7777 UDP; deployment ends when the match ends; unique tags; test with two clients and check CT Direct.",
+      "files": [
+        "fixtures/br200-shell"
+      ],
+      "assertions": [
+        "Uses an Edgegap dedicated server with Fusion GameMode.Server (BR200's -dedicatedServer); does not recommend Edgegap relays or a player host",
+        "The server's bind address is 0.0.0.0 or left empty (BR200 -ip / Address); never 127.0.0.1 and never the deployment's public IP",
+        "Server binds the port the app version declares (7777, or ARBITRIUM_PORT_GAMEPORT_INTERNAL), and the app version port is UDP",
+        "Each deployment gets its own Fusion session name derived from the deployment (ARBITRIUM_REQUEST_ID or its FQDN), and HANDOFF says how clients learn it",
+        "Photon region is handled: the server uses a fixed region chosen near the deployment (from ARBITRIUM_DEPLOYMENT_LOCATION or a per-deployment variable) and clients are told to use the same one",
+        "Server scripting backend stays or is set to IL2CPP, with the reason (a Mono server breaks Fusion RPCs), not switched to Mono to save build time",
+        "Packages/manifest.json gets com.unity.toolchain.win-x86_64-linux and com.unity.sdk.linux-x86_64 (Linux IL2CPP on Windows with Unity 6000.3)",
+        "BR200's own code (Assets/TPSBR) is not modified; server behaviour comes from command-line options, environment variables or new files",
+        "The deployment ends when the match ends (process exits with restart policy never, or a call to ARBITRIUM_DELETE_URL with ARBITRIUM_DELETE_TOKEN)",
+        "Dockerfile and start script never print the environment (no env/printenv; ARBITRIUM_DELETE_TOKEN stays out of logs)",
+        "Docker build uses --platform linux/amd64",
+        "Each build is pushed under a new unique tag (not latest, not a fixed reused tag)",
+        "No Edgegap API token, registry token or Photon App ID value written to the delivered files",
+        "HANDOFF.md has a two-client test on a real Edgegap deployment that checks the connection type is Direct (BR200's Tab overlay CT, or runner.CurrentConnectionType), with test clients started with -extraPeers 0 or as normal players"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "skyraid-ct-relayed",
+      "prompt": "our Photon Fusion game (SkyRaid, server mode) runs on edgegap dedicated servers but everyone has ~230ms and our overlay says CT Relayed, even a guy in the same city as the server. a docker test on my own PC was relayed too, so is it edgegap's network? also when two parties start at once people land in the wrong match, servers keep running after a match, and our security review complained about the server logs. project, notes and logs are in the folder. fix what you can.",
+      "expected_output": "Relayed comes from binding 127.0.0.1: bind NetAddress.Any(port) / 0.0.0.0 on ARBITRIUM_PORT_GAMEPORT_INTERNAL; don't bind the public IP; local Docker Desktop Relayed is a NAT hairpin artifact, verify on Edgegap; per-deployment session name from ARBITRIUM_REQUEST_ID passed to clients; same Photon region on server and client; self-stop at match end (exit process or ARBITRIUM_DELETE_URL); Dockerfile without env, non-root, amd64; new tag and app version; HANDOFF.",
+      "files": [
+        "fixtures/skyraid"
+      ],
+      "assertions": [
+        "Identifies the server binding 127.0.0.1 (ServerLauncher Address) as the cause of CT Relayed and changes it to 0.0.0.0 / NetAddress.Any(port) in code",
+        "Does not set the bind Address to the deployment's public IP; if CustomPublicAddress is set, it uses ARBITRIUM_PUBLIC_IP with the external port (ARBITRIUM_PORT_GAMEPORT_EXTERNAL), not the internal one",
+        "Explains that a Docker Desktop test from the same PC can show Relayed even with a correct bind, so CT Direct has to be checked on a real Edgegap deployment",
+        "Replaces the fixed session name skyraid-main with one per deployment (ARBITRIUM_REQUEST_ID or FQDN) and changes the client to join the name it is given",
+        "Server and clients use the same Photon region (fixed region on both, or the server's region passed to clients), so clients don't get GameNotFound from a region mismatch",
+        "Server ends the deployment after the match (exits the process with restart policy never, or calls ARBITRIUM_DELETE_URL with ARBITRIUM_DELETE_TOKEN) instead of only Runner.Shutdown",
+        "Removes env from the Dockerfile CMD and explains it printed ARBITRIUM_DELETE_TOKEN to the logs",
+        "Does not recommend Photon relays, Edgegap relays or a player host as the fix",
+        "Docker build uses --platform linux/amd64",
+        "Each build is pushed under a new unique tag and a new app version (not latest, not a reused tag)",
+        "HANDOFF.md lists the remaining steps in order, including a two-client check of CT Direct on Edgegap"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "broken-br200-debug",
+      "prompt": "BR200 (photon fusion) on edgegap and nothing works. the server now dies with 'Failed to bind socket', adding -ip 0.0.0.0 through an env var didn't change anything, before that players got MethodAccessException and no character, IL2CPP wouldn't even build so we're on Mono, and our test script opens 10 players per window that all get GameNotFound. notes, scripts and logs are in the folder. find and fix everything you can.",
+      "expected_output": "Bind -ip 0.0.0.0 (not the public IP); the appended -ip is ignored because BR200 reads the first copy of an option; IL2CPP back on the server (and clients) because Mono breaks RPCs; toolchain + sysroot packages in the manifest; test clients with -extraPeers 0 and the server's region; latest tag reuse -> unique tags + new app version; amd64; ordered HANDOFF with a CT Direct check.",
+      "files": [
+        "fixtures/broken-br200"
+      ],
+      "assertions": [
+        "Explains Failed to bind socket: BR200's -ip is the address the server binds, and the container doesn't own the public IP; the start script now binds 0.0.0.0 (or passes no -ip)",
+        "Explains why EXTRA_ARGS=-ip 0.0.0.0 had no effect (BR200 reads the first copy of a repeated option) and passes each option once",
+        "Server Scripting Backend set back to IL2CPP in ProjectSettings, explaining that a Mono server breaks Fusion RPCs (the MethodAccessException in CheckInvokeRpc)",
+        "Test clients are IL2CPP too (Standalone backend IL2CPP, or a separate IL2CPP client build), since Mono clients hit the same RPC error",
+        "Packages/manifest.json gets com.unity.toolchain.win-x86_64-linux and com.unity.sdk.linux-x86_64 so the IL2CPP Linux build works on Windows with Unity 6000.3",
+        "Test client launcher passes -extraPeers 0 (each process currently starts 10 peers)",
+        "Fixes the region mismatch behind GameNotFound: clients use the server's region (us), or the server's region is chosen per deployment and handed to clients",
+        "Does not keep 127.0.0.1 or the public IP as the bind address, and does not recommend Photon or Edgegap relays as the fix",
+        "Explains the re-push changed nothing because the latest tag was reused/cached; switches to unique tags and a new app version",
+        "Docker build uses --platform linux/amd64",
+        "HANDOFF.md lists the remaining steps in order, including a two-client check of CT Direct on Edgegap"
+      ]
+    }
+  ],
+  "notes": "Fixtures are synthetic and contain no BR200 or Photon Fusion files (licensed). br200-shell and broken-br200 stand for BR200 2.1.0 on Unity 6000.3.11f1 with Fusion 2.1.1 b2177: settings files trimmed to the relevant keys, the sample described in Assets/TPSBR/NOT-INCLUDED.txt. skyraid is a small Fusion server-mode game written for this eval. broken-br200 plants the pitfalls listed in its assertions; the logs are written to match the measured errors. Nothing here can be compiled without the licensed assets, so assertions check the delivered files and HANDOFF.md, not a Unity build. Results (skill 0.1.0, 3 runs per configuration, 2026-10-20): 99% with the skill vs 69% without (42/42 vs 27/42, 33/33 vs 27/33, 32/33 vs 21/33); trigger 20/20; routing 57/60."
+}

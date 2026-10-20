@@ -1,0 +1,4 @@
+{
+  "PeerMode": 0,
+  "Simulation": { "TickRateSelection": { "Client": 60, "ServerIndex": 0, "ClientSendIndex": 0, "ServerSendIndex": 0 } }
+}

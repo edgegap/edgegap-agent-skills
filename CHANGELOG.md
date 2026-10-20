@@ -15,7 +15,10 @@ Adds Photon Fusion 2.
 - `edgegap` (0.9.0) routes Photon Fusion projects to `edgegap-fusion`.
 - `edgegap-unity` (0.1.10) points Photon Fusion projects to `edgegap-fusion`.
 - README, plugin and marketplace descriptions name Photon Fusion. The verified table lists the BR200 run.
-- Evals: Fusion queries in `evals/routing-eval.json`.
+- Evals: Fusion queries in `evals/routing-eval.json`, plus `evals/fusion-evals.json` (3 tasks, with fixtures `br200-shell`, `skyraid` and `broken-br200`, scripts and trimmed settings only, no BR200 or Photon files) and `evals/fusion-routing-eval.json` (20 queries). Results with `edgegap-fusion` 0.1.0, 3 runs each:
+  - Tasks: 99% with the skill vs 69% without (107/108 vs 75/108). BR200 setup 42/42 vs 27/42: without the skill, every run switched the server to Mono, left out the Linux toolchain packages, patched BR200's code and had no CT Direct check. SkyRaid CT Relayed 33/33 vs 27/33: without the skill, every run expected CT Direct in a local Docker Desktop test and left out `--platform linux/amd64`. Broken BR200 32/33 vs 21/33: without the skill, every run left out `com.unity.sdk.linux-x86_64`, `--platform` and the CT Direct check. The fixtures can't compile without the licensed assets, so the assertions check the delivered files and HANDOFF.md.
+  - Triggering (skill-creator `run_eval`, `--num-workers 1`): 20/20; 30/30 should-trigger runs, 1 false trigger in 30 near-miss runs.
+  - Routing with the whole pack: 57/60. The miss: a BR200 lag-compensation question with nothing to do with hosting loaded `edgegap-fusion` 3 times out of 3.
 
 ## 0.8.0 (2026-10-19)
 

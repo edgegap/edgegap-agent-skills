@@ -1,0 +1,3 @@
+BR200 2.1.0 (Assets/TPSBR) is installed unchanged in the real project but left out of this copy
+because it is licensed. Build scenes, in order: Loader, Menu, LoadingScene, Game, GameplayUI,
+GenArea2, GenArea3, GenArea5, GenArea7. Template.unity is not in the build.

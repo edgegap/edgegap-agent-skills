@@ -156,7 +156,7 @@ Everything here happens only when you ask the agent to work on your game, and mo
 | Manus browser games (Node.js + WebSocket) | Templates tested locally against a mock matchmaker: backend flow (duplicate join, cancel, timeout, allocation failures), join tokens and their reject paths, reconnect, self-stop, and the Docker image. The browser client is type-checked only. Not yet run end to end on Edgegap and Manus hosting. |
 | Edgegap Unity SDK | 3.5.5+ (3.5.5 is the first that compiles for WebGL). |
 | Edgegap MCP | 0.3.3+ (`tls_upgrade`, `allowed_cors_origins`). Older servers work with dashboard fallbacks. |
-| Triggering | `edgegap-unity`: 20/20 on its eval set (10 should-trigger prompts, 10 near-misses). `edgegap-unreal`, `edgegap-ngo`, `edgegap-fishnet`, `edgegap-purrnet` and `edgegap-fusion`: not yet measured. The new engine-agnostic skills ship with a routing eval set (`evals/routing-eval.json`) and safety scenarios (`evals/guardrails.json`), not yet run. |
+| Triggering | `edgegap-unity`: 20/20 on its eval set (10 should-trigger prompts, 10 near-misses). `edgegap-fusion`: 20/20 on `evals/fusion-routing-eval.json`, and 57/60 routing runs with the whole pack. `edgegap-unreal`, `edgegap-ngo`, `edgegap-fishnet` and `edgegap-purrnet`: not yet measured. The new engine-agnostic skills ship with a routing eval set (`evals/routing-eval.json`) and safety scenarios (`evals/guardrails.json`), not yet run. |
 | Engine-agnostic skills (0.2.0) | Written from the Edgegap docs and the published OpenAPI spec, and checked against the Unity end-to-end run. Exercised end to end with Unity and Unreal Engine servers; not yet with Godot or Node. |
 
 ## Security and cost
