@@ -1,13 +1,13 @@
 ---
 name: edgegap
-description: 'Start here for hosting a game on Edgegap (dedicated game servers + matchmaking) when the engine is not Unity or Unreal, is unknown, or the question is about the platform itself. Use when someone wants to host or deploy a game server, wants a single-player or co-op game to be always online or harder to crack, decompile or pirate, asks how players will connect to matches, wants dedicated servers for a Godot, web/Node or custom-engine game, compares hosting options, or asks what Edgegap apps, versions, deployments, fleets or matchmakers are, even if they never say "hosting". It picks the right server shape for the game (per match, per player session, or persistent), explains the vocabulary and safety rules for the Edgegap MCP tools, and sends the agent to the right edgegap-* skill. For a Unity project, load edgegap-unity directly instead (NGO: edgegap-ngo, FishNet: edgegap-fishnet, PurrNet: edgegap-purrnet, Fusion: edgegap-fusion); for Unreal Engine, edgegap-unreal; for a Manus game, edgegap-manus.'
+description: 'Start here for hosting a game on Edgegap (dedicated game servers + matchmaking) when the engine is not Unity or Unreal, is unknown, or the question is about the platform itself. Use when someone wants to host or deploy a game server, wants a single-player or co-op game to be always online or harder to crack, decompile or pirate, asks how players will connect to matches, wants dedicated servers for a Godot, web/Node or custom-engine game, compares hosting options, or asks what Edgegap apps, versions, deployments, fleets or matchmakers are, even if they never say "hosting". It picks the right server shape for the game (per match, per player session, or persistent), explains the vocabulary and the Edgegap MCP safety rules, and sends the agent to the right edgegap-* skill. For a Unity project, load edgegap-unity instead (NGO: edgegap-ngo, FishNet: edgegap-fishnet, PurrNet: edgegap-purrnet, Fusion: edgegap-fusion); for Unreal Engine, edgegap-unreal; Colyseus: edgegap-colyseus; for a Manus game, edgegap-manus.'
 metadata:
-  version: "0.10.0"
+  version: "0.11.0"
 ---
 
 # Edgegap
 
-Pack version: 0.10.0
+Pack version: 0.11.0
 
 Edgegap runs dedicated game servers. You push a **Linux container image** of your game server, register it as an **app version**, and ask for a **deployment** near a group of players. Edgegap picks the location with the best ping for that group, starts the container in seconds, and returns a URL (`<id>.pr.edgegap.net`), a public IP, and an external port per internal port. Players connect. The match ends, the server stops, billing stops.
 
@@ -32,13 +32,13 @@ Work through these in order and skip what is already done:
 | Step | Skill | Done when |
 |---|---|---|
 | 1 | `edgegap-server-design` | The server is authoritative, match-scoped, configured by env vars, and stops itself at match end |
-| 2 | Engine build (Unity: `edgegap-unity`, `edgegap-ngo` for Netcode for GameObjects games, `edgegap-fishnet` for FishNet games, or `edgegap-purrnet` for PurrNet games, or `edgegap-fusion` for Photon Fusion games; Unreal Engine: `edgegap-unreal`; each covers every step for its engine) | A headless **linux/amd64** server build exists |
+| 2 | Engine build (Unity: `edgegap-unity`, `edgegap-ngo` for Netcode for GameObjects games, `edgegap-fishnet` for FishNet games, or `edgegap-purrnet` for PurrNet games, or `edgegap-fusion` for Photon Fusion games; Unreal Engine: `edgegap-unreal`; Colyseus (Node.js): `edgegap-colyseus`; each covers every step for its engine) | A headless **linux/amd64** server build exists |
 | 3 | `edgegap-containerize` | `docker run` starts a working server locally, and the image is in a registry Edgegap can pull |
 | 4 | `edgegap-local-testing` | Parity tests pass locally, then one test deployment on Edgegap accepts a real client |
 | 5 | Matchmaking: Edgegap's matchmaker (config, dashboard steps and the ticket contract are engine-agnostic: [edgegap-unity's matchmaker reference](../edgegap-unity/references/matchmaker.md), plus https://docs.edgegap.com/learn/matchmaking), or your own backend with `edgegap-deployments-api` | Players clicking Play land on the same server |
 | 6 | `edgegap-launch` | The launch checklist is green |
 
-No engine skill for Godot yet. For a JavaScript browser game, `edgegap-manus` has a Node.js WebSocket server, a backend matchmaking proxy and a browser client that work outside Manus too. Use `edgegap-server-design` and `edgegap-containerize`, which are engine-agnostic and cover everything Edgegap actually requires, plus the official guide: https://docs.edgegap.com/godot. The Edgegap MCP tool `edgegap_generate_dockerfile` knows the headless flags for Unity, Unreal and Godot.
+No engine skill for Godot yet. If the game's server is Colyseus (any client, Godot included), use `edgegap-colyseus`. For another JavaScript browser game, `edgegap-manus` has a Node.js WebSocket server, a backend matchmaking proxy and a browser client that work outside Manus too. Otherwise, use `edgegap-server-design` and `edgegap-containerize`, which are engine-agnostic and cover everything Edgegap actually requires, plus the official guide: https://docs.edgegap.com/godot. The Edgegap MCP tool `edgegap_generate_dockerfile` knows the headless flags for Unity, Unreal and Godot.
 
 ## Jump straight to a task
 
@@ -52,6 +52,7 @@ No engine skill for Godot yet. For a JavaScript browser game, `edgegap-manus` ha
 | Photon's Simple FPS (Fusion 2) sample: dedicated servers, joining a deployment from its Party menu | `edgegap-fusion-simplefps` |
 | Anything for an Unreal Engine project | `edgegap-unreal` |
 | Voice chat (EOS Voice) in an Unreal game hosted on Edgegap | `edgegap-eos-voice` |
+| A game whose server is Colyseus (Node.js), with any client: browser JS/TS, Unity, Godot, Defold, GameMaker... | `edgegap-colyseus` |
 | A browser game built with Manus (manus.im): Steam sign-in, backend matchmaking, WebSocket server | `edgegap-manus` |
 | Write backend code that starts, finds or stops servers, or receives webhooks | `edgegap-deployments-api` |
 | Write or fix a Dockerfile, push to a registry, pick an image tag | `edgegap-containerize` |
