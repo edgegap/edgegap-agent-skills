@@ -5,7 +5,7 @@
   },
   {
     "query": "I want to host my Godot 4 multiplayer shooter. I have the game but no server setup yet. Where do I start?",
-    "expected_skill": "edgegap"
+    "expected_skill": "edgegap-godot"
   },
   {
     "query": "I'm building a turn-based word game where players make a move every few hours. How should I host the multiplayer part?",

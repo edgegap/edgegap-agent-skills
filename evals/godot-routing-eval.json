@@ -1,0 +1,22 @@
+[
+  {"query": "I want to host my Godot 4 multiplayer shooter on dedicated servers. players shouldn't have to host. where do I start?", "expected_skill": "edgegap-godot"},
+  {"query": "godot 4 game using ENetMultiplayerPeer, one player hosts right now. how do I run a headless server on edgegap and add a find match button?", "expected_skill": "edgegap-godot"},
+  {"query": "my godot html5 game is on itch.io and uses WebSocketMultiplayerPeer. how do I get servers that browsers can connect to with wss?", "expected_skill": "edgegap-godot"},
+  {"query": "deployment logs on edgegap are completely empty for my godot server, not even the engine banner. docker logs is empty too", "expected_skill": "edgegap-godot"},
+  {"query": "exported godot server crashes on edgegap with Identifier \"EdgegapSettings\" not declared in the current scope, works in the editor", "expected_skill": "edgegap-godot"},
+  {"query": "how do I export a linux dedicated server build of my godot project and put it in a docker image for edgegap?", "expected_skill": "edgegap-godot"},
+  {"query": "players get matched by the edgegap matchmaker but my godot client just sits on Joining... and the server never sees them", "expected_skill": "edgegap-godot"},
+  {"query": "what port protocol should the edgegap app version use for a godot game with ENet on port 7777?", "expected_skill": "edgegap-godot"},
+  {"query": "we use netfox on top of godot's high-level multiplayer. can we host matches on edgegap with matchmaking for 2v2?", "expected_skill": "edgegap-godot"},
+  {"query": "my godot dedicated servers on edgegap never shut down after the match. how does the server stop its own deployment?", "expected_skill": "edgegap-godot"},
+  {"query": "Godot multiplayer: the host presses Start in the lobby. On a dedicated server nobody's there to press it. How should matches start on edgegap?", "expected_skill": "edgegap-godot"},
+  {"query": "docker stop takes 10 seconds and kills my godot server container, does edgegap have the same problem when it stops a deployment?", "expected_skill": "edgegap-godot"},
+  {"query": "unity netcode for gameobjects game, want edgegap dedicated servers and a find match button", "expected_skill": "edgegap-ngo"},
+  {"query": "Unreal Engine 5 dedicated server: how do I package a linux server build and host it on edgegap?", "expected_skill": "edgegap-unreal"},
+  {"query": "what's the difference between an Edgegap app, an app version and a deployment? we're comparing hosting providers", "expected_skill": "edgegap"},
+  {"query": "my node.js websocket game server: write a Dockerfile for edgegap and push it to the registry", "expected_skill": "edgegap-containerize"},
+  {"query": "in godot 4 how do I make a MultiplayerSynchronizer only sync position every other frame? it's using too much bandwidth on LAN", "expected_skill": null},
+  {"query": "godot 4 rpc annotation: what's the difference between any_peer and authority, and when do I use call_local?", "expected_skill": null},
+  {"query": "my godot 4 CharacterBody2D jitters when moving on slopes, how do I fix it?", "expected_skill": null},
+  {"query": "how do I export my godot game for android and sign the apk?", "expected_skill": null}
+]
