@@ -1,0 +1,4 @@
+Building Player for Linux, subtarget Server, IL2CPP
+...
+Error building Player: BuildFailedException: No Toolchain found for host platform. Install the Linux toolchain package (com.unity.toolchain.*) from the Package Manager.
+Build Finished, Result: Failure.

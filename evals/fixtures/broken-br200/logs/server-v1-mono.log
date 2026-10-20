@@ -1,0 +1,6 @@
+Initialize engine version: 6000.3.11f1
+Mono path[0] = '/root/build/ServerBuild_Data/Managed'
+StartGame() Result: [StartGameResult: Ok:True ShutdownReason:Ok]
+Server#0 started
+MethodAccessException: Method 'Fusion.NetworkBehaviourUtils.CheckInvokeRpc(Fusion.NetworkBehaviour)' is inaccessible from method 'TPSBR.Player.RPC_SendPlayerData(...)'
+MethodAccessException: Method 'Fusion.NetworkBehaviourUtils.CheckInvokeRpc(Fusion.NetworkBehaviour)' is inaccessible from method 'TPSBR.Player.RPC_SendPlayerData(...)'
