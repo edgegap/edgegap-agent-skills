@@ -2,6 +2,19 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.11.0 (2026-10-20)
+
+Adds Colyseus.
+
+- New skill `edgegap-colyseus` (0.1.0): games with a Colyseus (Node.js) server and any client, one server per match on Edgegap, from the end-to-end run of [realtime-tanks-demo](https://github.com/edgegap/realtime-tanks-demo) (Colyseus 0.17, matchmaker 3.3.2, Godot 4.5.2 with Colyseus Godot SDK 0.17.12, Unity 6000.3).
+  - Verified on Edgegap on 2026-10-20: the Colyseus matchmake HTTP request and the room WebSocket both go through one WS port with TLS Upgrade; Node and Godot desktop clients joined a direct deployment; the matchmaker matched a Three.js browser client with a Godot desktop client, then with a Unity Windows build; the server stopped itself each time.
+  - Templates from that run: a lifecycle module (self-stop through `ARBITRIUM_DELETE_URL` when nobody joins, everyone leaves, or the game ends the match; the tanks-specific round rule moved out to the room), a Dockerfile with Node as PID 1 (`node --import tsx`), a direct deploy script (tags and port name configurable), a matchmaker config with the expansion stage and local CORS origins, and dependency-free matchmaker clients for browser JS/TS (`fetch`), Unity (`UnityWebRequest` + `Awaitable`) and Godot 4 (`HTTPRequest`), plus a join-retry helper for JS.
+  - Pitfalls from the run: a fresh deployment answers 502 for a few seconds after `HOST_ASSIGNED`, so clients retry the first join; `wss` only by FQDN; page origins in `allowed_cors_origins`; playground and monitor off on Edgegap; Windows long paths for a GameMaker client.
+  - Not run: Construct 3, Defold, GameMaker, Haxe and PlayCanvas clients, Godot web, Unity WebGL, Colyseus 0.15/0.16, rooms with `allowReconnection`, the optional matched-tickets-only `onAuth`.
+- `edgegap` (0.11.0) routes Colyseus servers to `edgegap-colyseus`. Its description is slightly shorter, to stay under 1024 characters.
+- README, plugin and marketplace descriptions name Colyseus; the verified table lists the tanks run.
+- Evals: `evals/colyseus-routing-eval.json` (16 queries: 8 Colyseus hosting, 4 other skills, 4 Colyseus gameplay near-misses), and two Colyseus queries in `evals/routing-eval.json`. With the whole pack, 3 runs each: 48/48. Task evals not run yet.
+
 ## 0.10.0 (2026-10-20)
 
 Adds Photon's Simple FPS sample.
