@@ -37,6 +37,7 @@ If you change the C# templates or adapters, compile them in a real Unity project
 - `evals/fusion-evals.json` and `evals/fusion-routing-eval.json`: Photon Fusion tasks and routing. The Fusion fixtures (`br200-shell`, `skyraid`, `broken-br200`) hold scripts and trimmed settings only: never commit BR200 or Photon Fusion files, they are licensed.
 - `evals/fusion-simplefps-routing-eval.json`: routing between `edgegap-fusion-simplefps`, `edgegap-fusion` and no skill. The same licence rule holds for Photon's Simple FPS sample: the kit in `skills/edgegap-fusion-simplefps/assets/` holds only Edgegap's files.
 - `evals/colyseus-routing-eval.json`: routing between `edgegap-colyseus`, other pack skills and no skill (Colyseus gameplay questions).
+- `evals/nakama-evals.json`: Nakama tasks with fixtures `reefrush` (Godot, relayed play), `starhaul` (TypeScript module, Node server, Steam) and `broken-tidewars` (planted bugs; its `.env` holds no real token). Check delivered Go modules by building them in `heroiclabs/nakama-pluginbuilder:3.39.0`.
 - `evals/nakama-routing-eval.json`: routing between `edgegap-nakama`, other pack skills and no skill (Nakama questions unrelated to hosting). If you change `skills/edgegap-nakama/assets/nakama/`, build it with `docker build --target builder` (pluginbuilder) before committing.
 - `evals/fixtures/ngo-arena`: a minimal Netcode for GameObjects host/client project (scripts only) for the NGO eval. The Mirror WebGL eval uses https://github.com/edgegap/mirror-webgl.
 

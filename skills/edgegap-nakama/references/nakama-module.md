@@ -75,7 +75,7 @@ nk.LeaderboardCreate(ctx, "wins", true /* authoritative */, "desc", "incr", "", 
 initializer.RegisterRpc("report_match_result", rpcReportMatchResult)
 ```
 
-- **Authoritative leaderboard**: clients can't write records; only server code can.
+- **Authoritative leaderboard**: clients can't write records; only server code can. `LeaderboardCreate` does nothing when the ID already exists, so a game that had a client-writable board keeps it, cheated records included. Check with `nk.LeaderboardsGetId`: if it exists and isn't `Authoritative`, delete it (`nk.LeaderboardDelete`, which drops its records; ask the developer first, or gate it behind a one-time runtime env flag) and create it again, or use a new ID.
 - **The RPC refuses player sessions**: a call made with a session has `RUNTIME_CTX_USER_ID`; a server-to-server call with `?http_key=...` doesn't. So `if userId != "" { return PERMISSION_DENIED }`. Verified: a player's call is refused.
 - **The winner must be one of the instance's matched users** (`nk.GetFleetManager().Get(ctx, instanceId)` → `Metadata["user_ids"]`, which comes back from storage as `[]any`).
 - **Each instance counts once**: write a storage object keyed by the instance ID with `Version: "*"` (create only if absent) and no client permissions before writing the record. A retry, or a second report, gets `ALREADY_EXISTS`.

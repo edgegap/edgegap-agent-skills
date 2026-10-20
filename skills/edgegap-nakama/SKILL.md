@@ -2,7 +2,7 @@
 name: edgegap-nakama
 description: 'Nakama + Edgegap: keep Nakama for accounts, matchmaking and leaderboards, and run every match on its own Edgegap dedicated server near the players through the Edgegap Fleet Manager for Nakama (nakama-edgegap), end to end. Load this before using any Edgegap MCP tool on a project with a Nakama backend (a Go, TypeScript or Lua Nakama module, heroiclabs/nakama images, a Nakama client SDK: nakama-godot, nakama-unity, nakama-js). Engine-agnostic templates verified on Edgegap with Fish Game (Godot 4.7, Nakama 3.39): the Go module (Fleet Manager, AfterAuthenticate hook for the real sign-in method, MatchmakerMatched hook, notifications 111/112/113, a leaderboard only the server writes), game server code for READY, connection events, STOP and player checks, Dockerfile, compose. Use for "host my Nakama game on Edgegap", "Nakama matchmaker should start a dedicated server", "replace Nakama relayed matches", "Heroic Cloud plus Edgegap", or debugging nakama-edgegap. Unity servers: edgegap-server-nakama-plugin-unity.'
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Edgegap for Nakama games: Nakama matches players, Edgegap runs the match
@@ -66,7 +66,7 @@ Read `references/infra.md` §1 to §2.
 
 Read `references/nakama-module.md` and `references/infra.md` §3 to §4.
 1. Copy `assets/nakama/` (`main.go`, `go.mod`, `go.sum`, `Dockerfile`, `docker-compose.yml`, `.env.example`, `.gitignore`, `.dockerignore`) into the project's `nakama/` folder, or merge `main.go` into an existing Go module. TypeScript/Lua modules: add the Go module next to them and move the matchmaker hook to Go (`references/nakama-module.md` §6).
-2. Adapt: the AfterAuthenticate hook for each auth method the game uses; the leaderboard ID; the match result payload; anything extra the server needs in `metadata`.
+2. Adapt: the AfterAuthenticate hook for each auth method the game uses; the leaderboard ID (an existing client-writable board must be deleted and recreated, `references/nakama-module.md` §5); the match result payload; anything extra the server needs in `metadata`.
 3. Keep the Nakama, `nakama-pluginbuilder` and `nakama-common` versions matched, and `nakama-edgegap` pinned by pseudo-version.
 4. Public HTTPS for Nakama: the real host, or for a test the developer runs a quick tunnel. `NAKAMA_ACCESS_URL` = that `https://` URL. `.env` from `.env.example`, then `docker compose up -d --build`.
 
@@ -83,7 +83,7 @@ Read `references/clients.md`. Point the client's Nakama connection at the **publ
 3. Play to the end: the result appears in Nakama (leaderboard), the server sends STOP, the deployment disappears. A player-session call to `report_match_result` is refused.
 4. Debug with `references/troubleshooting.md`.
 
-Hand-off: what changed where, app/version names, how to ship a new server build (new tag → new app version → `update_edgegap_version` S2S RPC, no Nakama restart), what wasn't tested, the plugin's client RPCs that any signed-in player can call (`references/nakama-module.md` §7), and before launch: a real public Nakama URL with TLS, the tunnel gone, max duration fitted to matches, `edgegap-launch`.
+Hand-off: what changed where, app/version names, how to ship a new server build (new tag → new app version → `update_edgegap_version` S2S RPC, no Nakama restart), what wasn't tested, the plugin's client RPCs that any signed-in player can call (`references/nakama-module.md` §7), why `NAKAMA_ACCESS_URL` must be public HTTPS (Edgegap webhooks and every game server call Nakama back at it), and before launch: a real public Nakama URL with TLS, the tunnel gone, max duration fitted to matches, `edgegap-launch`.
 
 ## Reference files
 
