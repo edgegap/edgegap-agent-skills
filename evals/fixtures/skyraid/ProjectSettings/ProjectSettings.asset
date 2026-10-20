@@ -1,0 +1,11 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!129 &1
+PlayerSettings:
+  # Trimmed eval copy: only the keys relevant to a server build are kept.
+  productName: SkyRaid
+  bundleVersion: 0.4.2
+  scriptingBackend:
+    Server: 1
+    Standalone: 1
+  allowUnsafeCode: 1

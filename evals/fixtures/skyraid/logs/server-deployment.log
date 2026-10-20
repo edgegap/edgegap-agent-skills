@@ -1,0 +1,12 @@
+HOSTNAME=8c1d5e2a7f30
+ARBITRIUM_REQUEST_ID=f68e011bfb01
+ARBITRIUM_PUBLIC_IP=203.0.113.24
+ARBITRIUM_PORT_GAMEPORT_INTERNAL=7777
+ARBITRIUM_PORT_GAMEPORT_EXTERNAL=31502
+ARBITRIUM_DELETE_URL=https://api.edgegap.com/v1/self/stop/f68e011bfb01/REDACTED
+ARBITRIUM_DELETE_TOKEN=REDACTED-BY-US-FOR-THIS-COPY
+ARBITRIUM_DEPLOYMENT_LOCATION={"city": "Newark", "country": "United States of America", "continent": "North America", "latitude": 40.73, "longitude": -74.17}
+HOME=/root
+Initialize engine version: 6000.3.11f1
+[ServerLauncher] StartGame ok=True reason=Ok session=skyraid-main address=127.0.0.1:7777
+[Match] winner [Player:3]

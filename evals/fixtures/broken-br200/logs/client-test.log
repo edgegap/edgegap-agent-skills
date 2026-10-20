@@ -1,0 +1,6 @@
+Mono path[0] = 'C:/BR200/Builds/Client/BR200_Data/Managed'
+Starting 10 peers (ExtraPeers: 9)
+Client#0 StartGame() Result: [StartGameResult: Ok:False ShutdownReason:GameNotFound]
+Client#1 StartGame() Result: [StartGameResult: Ok:False ShutdownReason:GameNotFound]
+...
+Client#9 StartGame() Result: [StartGameResult: Ok:False ShutdownReason:GameNotFound]

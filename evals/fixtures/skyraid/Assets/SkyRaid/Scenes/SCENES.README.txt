@@ -1,0 +1,4 @@
+Build scenes, in order:
+0 Boot   - ServerLauncher and ClientJoin on one GameObject "Net".
+1 Menu   - Join button calls ClientJoin.Join().
+2 Arena  - MatchManager (NetworkObject) and spawn points. Loaded by the server runner (Scene = 2).

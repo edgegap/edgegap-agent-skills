@@ -2,6 +2,24 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.9.0 (2026-10-20)
+
+Adds Photon Fusion 2.
+
+- New skill `edgegap-fusion` (0.1.0): Unity games built on Photon Fusion 2 as dedicated servers on Edgegap, verified end to end with Photon's BR200 Battle Royale sample (BR200 2.1.0, Fusion 2.1.1 build 2177, Unity 6000.3.11f1).
+  - A drop-in BR200 kit that changes no sample code. An editor preflight and Linux Server build checks the scenes BR200 loads, an IL2CPP server, the Linux toolchain, the App ID and Peer Mode, and restores the editor's standalone subtarget afterwards. Also a Dockerfile, a start script that maps Edgegap's variables to BR200's command-line options (session name = deployment FQDN, nearest Photon region, bind `0.0.0.0`, self-stop, SIGTERM forwarding), helper scripts, start-script tests and API examples.
+  - Headless test clients: a Windows IL2CPP client build and a probe that logs `runner.CurrentConnectionType`, the CT value in BR200's Tab overlay.
+  - Measured with two clients: binding `0.0.0.0` gives CT Direct on Edgegap (14 ms in Newark) with no `CustomPublicAddress`. `127.0.0.1` forces Photon relays (about 235 ms). Binding the deployment's public IP fails (`Failed to bind socket`), because BR200's `IP`/`-ip` is Fusion's bind address.
+  - A Mono server or client breaks BR200's RPCs (`MethodAccessException ... CheckInvokeRpc`), so the server must be IL2CPP. On Unity 6000.3 on Windows, that needs `com.unity.toolchain.win-x86_64-linux` and `com.unity.sdk.linux-x86_64`.
+  - A two-player Battle Royale ran with no exceptions. When one player left, the other got Game Over and the deployment stopped on its own.
+- `edgegap` (0.9.0) routes Photon Fusion projects to `edgegap-fusion`.
+- `edgegap-unity` (0.1.10) points Photon Fusion projects to `edgegap-fusion`.
+- README, plugin and marketplace descriptions name Photon Fusion. The verified table lists the BR200 run.
+- Evals: Fusion queries in `evals/routing-eval.json`, plus `evals/fusion-evals.json` (3 tasks, with fixtures `br200-shell`, `skyraid` and `broken-br200`, scripts and trimmed settings only, no BR200 or Photon files) and `evals/fusion-routing-eval.json` (20 queries). Results with `edgegap-fusion` 0.1.0, 3 runs each:
+  - Tasks: 99% with the skill vs 69% without (107/108 vs 75/108). BR200 setup 42/42 vs 27/42: without the skill, every run switched the server to Mono, left out the Linux toolchain packages, patched BR200's code and had no CT Direct check. SkyRaid CT Relayed 33/33 vs 27/33: without the skill, every run expected CT Direct in a local Docker Desktop test and left out `--platform linux/amd64`. Broken BR200 32/33 vs 21/33: without the skill, every run left out `com.unity.sdk.linux-x86_64`, `--platform` and the CT Direct check. The fixtures can't compile without the licensed assets, so the assertions check the delivered files and HANDOFF.md.
+  - Triggering (skill-creator `run_eval`, `--num-workers 1`): 20/20; 30/30 should-trigger runs, 1 false trigger in 30 near-miss runs.
+  - Routing with the whole pack: 57/60. The miss: a BR200 lag-compensation question with nothing to do with hosting loaded `edgegap-fusion` 3 times out of 3.
+
 ## 0.8.0 (2026-10-19)
 
 Adds in-game voice chat.

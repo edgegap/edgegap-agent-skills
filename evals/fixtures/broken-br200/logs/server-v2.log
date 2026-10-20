@@ -1,0 +1,4 @@
+Initialize engine version: 6000.3.11f1
+Mono path[0] = '/root/build/ServerBuild_Data/Managed'
+Failed to bind socket to [Address Ip=203.0.113.24 Port=7777]
+StartGame() Result: [StartGameResult: Ok:False ShutdownReason:Error]

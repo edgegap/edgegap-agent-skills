@@ -1,0 +1,22 @@
+[
+  {"query": "I bought BR200 from the Asset Store (Photon Fusion 2 battle royale). How do I run it as a dedicated server on Edgegap instead of Photon's own hosting?", "expected_skill": "edgegap-fusion"},
+  {"query": "our fusion 2 server runs on edgegap and players can join, but the Tab overlay says CT Relayed and ping is ~230ms even next to the server. Loader IP is 127.0.0.1", "expected_skill": "edgegap-fusion"},
+  {"query": "BR200 deployment on edgegap exits right away with 'Failed to bind socket to [Address Ip=... Port=7777]'. I set -ip to the deployment's public IP so clients can reach it", "expected_skill": "edgegap-fusion"},
+  {"query": "Linux dedicated server build of my Photon Fusion game: players join but RPC_SendPlayerData throws MethodAccessException CheckInvokeRpc and nobody gets a character. it's a Mono build", "expected_skill": "edgegap-fusion"},
+  {"query": "Unity 6000.3 on Windows, IL2CPP Linux server build for our Fusion game fails with 'No Linux sysroot found for x64'. Server goes to Edgegap", "expected_skill": "edgegap-fusion"},
+  {"query": "We have NetworkRunner with GameMode.Server in a headless build. What should StartGameArgs.Address and CustomPublicAddress be when the server runs in an Edgegap container?", "expected_skill": "edgegap-fusion"},
+  {"query": "Fusion clients get ShutdownReason GameNotFound joining the session our edgegap server created. App ID is right. what else has to match?", "expected_skill": "edgegap-fusion"},
+  {"query": "Project has Assets/Photon/Fusion, PhotonAppSettings and a NetworkProjectConfig. I want players to stop hosting and have servers near them on Edgegap. Where do I start?", "expected_skill": "edgegap-fusion"},
+  {"query": "how do I name the Fusion session after the edgegap deployment and pick the Photon region closest to where edgegap put the server?", "expected_skill": "edgegap-fusion"},
+  {"query": "headless test clients for TPSBR: each Client.exe I launch with -batchmode starts ten players, and I need to check CT Direct against our edgegap deployment", "expected_skill": "edgegap-fusion"},
+  {"query": "Photon Fusion 2: my [Networked] property changes on the state authority but proxies never see it. what am I missing?", "expected_skill": null},
+  {"query": "Fusion 2 shared mode vs host mode for a 4 player co-op game, which is better and how do I switch?", "expected_skill": null},
+  {"query": "how much does Photon Fusion cost per CCU, and what happens if we go over the 100 CCU free tier?", "expected_skill": null},
+  {"query": "BR200 lag compensation: hitscan shots miss at high ping in the battle royale sample. how does Fusion's hitbox buffer work?", "expected_skill": null},
+  {"query": "Unity 6 game on Netcode for GameObjects with UnityTransport. we want Edgegap dedicated servers and a Find Match button", "expected_skill": "edgegap-ngo"},
+  {"query": "FishNet game with Tugboat, one player hosts right now. move it to edgegap dedicated servers with matchmaking", "expected_skill": "edgegap-fishnet"},
+  {"query": "PurrNet project with UDPTransport, nobody should host. how do I get dedicated servers on Edgegap?", "expected_skill": "edgegap-purrnet"},
+  {"query": "my Mirror webgl game needs dedicated servers and matchmaking on edgegap, players connect from the browser", "expected_skill": "edgegap-unity"},
+  {"query": "We're replacing Photon PUN 2 with our own Unity netcode and want our servers hosted somewhere. what should I set up on Edgegap?", "expected_skill": "edgegap-unity"},
+  {"query": "what's the difference between an Edgegap app, an app version and a deployment? we're comparing hosting providers for a Godot game", "expected_skill": "edgegap"}
+]
