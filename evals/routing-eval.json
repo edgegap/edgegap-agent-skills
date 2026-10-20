@@ -1,39 +1,170 @@
 [
-  {"query": "Unreal Engine 5.4 dedicated server: how do I package a linux server build and host it on edgegap?", "expected_skill": "edgegap-unreal"},
-  {"query": "I want to host my Godot 4 multiplayer shooter. I have the game but no server setup yet. Where do I start?", "expected_skill": "edgegap"},
-  {"query": "I'm building a turn-based word game where players make a move every few hours. How should I host the multiplayer part?", "expected_skill": "edgegap"},
-  {"query": "My single-player roguelike keeps getting cracked. Can I make it always online so the game logic runs on a server?", "expected_skill": "edgegap"},
-  {"query": "What's the difference between an Edgegap app, an app version and a deployment?", "expected_skill": "edgegap"},
-  {"query": "We're moving our listen-server game to dedicated servers. How should the server process behave from boot to match end so it doesn't burn money?", "expected_skill": "edgegap-server-design"},
-  {"query": "How should my custom C++ game server handle SIGTERM and shut itself down when the match is over on Edgegap?", "expected_skill": "edgegap-server-design"},
-  {"query": "write me a Dockerfile for my Go game server so I can push it to registry.edgegap.com, I'm on an M2 mac", "expected_skill": "edgegap-containerize"},
-  {"query": "my edgegap deployment says 'Unable to pull image from registry' but the push worked", "expected_skill": "edgegap-troubleshoot"},
-  {"query": "How do I test my game server Docker image locally before deploying it to Edgegap? It works with -p 7777:7777", "expected_skill": "edgegap-local-testing"},
-  {"query": "Our Nakama backend forms matches. Write the TypeScript that starts an Edgegap server for each match and gives players the address.", "expected_skill": "edgegap-deployments-api"},
-  {"query": "We keep Unity Matchmaker (UGS). How do I make the Cloud Code allocator deploy Edgegap servers?", "expected_skill": "edgegap-deployments-api"},
-  {"query": "how do edgegap deployment webhooks work and what's in the payload", "expected_skill": "edgegap-deployments-api"},
-  {"query": "We launch on Steam in 3 weeks with servers on Edgegap. What should we check before launch day?", "expected_skill": "edgegap-launch"},
-  {"query": "How do we roll out a new server build on Edgegap without kicking players out of running matches?", "expected_skill": "edgegap-launch"},
-  {"query": "Players can't connect to my Edgegap server, the deployment is Ready but clients time out", "expected_skill": "edgegap-troubleshoot"},
-  {"query": "my edgegap server keeps restarting and the logs say OOM killed", "expected_skill": "edgegap-troubleshoot"},
-  {"query": "My Unity game works when I play with my friend on the same wifi, but not over the internet. How do I fix that?", "expected_skill": "edgegap-unity"},
-  {"query": "My Unity game uses FishNet with Tugboat. Right now one player hosts. How do I get dedicated servers and a Find Match button on Edgegap?", "expected_skill": "edgegap-fishnet"},
-  {"query": "fishnet bayou webgl build can't connect to my edgegap deployment, works on localhost", "expected_skill": "edgegap-fishnet"},
-  {"query": "Unity 2021.3 project with the edgegap sdk, every matchmaker ticket returns 400 even though my profile name is right. We use fish-networking", "expected_skill": "edgegap-fishnet"},
-  {"query": "I made a co-op game with PurrNet and right now one player hosts. I want dedicated servers on Edgegap and a Find Match button.", "expected_skill": "edgegap-purrnet"},
-  {"query": "purrnet dedicated server on edgegap: players connect fine but none of the world objects spawn, in host mode everything works", "expected_skill": "edgegap-purrnet"},
-  {"query": "Netcode for GameObjects game, I want Edgegap matchmaking and dedicated servers", "expected_skill": "edgegap-ngo"},
-  {"query": "I started from Unity's Boss Room sample and want to drop Relay and Lobby: dedicated servers on Edgegap and a Find Match button", "expected_skill": "edgegap-ngo"},
-  {"query": "NGO dedicated server on edgegap is Ready but my UnityTransport client can't connect when I use the pr.edgegap.net address", "expected_skill": "edgegap-ngo"},
-  {"query": "Mirror game with SimpleWebTransport, I need a WebGL build that joins Edgegap servers", "expected_skill": "edgegap-unity"},
-  {"query": "set up game-ci in github actions so my unity project's playmode tests run on every PR", "expected_skill": null},
-  {"query": "write a python script that parses my game server's json logs and plots concurrent players", "expected_skill": null},
-  {"query": "add a local split-screen 2 player mode to my unity racing game using the new input system", "expected_skill": null},
-  {"query": "my UE5 blueprint game only works with listen servers when friends join through Steam. I want proper matchmaking and nobody hosting, can that work without me writing C++?", "expected_skill": "edgegap-unreal"},
-  {"query": "Edgegap deployment of my Unreal server shows empty logs and the dashboard says Error after a few seconds. Dockerfile runs MultiplayerGameServer.sh", "expected_skill": "edgegap-unreal"},
-  {"query": "I made a little arena game with Manus and want my friends to play it online together with a Find Match button. How?", "expected_skill": "edgegap-manus"},
-  {"query": "My Manus web game has Steam login. Players get matched but connecting to the server fails with mixed content, ws:// blocked from https", "expected_skill": "edgegap-manus"},
-  {"query": "My UE5 game runs on Edgegap dedicated servers with the matchmaker. I want team voice chat with EOS so only teammates hear each other. How?", "expected_skill": "edgegap-eos-voice"},
-  {"query": "add push to talk voice chat to my unreal multiplayer game hosted on edgegap, ideally free and cross-platform", "expected_skill": "edgegap-eos-voice"},
-  {"query": "EOS voice works with lobbies but how do I make my dedicated server hand out room tokens? the server is linux and the EOS SDK says no voice on linux", "expected_skill": "edgegap-eos-voice"}
+  {
+    "query": "Unreal Engine 5.4 dedicated server: how do I package a linux server build and host it on edgegap?",
+    "expected_skill": "edgegap-unreal"
+  },
+  {
+    "query": "I want to host my Godot 4 multiplayer shooter. I have the game but no server setup yet. Where do I start?",
+    "expected_skill": "edgegap"
+  },
+  {
+    "query": "I'm building a turn-based word game where players make a move every few hours. How should I host the multiplayer part?",
+    "expected_skill": "edgegap"
+  },
+  {
+    "query": "My single-player roguelike keeps getting cracked. Can I make it always online so the game logic runs on a server?",
+    "expected_skill": "edgegap"
+  },
+  {
+    "query": "What's the difference between an Edgegap app, an app version and a deployment?",
+    "expected_skill": "edgegap"
+  },
+  {
+    "query": "We're moving our listen-server game to dedicated servers. How should the server process behave from boot to match end so it doesn't burn money?",
+    "expected_skill": "edgegap-server-design"
+  },
+  {
+    "query": "How should my custom C++ game server handle SIGTERM and shut itself down when the match is over on Edgegap?",
+    "expected_skill": "edgegap-server-design"
+  },
+  {
+    "query": "write me a Dockerfile for my Go game server so I can push it to registry.edgegap.com, I'm on an M2 mac",
+    "expected_skill": "edgegap-containerize"
+  },
+  {
+    "query": "my edgegap deployment says 'Unable to pull image from registry' but the push worked",
+    "expected_skill": "edgegap-troubleshoot"
+  },
+  {
+    "query": "How do I test my game server Docker image locally before deploying it to Edgegap? It works with -p 7777:7777",
+    "expected_skill": "edgegap-local-testing"
+  },
+  {
+    "query": "Our Nakama backend forms matches. Write the TypeScript that starts an Edgegap server for each match and gives players the address.",
+    "expected_skill": "edgegap-deployments-api"
+  },
+  {
+    "query": "We keep Unity Matchmaker (UGS). How do I make the Cloud Code allocator deploy Edgegap servers?",
+    "expected_skill": "edgegap-deployments-api"
+  },
+  {
+    "query": "how do edgegap deployment webhooks work and what's in the payload",
+    "expected_skill": "edgegap-deployments-api"
+  },
+  {
+    "query": "We launch on Steam in 3 weeks with servers on Edgegap. What should we check before launch day?",
+    "expected_skill": "edgegap-launch"
+  },
+  {
+    "query": "How do we roll out a new server build on Edgegap without kicking players out of running matches?",
+    "expected_skill": "edgegap-launch"
+  },
+  {
+    "query": "Players can't connect to my Edgegap server, the deployment is Ready but clients time out",
+    "expected_skill": "edgegap-troubleshoot"
+  },
+  {
+    "query": "my edgegap server keeps restarting and the logs say OOM killed",
+    "expected_skill": "edgegap-troubleshoot"
+  },
+  {
+    "query": "My Unity game works when I play with my friend on the same wifi, but not over the internet. How do I fix that?",
+    "expected_skill": "edgegap-unity"
+  },
+  {
+    "query": "My Unity game uses FishNet with Tugboat. Right now one player hosts. How do I get dedicated servers and a Find Match button on Edgegap?",
+    "expected_skill": "edgegap-fishnet"
+  },
+  {
+    "query": "fishnet bayou webgl build can't connect to my edgegap deployment, works on localhost",
+    "expected_skill": "edgegap-fishnet"
+  },
+  {
+    "query": "Unity 2021.3 project with the edgegap sdk, every matchmaker ticket returns 400 even though my profile name is right. We use fish-networking",
+    "expected_skill": "edgegap-fishnet"
+  },
+  {
+    "query": "I made a co-op game with PurrNet and right now one player hosts. I want dedicated servers on Edgegap and a Find Match button.",
+    "expected_skill": "edgegap-purrnet"
+  },
+  {
+    "query": "purrnet dedicated server on edgegap: players connect fine but none of the world objects spawn, in host mode everything works",
+    "expected_skill": "edgegap-purrnet"
+  },
+  {
+    "query": "Netcode for GameObjects game, I want Edgegap matchmaking and dedicated servers",
+    "expected_skill": "edgegap-ngo"
+  },
+  {
+    "query": "I started from Unity's Boss Room sample and want to drop Relay and Lobby: dedicated servers on Edgegap and a Find Match button",
+    "expected_skill": "edgegap-ngo"
+  },
+  {
+    "query": "NGO dedicated server on edgegap is Ready but my UnityTransport client can't connect when I use the pr.edgegap.net address",
+    "expected_skill": "edgegap-ngo"
+  },
+  {
+    "query": "Mirror game with SimpleWebTransport, I need a WebGL build that joins Edgegap servers",
+    "expected_skill": "edgegap-unity"
+  },
+  {
+    "query": "set up game-ci in github actions so my unity project's playmode tests run on every PR",
+    "expected_skill": null
+  },
+  {
+    "query": "write a python script that parses my game server's json logs and plots concurrent players",
+    "expected_skill": null
+  },
+  {
+    "query": "add a local split-screen 2 player mode to my unity racing game using the new input system",
+    "expected_skill": null
+  },
+  {
+    "query": "my UE5 blueprint game only works with listen servers when friends join through Steam. I want proper matchmaking and nobody hosting, can that work without me writing C++?",
+    "expected_skill": "edgegap-unreal"
+  },
+  {
+    "query": "Edgegap deployment of my Unreal server shows empty logs and the dashboard says Error after a few seconds. Dockerfile runs MultiplayerGameServer.sh",
+    "expected_skill": "edgegap-unreal"
+  },
+  {
+    "query": "I made a little arena game with Manus and want my friends to play it online together with a Find Match button. How?",
+    "expected_skill": "edgegap-manus"
+  },
+  {
+    "query": "My Manus web game has Steam login. Players get matched but connecting to the server fails with mixed content, ws:// blocked from https",
+    "expected_skill": "edgegap-manus"
+  },
+  {
+    "query": "My UE5 game runs on Edgegap dedicated servers with the matchmaker. I want team voice chat with EOS so only teammates hear each other. How?",
+    "expected_skill": "edgegap-eos-voice"
+  },
+  {
+    "query": "add push to talk voice chat to my unreal multiplayer game hosted on edgegap, ideally free and cross-platform",
+    "expected_skill": "edgegap-eos-voice"
+  },
+  {
+    "query": "EOS voice works with lobbies but how do I make my dedicated server hand out room tokens? the server is linux and the EOS SDK says no voice on linux",
+    "expected_skill": "edgegap-eos-voice"
+  },
+  {
+    "query": "I bought the BR200 battle royale template (Photon Fusion). How do I run it as a dedicated server on Edgegap?",
+    "expected_skill": "edgegap-fusion"
+  },
+  {
+    "query": "My Fusion 2 game runs with GameMode.Server on my PC but the Tab overlay says CT Relayed when the server is in a container. Why?",
+    "expected_skill": "edgegap-fusion"
+  },
+  {
+    "query": "Unity project with Assets/Photon/Fusion and a NetworkRunner. I want headless dedicated servers instead of a player hosting. Where do I start?",
+    "expected_skill": "edgegap-fusion"
+  },
+  {
+    "query": "Fusion clients get GameNotFound when they try to join my server deployed on edgegap",
+    "expected_skill": "edgegap-fusion"
+  },
+  {
+    "query": "My Mirror game should move from host/client to dedicated servers on Edgegap",
+    "expected_skill": "edgegap-unity"
+  }
 ]

@@ -1,13 +1,13 @@
 ---
 name: edgegap
-description: 'Start here for hosting a game on Edgegap (dedicated game servers + matchmaking, Docker image in, server address out) when the engine is not Unity or Unreal, is unknown, or the question is about the platform itself. Use when someone wants to host or deploy a game server, wants a single-player or co-op game to be always online or harder to crack, decompile or pirate, asks how players will connect to matches, wants dedicated servers for a Godot, web/Node or custom-engine game, compares hosting options, or asks what Edgegap apps, versions, deployments, fleets or matchmakers are, even if they never say "hosting". It picks the right server shape for the game (per match, per player session, or persistent), explains the vocabulary and safety rules for the Edgegap MCP tools, and sends the agent to the right edgegap-* skill. For a Unity project, load edgegap-unity directly instead (NGO: edgegap-ngo, FishNet: edgegap-fishnet, PurrNet: edgegap-purrnet); for Unreal Engine, edgegap-unreal; for a Manus game, edgegap-manus.'
+description: 'Start here for hosting a game on Edgegap (dedicated game servers + matchmaking) when the engine is not Unity or Unreal, is unknown, or the question is about the platform itself. Use when someone wants to host or deploy a game server, wants a single-player or co-op game to be always online or harder to crack, decompile or pirate, asks how players will connect to matches, wants dedicated servers for a Godot, web/Node or custom-engine game, compares hosting options, or asks what Edgegap apps, versions, deployments, fleets or matchmakers are, even if they never say "hosting". It picks the right server shape for the game (per match, per player session, or persistent), explains the vocabulary and safety rules for the Edgegap MCP tools, and sends the agent to the right edgegap-* skill. For a Unity project, load edgegap-unity directly instead (NGO: edgegap-ngo, FishNet: edgegap-fishnet, PurrNet: edgegap-purrnet, Fusion: edgegap-fusion); for Unreal Engine, edgegap-unreal; for a Manus game, edgegap-manus.'
 metadata:
-  version: "0.8.0"
+  version: "0.9.0"
 ---
 
 # Edgegap
 
-Pack version: 0.8.0
+Pack version: 0.9.0
 
 Edgegap runs dedicated game servers. You push a **Linux container image** of your game server, register it as an **app version**, and ask for a **deployment** near a group of players. Edgegap picks the location with the best ping for that group, starts the container in seconds, and returns a URL (`<id>.pr.edgegap.net`), a public IP, and an external port per internal port. Players connect. The match ends, the server stops, billing stops.
 
@@ -32,7 +32,7 @@ Work through these in order and skip what is already done:
 | Step | Skill | Done when |
 |---|---|---|
 | 1 | `edgegap-server-design` | The server is authoritative, match-scoped, configured by env vars, and stops itself at match end |
-| 2 | Engine build (Unity: `edgegap-unity`, `edgegap-ngo` for Netcode for GameObjects games, `edgegap-fishnet` for FishNet games, or `edgegap-purrnet` for PurrNet games; Unreal Engine: `edgegap-unreal`; each covers every step for its engine) | A headless **linux/amd64** server build exists |
+| 2 | Engine build (Unity: `edgegap-unity`, `edgegap-ngo` for Netcode for GameObjects games, `edgegap-fishnet` for FishNet games, or `edgegap-purrnet` for PurrNet games, or `edgegap-fusion` for Photon Fusion games; Unreal Engine: `edgegap-unreal`; each covers every step for its engine) | A headless **linux/amd64** server build exists |
 | 3 | `edgegap-containerize` | `docker run` starts a working server locally, and the image is in a registry Edgegap can pull |
 | 4 | `edgegap-local-testing` | Parity tests pass locally, then one test deployment on Edgegap accepts a real client |
 | 5 | Matchmaking: Edgegap's matchmaker (config, dashboard steps and the ticket contract are engine-agnostic: [edgegap-unity's matchmaker reference](../edgegap-unity/references/matchmaker.md), plus https://docs.edgegap.com/learn/matchmaking), or your own backend with `edgegap-deployments-api` | Players clicking Play land on the same server |
@@ -48,6 +48,7 @@ No engine skill for Godot yet. For a JavaScript browser game, `edgegap-manus` ha
 | Anything for a Unity project that uses Netcode for GameObjects (NGO), including Boss Room | `edgegap-ngo` |
 | Anything for a Unity project that uses FishNet | `edgegap-fishnet` |
 | Anything for a Unity project that uses PurrNet | `edgegap-purrnet` |
+| Anything for a Unity project that uses Photon Fusion 2, including Photon's BR200 sample | `edgegap-fusion` |
 | Anything for an Unreal Engine project | `edgegap-unreal` |
 | Voice chat (EOS Voice) in an Unreal game hosted on Edgegap | `edgegap-eos-voice` |
 | A browser game built with Manus (manus.im): Steam sign-in, backend matchmaking, WebSocket server | `edgegap-manus` |
