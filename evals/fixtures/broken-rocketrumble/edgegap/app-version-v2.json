@@ -1,0 +1,17 @@
+{
+  "name": "v2",
+  "docker_repository": "registry.edgegap.com/rr-studio/rocket-rumble",
+  "docker_tag": "latest",
+  "req_cpu": 256,
+  "req_memory": 512,
+  "max_duration": 1440,
+  "ports": [
+    {
+      "port": 2567,
+      "protocol": "TCP",
+      "name": "game",
+      "tls_upgrade": false
+    }
+  ],
+  "envs": []
+}

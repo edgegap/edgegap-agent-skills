@@ -33,7 +33,18 @@ const room = await joinWithRetry(new Client(url), "battle", {}, attempts);
 room.onLeave(() => (status.textContent = "Disconnected. Reload to play again."));
 ```
 
-`Matchmaker` cancels its ticket on `pagehide`. The page's origin must be in the matchmaker's `allowed_cors_origins`, or the browser blocks the `POST` (a CORS error in the console, no HTTP status). Vite env vars must start with `VITE_`.
+`Matchmaker` cancels its ticket on `pagehide`. The page's origin must be in the matchmaker's `allowed_cors_origins`, or the browser blocks the `POST` (a CORS error in the console, no HTTP status). Vite env vars must start with `VITE_`. A game embedded on itch.io runs in an iframe whose origin is the itch CDN host (usually `https://html-classic.itch.zone`), not `https://<you>.itch.io`: confirm it with `location.origin` in the embedded game's console and list that.
+
+**Reconnection after a drop or reload.** With one deployment per match there is no fixed server URL any more, so a client that saves `room.reconnectionToken` must save the endpoint with it and call `reconnect` on a `Client` for that endpoint:
+
+```ts
+sessionStorage.setItem("reconnect", JSON.stringify({ url, token: room.reconnectionToken }));
+// later (page reload, or room.onLeave with a non-consented code):
+const saved = JSON.parse(sessionStorage.getItem("reconnect") ?? "null");
+if (saved) room = await new Client(saved.url).reconnect(saved.token);   // fails once the window or the deployment is gone: clear it, back to Find Match
+```
+
+Not run on Edgegap in the verified test (the tanks room has no reconnection).
 
 PlayCanvas, Phaser, PixiJS, Construct 3 scripts and other web engines can use the same two files; only the "read a page parameter" part differs.
 

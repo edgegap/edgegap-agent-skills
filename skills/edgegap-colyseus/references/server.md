@@ -56,15 +56,40 @@ onJoin(client: Client, options: any) {
   // ...existing code
 }
 
-onLeave(client: Client, consented: boolean) {
+onLeave(client: Client) {                         // 0.17: (client, code?: number); 0.15/0.16: (client, consented: boolean)
   playerLeft();
   // ...existing code
 }
 ```
 
+Keep the room's existing `onLeave` signature: on 0.17 a `consented: boolean` second parameter doesn't typecheck (it's the close `code`, `CloseCode.CONSENTED` = 4000).
+
 With several room types, call them in each one: the counter is per process, which is per deployment.
 
-**Reconnection.** If a room keeps seats with `allowReconnection`, a player who drops and comes back gets no second `onJoin`. Call `playerLeft()` only when the seat is really gone: after `allowReconnection` rejects (the `catch` of the usual `onLeave` pattern), or, on 0.17 with `onDrop`/`onReconnect`, in `onLeave` and not in `onDrop`. Otherwise the empty timer can stop a match whose player is reconnecting. The verified tanks room has no reconnection, so check this path in a local test.
+**Reconnection.** If a room keeps seats with `allowReconnection`, a player who drops and comes back gets no second `onJoin`. Call `playerLeft()` only when the seat is really gone, never when the connection merely drops; otherwise the empty timer (30 s) can stop the deployment of a match whose player is inside a longer reconnection window, and the reconnect fails with "room not found".
+
+```ts
+// 0.17: onDrop fires on an unconsented drop, onLeave only when the seat is gone
+onDrop(client: Client) {
+  this.allowReconnection(client, 20);            // no playerLeft() here
+}
+onReconnect(client: Client) {}                   // no playerJoined() here either: the seat never left
+onLeave(client: Client) {
+  playerLeft();
+  // ...remove the player from the state
+}
+
+// 0.15/0.16: one onLeave
+async onLeave(client: Client, consented: boolean) {
+  if (!consented) {
+    try { await this.allowReconnection(client, 20); return; } catch {}
+  }
+  playerLeft();
+  // ...remove the player from the state
+}
+```
+
+Clients that resume after a page reload with `client.reconnect(token)` must reconnect to the same deployment: store the endpoint with the token (`clients.md`, "Reconnection after a drop or reload"). The verified tanks room has no reconnection; this pattern was typechecked on 0.16 and 0.17 but not run on Edgegap, so check it in a local test (drop a client, rejoin within the window, the log shows no self-stop).
 
 **Match end.** An arena that never ends stops when it empties. A game with a real end calls `selfStop()` after showing the result. From the verified tanks room (`MATCH_ROUNDS` won rounds, then end):
 

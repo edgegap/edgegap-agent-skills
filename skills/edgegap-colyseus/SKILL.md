@@ -2,7 +2,7 @@
 name: edgegap-colyseus
 description: 'Colyseus + Edgegap: host a Colyseus (Node.js) multiplayer game on Edgegap with one dedicated server per match, near its players, that stops itself, end to end. Load this before using any Edgegap MCP tool on a Colyseus project (colyseus or @colyseus/* in package.json, Room classes with onJoin/onLeave, defineServer, app.config.ts, colyseus.js, @colyseus/sdk, the Colyseus Unity, Godot, Defold, GameMaker or Haxe SDKs). It has templates verified on Edgegap with the Colyseus tanks demo: a lifecycle module (self-stop on no join, empty server or match end), a Dockerfile, the WS + TLS Upgrade app version, a direct deploy script, a matchmaker config, and matchmaker clients for browser JS/TS, Unity and Godot, plus the pitfalls: 502 right after a server starts, wss by FQDN, CORS origins, playground and monitor exposed. Use for "host my Colyseus server", "Colyseus on Edgegap", "replace Colyseus Cloud", "one server per match", "Find Match with Colyseus", or debugging Colyseus deployments. Manus games: edgegap-manus.'
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Edgegap for Colyseus games: one server per match
@@ -63,7 +63,7 @@ Read `references/deploy.md` §1 to §3.
 ## Phase 3: Matchmaker
 
 Read `references/deploy.md` §4.
-1. Start from `assets/matchmaker/casual.json`: `application.name`/`version`, team sizes, and `allowed_cors_origins` with every origin that serves a web build (scheme + host + port). Keep the `15` s expansion: without it a partial match waits for ticket expiry.
+1. Start from `assets/matchmaker/casual.json`: `application.name`/`version`, team sizes, and `allowed_cors_origins` with every origin that serves a web build (scheme + host + port). Keep the `15` s expansion even though it repeats `min_team_size: 2`: the stage itself lets a partial match start; without it a partial match waits for ticket expiry. Set `inspect` to `false` before launch.
 2. The developer uploads it: Matchmaker → Create → **Create and Start**, then copies the **API URL** and **Auth Token**.
 
 ## Phase 4: Clients
