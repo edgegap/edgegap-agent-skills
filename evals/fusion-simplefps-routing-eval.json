@@ -1,0 +1,18 @@
+[
+  {"query": "I downloaded Photon's Simple FPS Multiplayer (Fusion) template from the Asset Store. How do I run it as a dedicated server on Edgegap?", "expected_skill": "edgegap-fusion-simplefps"},
+  {"query": "simple fps fusion sample: clients join our edgegap server but spam NullReferenceException at SimpleFPS.Player.FixedUpdateNetwork every tick and can't move. server build only has the Deathmatch scene", "expected_skill": "edgegap-fusion-simplefps"},
+  {"query": "In the Simple FPS Party menu I want players to type the edgegap deployment FQDN and a Photon region to join, instead of the 8 letter party code. How?", "expected_skill": "edgegap-fusion-simplefps"},
+  {"query": "Deathmatch scene FusionBootstrap set to Automatic / Server / port 7777 and the room name from ARBITRIUM_REQUEST_ID. it runs on edgegap but players see the Startup menu scene active after joining", "expected_skill": "edgegap-fusion-simplefps"},
+  {"query": "our project has Assets/Scripts with the SimpleFPS namespace, MenuConnectionBehaviour, Startup and Deathmatch scenes. we want servers on Edgegap so nobody hosts", "expected_skill": "edgegap-fusion-simplefps"},
+  {"query": "joining a Simple FPS dedicated server from the party menu fails: the code field upper-cases my deployment address and Fusion says GameNotFound", "expected_skill": "edgegap-fusion-simplefps"},
+  {"query": "need headless test clients for the photon simple fps sample that join our edgegap deployment through the party menu and log CT Direct", "expected_skill": "edgegap-fusion-simplefps"},
+  {"query": "Simple FPS 2.1.1 on Unity 6000.3: what do I change so one project builds both the Linux server for Edgegap and the Windows client, without editing FusionBootstrap.cs?", "expected_skill": "edgegap-fusion-simplefps"},
+  {"query": "I bought BR200 from the Asset Store (Photon Fusion 2 battle royale). How do I run it as a dedicated server on Edgegap?", "expected_skill": "edgegap-fusion"},
+  {"query": "our own Fusion 2 game (not a Photon sample) runs GameMode.Server on edgegap but the CT overlay says Relayed. what should StartGameArgs.Address be?", "expected_skill": "edgegap-fusion"},
+  {"query": "BR200 deployment on edgegap exits with 'Failed to bind socket'. I set -ip to the public IP", "expected_skill": "edgegap-fusion"},
+  {"query": "Fusion clients get GameNotFound joining our edgegap server's session in a custom shooter. App ID is right. what else has to match?", "expected_skill": "edgegap-fusion"},
+  {"query": "Simple FPS sample: how do I add a new weapon pickup with its own ammo and fire rate?", "expected_skill": null},
+  {"query": "in Photon's Simple FPS template, how does the Gameplay class decide the deathmatch winner and the match length?", "expected_skill": null},
+  {"query": "Simple FPS Fusion sample: hitscan shots feel late at 150 ms ping. how does lag compensation work in Fusion 2?", "expected_skill": null},
+  {"query": "how do I change the player character model and animations in the Simple FPS Multiplayer Photon Fusion template?", "expected_skill": null}
+]

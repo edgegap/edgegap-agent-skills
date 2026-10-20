@@ -1,8 +1,8 @@
 ---
 name: edgegap-fusion
-description: 'Photon Fusion 2 + Edgegap: run a Unity game built on Photon Fusion as a dedicated server on Edgegap, verified end to end with Photon''s BR200 Battle Royale sample. Load this before using any Edgegap MCP tool on a Fusion project (Assets/Photon/Fusion, NetworkRunner, StartGameArgs, GameMode.Server, PhotonAppSettings, NetworkProjectConfig, TPSBR, BR200). It has a drop-in BR200 kit that changes no sample code (server build with preflight checks, Dockerfile, start script that maps Edgegap variables to BR200''s command-line options, picks the Photon region and self-stops), headless test clients that log the connection type, and fixes for Fusion pitfalls: Loader IP 127.0.0.1 forcing Photon relays, public IP failing to bind, IL2CPP required on the server, Linux toolchain packages and App ID/AppVersion/region mismatches. Use when a Fusion dev wants dedicated servers, "host BR200", "CT shows Relayed", GameNotFound. Other Unity netcodes: edgegap-unity, edgegap-ngo, edgegap-fishnet, edgegap-purrnet.'
+description: 'Photon Fusion 2 + Edgegap: run a Unity game built on Photon Fusion as a dedicated server on Edgegap, verified end to end with Photon''s BR200 Battle Royale sample. Load this before using any Edgegap MCP tool on a Fusion project (Assets/Photon/Fusion, NetworkRunner, StartGameArgs, GameMode.Server, PhotonAppSettings, NetworkProjectConfig, TPSBR, BR200). It has a drop-in BR200 kit that changes no sample code (server build with preflight checks, Dockerfile, start script mapping Edgegap variables to BR200''s command-line options, Photon region, self-stop), headless test clients logging the connection type, and fixes for pitfalls: Loader IP 127.0.0.1 forcing Photon relays, public IP failing to bind, IL2CPP required on the server, Linux toolchain packages and App ID/AppVersion/region mismatches. Use when a Fusion dev wants dedicated servers, "host BR200", "CT shows Relayed", GameNotFound. Simple FPS sample: edgegap-fusion-simplefps. Other Unity netcodes: edgegap-unity, edgegap-ngo, edgegap-fishnet, edgegap-purrnet.'
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Edgegap for Photon Fusion 2: dedicated servers
@@ -29,7 +29,7 @@ Read, don't ask:
 - `Assets/Photon/Fusion/Resources/PhotonAppSettings.asset`: `AppIdFusion`, `AppVersion`, `FixedRegion`.
 - `Assets/Photon/Fusion/Resources/NetworkProjectConfig.fusion`: `PeerMode` (`0` = Single).
 - `scriptingBackend` → `Server:` in `ProjectSettings.asset` (`1` = IL2CPP) and `Packages/manifest.json` for `com.unity.toolchain.*` / `com.unity.sdk.*`.
-- Is it BR200 (`Assets/TPSBR/`, `TPSBR.Loader`, `StandaloneManager`)? Then follow the BR200 path below. Another Fusion game: grep `StartGameArgs`, `GameMode.Server`, `Address =`, `CustomPublicAddress`, and read `references/fusion.md` §5.
+- Is it BR200 (`Assets/TPSBR/`, `TPSBR.Loader`, `StandaloneManager`)? Then follow the BR200 path below. Is it Photon's Simple FPS (`SimpleFPS` namespace in `Assets/Scripts/`, `Deathmatch` and `Startup` scenes, `MenuConnectionBehaviour`)? Load `edgegap-fusion-simplefps` instead: it has a tested kit for that sample. Another Fusion game: grep `StartGameArgs`, `GameMode.Server`, `Address =`, `CustomPublicAddress`, and read `references/fusion.md` §5.
 
 Ask, in one message, only what you couldn't infer: the Fusion App ID (if empty), players per match, the developer's Edgegap account and Docker.
 
@@ -81,6 +81,6 @@ If the developer is writing a guide for Photon's docs, the measured facts are in
 - `references/troubleshooting.md`: symptom → fix tables.
 - `assets/br200/`: the kit (editor preflight and build, Dockerfile, start script, helper scripts, start-script tests, API examples). `assets/test/`: the CT probe and the test client build.
 
-Related skills in this pack, if installed: `edgegap-unity` (general Unity, Mirror, WebGL), `edgegap-containerize`, `edgegap-troubleshoot`, `edgegap-launch` before going live.
+Related skills in this pack, if installed: `edgegap-fusion-simplefps` (Photon's Simple FPS sample), `edgegap-unity` (general Unity, Mirror, WebGL), `edgegap-containerize`, `edgegap-troubleshoot`, `edgegap-launch` before going live.
 
 Sources of truth: https://doc.photonengine.com/fusion/v2, the `Fusion.Runtime.xml` API docs shipped in `Assets/Photon/Fusion/Assemblies/`, https://docs.edgegap.com/unity.
