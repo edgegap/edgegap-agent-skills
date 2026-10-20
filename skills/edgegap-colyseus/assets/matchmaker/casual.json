@@ -1,0 +1,40 @@
+{
+  "version": "3.3.2",
+  "inspect": true,
+  "max_deployment_retry_count": 3,
+  "allowed_cors_origins": [
+    "http://localhost:5173",
+    "http://localhost:8060",
+    "http://localhost:8080"
+  ],
+  "profiles": {
+    "casual": {
+      "ticket_expiration_period": "5m",
+      "ticket_removal_period": "1m",
+      "group_inactivity_removal_period": "5m",
+      "application": {
+        "name": "my-colyseus-game",
+        "version": "v1"
+      },
+      "rules": {
+        "initial": {
+          "match_size": {
+            "type": "player_count",
+            "attributes": {
+              "team_count": 1,
+              "min_team_size": 2,
+              "max_team_size": 8
+            }
+          }
+        },
+        "expansions": {
+          "15": {
+            "match_size": {
+              "min_team_size": 2
+            }
+          }
+        }
+      }
+    }
+  }
+}

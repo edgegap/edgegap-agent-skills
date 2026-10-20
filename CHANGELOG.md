@@ -2,7 +2,7 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
-## 0.11.0 (2026-10-20)
+## 0.12.0 (2026-10-20)
 
 Adds Godot 4.
 
@@ -10,11 +10,25 @@ Adds Godot 4.
   - GDScript templates made game-agnostic: an `EdgegapServer` autoload (creates the ENet or WebSocket server on all interfaces, emits `match_ready` once the `MM_TICKET_IDS` players are in or after a grace period, stops its own deployment through `ARBITRIUM_DELETE_URL` with the raw token after `match_ended()`, when nobody joins or when everyone left), a matchmaker client (`POST`/`GET`/`DELETE /tickets`, raw `Authorization`, cancel that races a match, join retries while the server boots), a Find Match button, a settings script with env overrides, a Linux dedicated server export preset, a Dockerfile and a matchmaker config.
   - Tested on 2026-10-20 with Godot 4.7.2 in a minimal project, exported as a Linux dedicated server and run in Docker against a mock matchmaker with two clients, with ENet and with WebSocket: tickets → assignment → both joined → `match_ready` → `match_ended` → self-stop. ENet hasn't been run on a real Edgegap deployment yet.
   - Pitfalls measured in that run, now in the references: without `application/run/flush_stdout_on_print` the container logs are empty, even the engine banner. Godot has no SIGTERM handler, so as PID 1 it ignores `docker stop` and Edgegap's stop until killed (20 s, exit 137); `tini` in the image fixes it (1 s). An export allowlist ships the autoload but not the `class_name` scripts it uses, which fails only at runtime (`Identifier "EdgegapSettings" not declared`), and an `export_filter="scenes"` preset ignores listed scripts altogether. From the sample: a join refused by the game's own validation (an empty display name) fails silently and the player looks stuck searching.
-- `edgegap` (0.11.0) routes Godot 4 projects to `edgegap-godot` instead of the engine-agnostic skills. Its description is slightly shorter, to stay under 1024 characters.
+- `edgegap` (0.12.0) routes Godot 4 projects whose server is Godot to `edgegap-godot`; Colyseus servers with Godot clients stay with `edgegap-colyseus`. Its description is slightly shorter, to stay under 1024 characters.
 - README, plugin and marketplace descriptions name Godot; the verified table lists the Godot run. `scan_private_refs.py` and `validate.py` also scan `.gd`, `.cfg` and `.godot` files.
 - Evals: `evals/godot-evals.json` (3 tasks, fixtures `skyarena`, `pixelparty`, `broken-skyarena`) and `evals/godot-routing-eval.json` (20 queries). `evals/routing-eval.json` now expects `edgegap-godot` for its Godot query. Results with `edgegap-godot` 0.1.0, 3 runs each:
   - Tasks: 99% with the skill vs 83% without (148/150 vs 124/150). Every delivered project, with or without the skill, loaded in Godot 4.7.2 with no script errors as a client and as a server. Sky Arena (ENet host/join) 54/54 vs 46/54: without the skill, no run turned on `flush_stdout_on_print` or handled SIGTERM as PID 1, and one had no expansion stage. Pixel Party (web, `wss`) 54/54 vs 43/54: without the skill, no run had the itch.io `allowed_cors_origins`, `flush_stdout_on_print` or an init in the Dockerfile, and two had no expansion stage. Broken Sky Arena 40/42 vs 35/42: without the skill, no run pinned `linux/amd64` or added an init, and one wrote the expansion keys inverted. The two with-skill misses: runs that kept the client preset on `export_filter="scenes"` and only listed the scripts, which an `--export-pack` showed are still left out. The skill now says to switch such presets to `"resources"` and check with `--export-pack`; that fix wasn't re-run through the task evals.
   - Routing with the whole pack: 57/60. The miss: a one-line question about the app version port protocol for ENet was answered without loading any skill, 3 times out of 3. No non-Godot or gameplay query loaded `edgegap-godot`.
+  - With `edgegap-colyseus` in the pack: the Godot routing eval is unchanged (57/60). `evals/colyseus-routing-eval.json` now expects `edgegap-godot` for its Godot high-level multiplayer query, which loaded it 3 times out of 3; the rest of that eval scored as before, except a Colyseus `allowReconnection` near-miss that loaded `edgegap-colyseus` 2 times out of 3.
+
+## 0.11.0 (2026-10-20)
+
+Adds Colyseus.
+
+- New skill `edgegap-colyseus` (0.1.0): games with a Colyseus (Node.js) server and any client, one server per match on Edgegap, from the end-to-end run of [realtime-tanks-demo](https://github.com/edgegap/realtime-tanks-demo) (Colyseus 0.17, matchmaker 3.3.2, Godot 4.5.2 with Colyseus Godot SDK 0.17.12, Unity 6000.3).
+  - Verified on Edgegap on 2026-10-20: the Colyseus matchmake HTTP request and the room WebSocket both go through one WS port with TLS Upgrade; Node and Godot desktop clients joined a direct deployment; the matchmaker matched a Three.js browser client with a Godot desktop client, then with a Unity Windows build; the server stopped itself each time.
+  - Templates from that run: a lifecycle module (self-stop through `ARBITRIUM_DELETE_URL` when nobody joins, everyone leaves, or the game ends the match; the tanks-specific round rule moved out to the room), a Dockerfile with Node as PID 1 (`node --import tsx`), a direct deploy script (tags and port name configurable), a matchmaker config with the expansion stage and local CORS origins, and dependency-free matchmaker clients for browser JS/TS (`fetch`), Unity (`UnityWebRequest` + `Awaitable`) and Godot 4 (`HTTPRequest`), plus a join-retry helper for JS.
+  - Pitfalls from the run: a fresh deployment answers 502 for a few seconds after `HOST_ASSIGNED`, so clients retry the first join; `wss` only by FQDN; page origins in `allowed_cors_origins`; playground and monitor off on Edgegap; Windows long paths for a GameMaker client.
+  - Not run: Construct 3, Defold, GameMaker, Haxe and PlayCanvas clients, Godot web, Unity WebGL, Colyseus 0.15/0.16, rooms with `allowReconnection`, the optional matched-tickets-only `onAuth`.
+- `edgegap` (0.11.0) routes Colyseus servers to `edgegap-colyseus`. Its description is slightly shorter, to stay under 1024 characters.
+- README, plugin and marketplace descriptions name Colyseus; the verified table lists the tanks run.
+- Evals: `evals/colyseus-routing-eval.json` (16 queries: 8 Colyseus hosting, 4 other skills, 4 Colyseus gameplay near-misses), and two Colyseus queries in `evals/routing-eval.json`. With the whole pack, 3 runs each: 48/48. Task evals not run yet.
 
 ## 0.10.0 (2026-10-20)
 

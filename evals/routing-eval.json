@@ -166,5 +166,13 @@
   {
     "query": "My Mirror game should move from host/client to dedicated servers on Edgegap",
     "expected_skill": "edgegap-unity"
+  },
+  {
+    "query": "Our multiplayer game's server is Colyseus on Node.js and the client is Defold. How do we host matches on Edgegap?",
+    "expected_skill": "edgegap-colyseus"
+  },
+  {
+    "query": "colyseus server on edgegap: the matchmake request works but I connect with wss://<public ip>:<port> and get a certificate error",
+    "expected_skill": "edgegap-colyseus"
   }
 ]

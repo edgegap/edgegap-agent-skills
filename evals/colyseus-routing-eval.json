@@ -1,0 +1,18 @@
+[
+  {"query": "My game server is Colyseus 0.17 (Node, TypeScript). How do I host it on Edgegap so every match gets its own server?", "expected_skill": "edgegap-colyseus"},
+  {"query": "we're on Colyseus Cloud right now and want to move to edgegap with one server per match near the players. what changes in the server?", "expected_skill": "edgegap-colyseus"},
+  {"query": "colyseus room deployed on edgegap: the browser client gets 502 on joinOrCreate for a few seconds right after the matchmaker says HOST_ASSIGNED", "expected_skill": "edgegap-colyseus"},
+  {"query": "How do I make my Colyseus server stop its Edgegap deployment when the room is empty or the match ends, so it stops billing?", "expected_skill": "edgegap-colyseus"},
+  {"query": "Unity client using the Colyseus Unity SDK, server is a Colyseus Node app. I want a Find Match button with Edgegap's matchmaker", "expected_skill": "edgegap-colyseus"},
+  {"query": "Godot 4 game with the Colyseus Godot SDK. how do the clients get a server address from the edgegap matchmaker and connect over wss?", "expected_skill": "edgegap-colyseus"},
+  {"query": "Dockerfile for a colyseus server (app.config.ts, @colyseus/tools) to push to registry.edgegap.com. which port protocol and do I need TLS?", "expected_skill": "edgegap-colyseus"},
+  {"query": "our phaser + colyseus.js game works locally on ws://localhost:2567. what do we need so players on https can connect to edgegap servers?", "expected_skill": "edgegap-colyseus"},
+  {"query": "I built a browser game in Manus and want online matchmaking with Steam login. How do I add multiplayer servers?", "expected_skill": "edgegap-manus"},
+  {"query": "I want to host my Godot 4 multiplayer shooter (Godot high-level multiplayer, ENet). I have the game but no server setup yet. Where do I start?", "expected_skill": "edgegap-godot"},
+  {"query": "Mirror host/client Unity game, want dedicated servers on edgegap and a WebGL build", "expected_skill": "edgegap-unity"},
+  {"query": "my custom Node.js websocket game server (ws library, no framework) restarts on edgegap and ignores SIGTERM. how should it shut down?", "expected_skill": "edgegap-server-design"},
+  {"query": "In Colyseus 0.17, how do I define a Schema with a MapSchema of players and sync only some fields to each client?", "expected_skill": null},
+  {"query": "colyseus allowReconnection: how long should I keep a seat and how does the client reconnect with the reconnection token?", "expected_skill": null},
+  {"query": "How do I write a Colyseus loadtest script with @colyseus/loadtest that spawns 50 bots?", "expected_skill": null},
+  {"query": "What's the difference between Colyseus onCreate, onAuth and onJoin, and where should I validate room options?", "expected_skill": null}
+]

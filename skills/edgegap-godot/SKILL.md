@@ -28,6 +28,7 @@ Use **dedicated (authoritative) servers**, not a player host, unless the develop
 
 Read, don't ask (`references/godot.md` §1 has the grep list):
 - `project.godot`: Godot version (`config/features`), autoloads, main scene, `application/run/flush_stdout_on_print`. Godot 3 (`NetworkedMultiplayerENet`) is out of scope for the templates; the Edgegap side is the same.
+- Who runs the server: a Godot client talking to a Colyseus (Node.js) server is `edgegap-colyseus`, not this skill.
 - How the game goes online: `ENetMultiplayerPeer` (UDP) or `WebSocketMultiplayerPeer` (TCP), `create_server` / `create_client`, the port, `multiplayer.multiplayer_peer =`, custom `MultiplayerAPI` branches (`set_multiplayer`). WebRTC or noray/NAT punch-through means peer-to-peer today: the server path replaces it.
 - Host assumptions: a Host button that also spawns a local player for peer 1, `multiplayer.is_server()` used as "I'm a player too", UI, camera or audio code on the server, a lobby or Start button the host presses (`references/godot.md` §3).
 - `export_presets.cfg`: existing presets, `export_filter` (`all_resources` or an explicit allowlist), custom features, any build script that writes presets.
