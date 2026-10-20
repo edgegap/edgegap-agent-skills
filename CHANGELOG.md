@@ -2,6 +2,20 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.12.0 (2026-10-20)
+
+Adds Nakama.
+
+- New skill `edgegap-nakama` (0.1.0): games with a Nakama backend, any engine. Nakama keeps accounts, matchmaking and leaderboards, and each match it forms runs on its own Edgegap server near the players, started through the [Edgegap Fleet Manager for Nakama](https://github.com/edgegap/nakama-edgegap). From the end-to-end run of [fishgame-godot](https://github.com/edgegap/fishgame-godot) (Godot 4.7.2, Nakama 3.39.0, nakama-edgegap `20d849e`).
+  - Verified on Edgegap on 2026-10-20: email sign-up, Nakama matchmaking, a deployment near the players, 5 rounds decided by the server, a leaderboard win written by the server, a player's attempt to post a win refused, and the server stopping itself.
+  - Templates: the Go module (Fleet Manager, the AfterAuthenticate hook for the game's real sign-in method, a MatchmakerMatched hook that calls the six-argument `Create` with `user_ids` metadata and returns `""`, notifications 111/112/113, an authoritative leaderboard written through an S2S `report_match_result` RPC that refuses player sessions and counts each instance once), `go.mod`/`go.sum` with nakama-edgegap pinned by pseudo-version, a Dockerfile on `nakama-pluginbuilder:3.39.0`, compose with runtime env from `.env`, and game server code for READY (with `game_server` IP and ports), batched connection events, STOP, player checks through `/v2/account` and S2S calls with the `http_key` from the event URLs: Godot 4 (from the verified run) and Node.js (a port). The Go module compiles in pluginbuilder 3.39.0; both server templates sent identical requests to a mock Nakama.
+  - Pitfalls from the run and the plugin's code: the plugin registers only the Custom auth hook, and without the right one `Create` fails for every match; the README's matchmaker sample passes no metadata, doesn't compile against two return values, returns JSON as a match ID and reads `ConnectionInfo`, which can still be nil when the READY callback runs; tags without `v` that Go can't use; `sh -x` printing the token; `NAKAMA_ACCESS_URL` must be public HTTPS (a Cloudflare quick tunnel for tests); clients must reach Nakama through the public URL so player IPs are public; registry credentials on the app version. It also documents that the plugin's `instance_create` and event RPCs accept player sessions.
+  - Not run: other auth methods than email, TypeScript/Lua Nakama modules, Heroic Cloud, the Node template on Edgegap, WebSocket game servers. Unity servers are pointed to edgegap-server-nakama-plugin-unity.
+- `edgegap` (0.12.0) routes Nakama backends to `edgegap-nakama` instead of `edgegap-deployments-api`. Its description is slightly shorter, to stay under 1024 characters.
+- `edgegap-deployments-api` (0.2.2) and `edgegap-unity` (0.1.12) send Nakama to `edgegap-nakama`.
+- README, plugin and marketplace descriptions name Nakama; the verified table lists the Fish Game run.
+- Evals: `evals/nakama-routing-eval.json` (16 queries: 8 Nakama hosting, 4 other skills, 4 Nakama questions unrelated to hosting). `evals/routing-eval.json`: the Nakama backend query now expects `edgegap-nakama`, plus two Nakama queries. With the whole pack, 3 runs each: 48/48 on the Nakama set and 9/9 on the three Nakama queries in `routing-eval.json` (57/57). Task evals not run yet.
+
 ## 0.11.0 (2026-10-20)
 
 Adds Colyseus.

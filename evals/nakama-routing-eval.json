@@ -1,0 +1,18 @@
+[
+  {"query": "Our game uses Nakama for login and matchmaking. How do we get each match running on its own Edgegap dedicated server instead of relayed through Nakama?", "expected_skill": "edgegap-nakama"},
+  {"query": "I added github.com/edgegap/nakama-edgegap to my Nakama Go module. Players get matched but nobody ever receives the server address notification. What am I missing?", "expected_skill": "edgegap-nakama"},
+  {"query": "Godot 4 game with nakama-godot, currently using NakamaMultiplayerBridge so one player hosts. I want dedicated servers on Edgegap started by the Nakama matchmaker.", "expected_skill": "edgegap-nakama"},
+  {"query": "go get github.com/edgegap/nakama-edgegap@0.4.0 fails with invalid version, and the README's OnMatchmakerMatched sample doesn't compile against nakama-common 1.46", "expected_skill": "edgegap-nakama"},
+  {"query": "We run Nakama on Heroic Cloud. Can its matchmaker spin up Edgegap game servers close to the matched players, and what does our game server have to send back?", "expected_skill": "edgegap-nakama"},
+  {"query": "every Nakama match fails with 'failed to extract client IP' when the fleet manager tries to create the Edgegap instance. players sign in with device auth", "expected_skill": "edgegap-nakama"},
+  {"query": "How should my dedicated server (spawned on Edgegap by Nakama's fleet manager) report the match winner to a Nakama leaderboard so players can't fake wins?", "expected_skill": "edgegap-nakama"},
+  {"query": "set up docker compose for Nakama 3.39 with the Edgegap fleet manager plugin locally. Edgegap servers need to call Nakama back, how do I expose it for testing?", "expected_skill": "edgegap-nakama"},
+  {"query": "We keep PlayFab matchmaking. How does a Cloud Script start an Edgegap server for each match?", "expected_skill": "edgegap-deployments-api"},
+  {"query": "I want to host my Godot 4 multiplayer shooter (Godot high-level multiplayer, ENet). I have the game but no backend or server setup yet. Where do I start?", "expected_skill": "edgegap"},
+  {"query": "Our game server is Colyseus 0.17 on Node. How do I host it on Edgegap with one server per match?", "expected_skill": "edgegap-colyseus"},
+  {"query": "Players can't connect to my Edgegap deployment: it shows Ready but UDP clients time out. No backend involved, I deploy from the dashboard.", "expected_skill": "edgegap-troubleshoot"},
+  {"query": "In Nakama's TypeScript runtime, how do I write an authoritative match handler with matchLoop and broadcast state to presences?", "expected_skill": null},
+  {"query": "How do I set up Nakama friends, groups and chat channels in my Unity game with the nakama-unity SDK?", "expected_skill": null},
+  {"query": "Nakama storage engine: how do I make a collection that only the owner can read and write, and list objects with a cursor?", "expected_skill": null},
+  {"query": "What's the right way to refresh a Nakama session token in nakama-js before it expires?", "expected_skill": null}
+]
