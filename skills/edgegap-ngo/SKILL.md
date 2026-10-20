@@ -2,7 +2,7 @@
 name: edgegap-ngo
 description: 'Netcode for GameObjects (NGO) + Edgegap: take a Unity game built on NGO to dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on an NGO project (com.unity.netcode.gameobjects, NetworkManager, UnityTransport, StartHost, ConnectionManager, Boss Room). It has NGO C# templates verified on Edgegap that add themselves at runtime, no scene edits (server start and self-stop, Find Match panel, settings asset), a Boss Room ConnectionManager adapter, port 7777 UDP app version, Dockerfile, matchmaker config, and fixes for NGO pitfalls: host-only logic, connection payloads and approval, UnityTransport needing an IP, client-only code on the server, Relay leftovers. Use when an NGO dev wants online play: "host my NGO game", "nobody should host", "replace Unity Relay or Multiplay", "Boss Room on Edgegap", "Find Match button", or is debugging NGO deployments, ports or matchmaking on Edgegap. Mirror or WebGL-first games: edgegap-unity. FishNet: edgegap-fishnet. PurrNet: edgegap-purrnet.'
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Edgegap for Netcode for GameObjects: dedicated servers + matchmaking
@@ -37,7 +37,7 @@ Then ask, in one message, only what you couldn't infer: players per match, platf
 ## Phase 1: Make the game dedicated-server ready
 
 Read `references/ngo.md`.
-1. Add the SDK: `"com.edgegap.unity-sdk": "https://github.com/edgegap/edgegap-unity-sdk.git#main"` (or a release tag, 3.5.6+) in `Packages/manifest.json`. It coexists with the older `com.edgegap.unity-servers-plugin`.
+1. Add the SDK: `"com.edgegap.unity-sdk": "https://github.com/edgegap/edgegap-unity-sdk.git"` in `Packages/manifest.json`. No `#tag`: that installs the latest SDK (3.5.6+). Never pin an exact version. It coexists with the older `com.edgegap.unity-servers-plugin`.
 2. Copy `assets/unity/*.cs`, `EdgegapSettings.cs.meta` and `link.xml` to `Assets/Edgegap/`, `assets/unity/Editor/EdgegapServerBuild.cs` to `Assets/Edgegap/Editor/`, and `assets/unity/Resources/EdgegapSettings.asset` to `Assets/Edgegap/Resources/`. Copy the `.meta` too: the asset finds its script by that GUID. Don't copy `Examples/`. If the game's scripts live in an asmdef the templates must call, reference it from an asmdef in `Assets/Edgegap/` (with `Edgegap.SDK`, `Unity.Netcode.Runtime`, `Unity.Networking.Transport`), or keep the templates in `Assembly-CSharp`, which sees auto-referenced asmdefs.
 3. **Plain NGO** (the game calls `NetworkManager` directly): keep `AutoStartServer` on; the lifecycle starts the server on `0.0.0.0` and the Edgegap internal port. Remove any headless `StartHost` the game does. **Own connection flow** (`ConnectionManager`, payloads, approval): `AutoStartServer` off, start the server through the game's flow, and swap in the Boss Room adapter (`references/ngo.md` §4).
 4. Fix host-only assumptions (`references/ngo.md` §2): `StartServer` not `StartHost`, no local player on the server, no host payload, matching build types, no Relay on the dedicated path.

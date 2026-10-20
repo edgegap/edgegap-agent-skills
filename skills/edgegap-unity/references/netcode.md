@@ -179,7 +179,7 @@ Browsers can't open UDP sockets or send ICMP pings. For a WebGL client:
   - Set it with `"tls_upgrade": true` on the WS port in `edgegap_create_app_version` (MCP 0.3.3+), or tick **TLS Upgrade** on the port in the dashboard.
 - Matchmaker config needs `allowed_cors_origins` listing every origin that serves the build (e.g. `http://localhost:8080`, `https://<user>.itch.io`, `https://html-classic.itch.zone`). Otherwise the browser blocks matchmaker calls.
 - No latency beacons: keep `UseLatencyBeacons` off and use a profile **without** a `latencies` rule. The matchmaker then places the server from player IPs.
-- SDK must be **3.5.6** (the pinned version). Versions before 3.5.5 fail the WebGL build with `CS0234` in `Runtime/Ping.cs`.
+- SDK must be **3.5.6 or newer**: install it from the git URL with no `#tag`, which gives the latest. Versions before 3.5.5 fail the WebGL build with `CS0234` in `Runtime/Ping.cs`.
 - IL2CPP stripping: include `link.xml` from `assets/unity/`.
 - Player Settings > Publishing: Compression **Gzip** with **Decompression Fallback** for hosts that don't set encoding headers (itch.io).
 - NGO WebGL path (UnityTransport WebSockets + TLS Upgrade): client `UseWebSockets = true`, `UseEncryption = true`, `SetClientSecrets(fqdn)`; server `UseWebSockets = true`, no encryption. This path has **not** been verified on Edgegap the way Mirror's has. Test it early, and suggest Mirror if it fights you.

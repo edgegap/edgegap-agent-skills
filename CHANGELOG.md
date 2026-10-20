@@ -2,6 +2,14 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.9.1 (2026-10-20)
+
+Stops pinning an exact Edgegap Unity SDK version.
+
+- `edgegap-unity` (0.1.11), `edgegap-ngo` (0.1.1), `edgegap-fishnet` (0.2.2) and `edgegap-purrnet` (0.1.2) install the SDK from `https://github.com/edgegap/edgegap-unity-sdk.git` with no `#tag`, so projects get the latest release and its fixes instead of a frozen `#3.5.6` (or `#main`). The minimum versions (3.5.5 for WebGL, 3.5.6 before Unity 2022.3) stay documented as facts, not pins.
+- README and CONTRIBUTING use the same untagged URL.
+- `edgegap` (0.9.1): pack version.
+
 ## 0.9.0 (2026-10-20)
 
 Adds Photon Fusion 2.
