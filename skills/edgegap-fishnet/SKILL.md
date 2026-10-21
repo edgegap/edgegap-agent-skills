@@ -2,7 +2,7 @@
 name: edgegap-fishnet
 description: 'FishNet (Fish-Networking) + Edgegap: take a Unity game built on FishNet to dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a FishNet project (Assets/FishNet, Tugboat, Bayou, Multipass, ServerManager, NetworkHudCanvas). It has FishNet-ready C# templates verified on Edgegap (matchmaker client, server self-stop, scene-change persistence), the Start On Headless and WebGL/Bayou wss setup, port 7770 app version, Dockerfile, matchmaker config and fixes for known pitfalls, including the SDK JSON bug on Unity before 2022.3. Use when a FishNet dev wants online play: "host my FishNet game", "players should not host", "works on LAN but not online", "Find Match button", "FishNet WebGL on Edgegap", moving off the old FishNet Edgegap samples that call the API from the client, or debugging FishNet deployments, ports or matchmaking. Other Unity netcodes (NGO, Mirror): edgegap-unity.'
 metadata:
-  version: "0.2.2"
+  version: "0.2.3"
 ---
 
 # Edgegap for FishNet: dedicated servers + matchmaking
@@ -103,6 +103,6 @@ Hand-off: what was built and where, app/version/matchmaker names, how to ship a 
 - `references/troubleshooting.md`: the SDK version Unity before 2022.3 needs, and symptom → fix tables.
 - `assets/unity/`: FishNet-ready `EdgegapMatchmakingClient`, `EdgegapServerLifecycle`, `EdgegapPersistence`, DTOs, `link.xml`; `Editor/` build and scene tools; `Examples/MatchmakingSystem.cs` menu bridge. `assets/docker/`: Dockerfile + .dockerignore. `assets/matchmaker/`: config template.
 
-Related skills in this pack, if installed: `edgegap-unity` for NGO or Mirror projects, `edgegap-deployments-api` when the studio keeps its own backend or matchmaker, `edgegap-launch` before going live.
+Related skills in this pack, if installed: `edgegap-unity` for NGO or Mirror projects, `edgegap-playfab` when the studio keeps PlayFab Matchmaking (its sample is a FishNet game), `edgegap-deployments-api` when it keeps another backend or matchmaker, `edgegap-launch` before going live.
 
 Sources of truth if something here looks outdated: https://docs.edgegap.com/unity, https://github.com/edgegap/edgegap-unity-sdk (releases), https://fish-networking.gitbook.io/docs, and the sample https://github.com/edgegap/netcode-sample-unity-fishnet.

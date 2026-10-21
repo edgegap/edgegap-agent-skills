@@ -2,12 +2,12 @@
 name: edgegap
 description: 'Start here for hosting a game on Edgegap (dedicated game servers + matchmaking) when the engine is not Unity, Unreal or Godot, is unknown, or the question is about the platform itself. Use when someone wants to host or deploy a game server, wants a single-player or co-op game to be always online or harder to crack, decompile or pirate, asks how players will connect to matches, wants dedicated servers for a web/Node or custom-engine game, compares hosting options, or asks what Edgegap apps, versions, deployments, fleets or matchmakers are, even if they never say "hosting". It picks the server shape (per match, per player session, or persistent), explains the vocabulary and the Edgegap MCP safety rules, and routes to the right edgegap-* skill. For a Unity project, load edgegap-unity instead (NGO: edgegap-ngo, FishNet: edgegap-fishnet, PurrNet: edgegap-purrnet, Fusion: edgegap-fusion); Unreal: edgegap-unreal; Godot 4: edgegap-godot; Colyseus: edgegap-colyseus; Nakama: edgegap-nakama; Manus: edgegap-manus.'
 metadata:
-  version: "0.13.1"
+  version: "0.14.0"
 ---
 
 # Edgegap
 
-Pack version: 0.13.1
+Pack version: 0.14.0
 
 Edgegap runs dedicated game servers. You push a **Linux container image** of your game server, register it as an **app version**, and ask for a **deployment** near a group of players. Edgegap picks the location with the best ping for that group, starts the container in seconds, and returns a URL (`<id>.pr.edgegap.net`), a public IP, and an external port per internal port. Players connect. The match ends, the server stops, billing stops.
 
@@ -55,13 +55,14 @@ For a Godot 4 game whose server is Godot itself (high-level multiplayer with ENe
 | Voice chat (EOS Voice) in an Unreal game hosted on Edgegap | `edgegap-eos-voice` |
 | A game whose server is Colyseus (Node.js), with any client: browser JS/TS, Unity, Godot, Defold, GameMaker... | `edgegap-colyseus` |
 | A game with a Nakama backend (any engine): Nakama's matchmaker starts one Edgegap server per match through the Edgegap Fleet Manager for Nakama | `edgegap-nakama` |
+| A game that keeps PlayFab for players and Matchmaking (or leaves PlayFab Multiplayer Servers): PlayFab Azure Functions start one Edgegap server per match | `edgegap-playfab` |
 | A browser game built with Manus (manus.im): Steam sign-in, backend matchmaking, WebSocket server | `edgegap-manus` |
 | Write backend code that starts, finds or stops servers, or receives webhooks | `edgegap-deployments-api` |
 | Write or fix a Dockerfile, push to a registry, pick an image tag | `edgegap-containerize` |
 | Test a server image before spending money | `edgegap-local-testing` |
 | Go live, plan capacity, roll out a new build, control cost | `edgegap-launch` |
 | Find out why a deployment fails, restarts, or nobody can connect | `edgegap-troubleshoot` |
-| Keep PlayFab, Unity Matchmaker or EOS lobbies and host on Edgegap | `edgegap-deployments-api` (their backend calls the Deploy API) |
+| Keep Unity Matchmaker or EOS lobbies and host on Edgegap | `edgegap-deployments-api` (their backend calls the Deploy API) |
 
 ## Vocabulary
 

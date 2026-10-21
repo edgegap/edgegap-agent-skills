@@ -2,6 +2,22 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.14.0 (2026-10-21)
+
+Adds PlayFab.
+
+- New skill `edgegap-playfab` (0.1.0): games that keep PlayFab for players, login and Matchmaking, any engine, including studios leaving PlayFab Multiplayer Servers. The queue runs with server allocation off. A rule on `playfab.matchmaking.match_found` runs the Azure Function `StartEdgegapDeployment`, which deploys near the matched players with `POST /v2/deployments` and ready/error webhooks and returns in about 1 to 2 s. Edgegap then calls `EdgegapDeploymentReady`, which re-reads the deployment and the match and writes `{matchId, host, port}` to each player's read-only data.
+  - Verified on Edgegap on 2026-10-21 with [sample-playfab-matchmaker-fishnet](https://github.com/edgegap/sample-playfab-matchmaker-fishnet) (Unity 2021.3.45f2, FishNet 3.11 Tugboat, Azure Functions Flex Consumption on Node 22): two clients matched, the rule fired, one server near them, the address in player data about 8 s after the call, `2 player(s) connected`, and self-stop 48 s after they quit (about 2 minutes when nobody joins).
+  - Ships the two functions (Node, no SDKs), `deploy-functions.sh` (deploys and sets every app setting without printing secrets), `playfab-setup.mjs` (queue with allocation off, keeping an existing queue's teams and rules; function registration), a dependency-free Unity client (`UnityWebRequest` + `JsonUtility`), a server lifecycle with self-stop, a build script and a Dockerfile, plus the REST contract for Unreal and Godot clients.
+  - Pitfalls from the run: new titles block `LoginWithCustomID` player creation (`PlayerCreationDisabled`). The rule's HTTP call times out after 10 s, so nothing waits for the server. `GetMatchmakingTicket` allows 10 calls per minute per ticket. `match_found` fires for every queue (`EDGEGAP_QUEUES` filters). A manual call while the rule exists starts a second server. Windows `az login` can pick another account with the same email. Legacy JavaScript CloudScript is replaced by Azure Functions, and the title secret never goes on the game server.
+  - Not run: the Unity client in WebGL, Unreal and Godot clients, latency queue rules, more than 2 players, C# functions.
+- `edgegap` (0.14.0) routes PlayFab to `edgegap-playfab` instead of `edgegap-deployments-api`. `edgegap-deployments-api` (0.2.3) no longer claims PlayFab, and `edgegap-unity` (0.1.13) and `edgegap-fishnet` (0.2.3) point PlayFab projects to the new skill.
+- README, plugin and marketplace descriptions name PlayFab; the verified table lists the SpaceEdge run.
+- Evals: `evals/playfab-routing-eval.json` (18 queries: 10 PlayFab hosting, 4 other skills, 4 PlayFab questions unrelated to hosting): 54/54 with the whole pack, 3 runs each.
+  - Task evals: `evals/playfab-evals.json` (3 tasks, fixtures `mps-skirmish`, `driftclash` and `broken-playfab-bridge`): 100% with the skill vs 74% without (38/38 vs 28/38; 15/15 vs 11/15, 12/12 vs 9/12, 11/11 vs 8/11), one run per configuration, every delivered JavaScript file passes `node --check`.
+  - Without the skill, agents built working backends but called by clients rather than by the PlayFab rule. They still read the wrong event path in the broken bridge, kept client-writable `UpdateUserData` and left the title secret on the game server without saying to rotate it, used `/v1/deploy`, and didn't know about the `LoginWithCustomID` setting. Several assertions check the skill's architecture (rule plus Azure Functions), which favours it.
+  - Gaps found by the with-skill runs and fixed before release: the `match_found` filter per queue (`EDGEGAP_QUEUES`), and `playfab-setup.mjs` keeping an existing queue's teams and rules instead of replacing them. Both were re-run on the live setup.
+
 ## 0.13.1 (2026-10-21)
 
 Task evals for Colyseus.

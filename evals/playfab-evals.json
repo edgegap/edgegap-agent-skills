@@ -1,0 +1,71 @@
+{
+  "skill_name": "edgegap-playfab",
+  "constraints": "Environment constraints for this eval: you cannot run Unity, Godot, Docker, Node, the Azure CLI or any Edgegap MCP tool, you have no network access to PlayFab, Azure or Edgegap, and you have no account access. Make every code and config change directly in the project copy, and write HANDOFF.md in the outputs folder with the exact remaining steps (commands, Game Manager and portal clicks, what to verify) a developer must do, in order. Don't ask questions; make reasonable assumptions and state them in HANDOFF.md.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "mps-skirmish-to-edgegap",
+      "prompt": "Skirmish is in the project folder: Unity NGO 2v2 brawler, PlayFab for login and matchmaking, servers on PlayFab Multiplayer Servers with the GSDK. MPS is too expensive for us. Keep PlayFab login and matchmaking (same queue, same skill rule) but run every match on an Edgegap dedicated server near the players. Do the whole integration.",
+      "expected_output": "Queue keeps teams + skill rule with server allocation off and no build ID; a backend triggered by the match_found rule (Azure Functions, not legacy CloudScript) deploys on Edgegap with player locations and returns fast (webhook, no waiting); the server address reaches players through read-only player data (or another channel clients can't forge); the client reads it instead of GetMatch ServerDetails, polling the ticket no faster than every 6 s; the server loses the GSDK, starts NGO on 7777 headless and stops its own deployment via ARBITRIUM_DELETE_URL; no PlayFab secret or Edgegap token in the client or server; app version UDP 7777; HANDOFF with rule creation and the LoginWithCustomID player-creation setting.",
+      "files": ["fixtures/mps-skirmish"],
+      "assertions": [
+        "Keeps PlayFab login and PlayFab Matchmaking (does not replace them with Edgegap's matchmaker) and keeps the queue's teams and skill rule",
+        "The queue ends up with ServerAllocationEnabled false and no BuildId (or HANDOFF says to change exactly that)",
+        "The trigger is the PlayFab rule on playfab.matchmaking.match_found executing an Azure Function (CloudScript using Azure Functions), not legacy JavaScript CloudScript and not a client-side call",
+        "The backend calls Edgegap POST /v2/deployments (application, version, users) with the matched players' locations or IPs",
+        "The function that runs on match_found does not wait for the server to be ready (it returns quickly and uses webhook_on_ready or another async path), because PlayFab's rule call times out after about 10 s",
+        "The server address is delivered through something players cannot write (read-only/internal player data, title data, or a backend endpoint), not client-writable UpdateUserData",
+        "The address delivery is verified (the code re-reads the deployment from the Edgegap API or otherwise doesn't trust an unauthenticated webhook body)",
+        "The client no longer reads GetMatch ServerDetails for the address and connects NGO UnityTransport to the delivered host and external port",
+        "Client polls GetMatchmakingTicket no faster than every 6 seconds",
+        "The server no longer uses the GSDK (PlayFabMultiplayerAgentAPI calls removed) and starts the NGO server headless on a fixed port",
+        "The server stops its own Edgegap deployment (ARBITRIUM_DELETE_URL + ARBITRIUM_DELETE_TOKEN) when the match is over or empty",
+        "No PlayFab secret key and no Edgegap API token in client code, the server image or committed files; secrets live in Function App settings",
+        "Edgegap app version uses UDP on the server's port (7777)",
+        "HANDOFF.md tells the developer to create the match_found rule in Game Manager and register the function",
+        "HANDOFF.md mentions the PlayFab title setting that blocks LoginWithCustomID player creation (Disable player creation using Client/LoginWithCustomId) or confirms existing accounts make it irrelevant"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "driftclash-godot-playfab",
+      "prompt": "Drift Clash (Godot 4.4, ENet, project folder) logs players into PlayFab over REST. Right now people type a server IP. I want a Race button that queues 4 players in PlayFab Matchmaking and puts them on an Edgegap server near them automatically. Set it all up, client and backend.",
+      "expected_output": "PlayFab queue of 4 with server allocation off; Azure Functions on the match_found rule deploy on Edgegap near the players with a ready webhook and write host/port to read-only player data; GDScript client creates a ticket with the entity from login, polls every 6 s, polls GetUserReadOnlyData, checks the match ID, connects ENet to host + external port; dedicated server keeps --server/dedicated_server mode on 9050 and self-stops; Dockerfile for the Linux server export; app version UDP 9050; no secrets in the game.",
+      "files": ["fixtures/driftclash"],
+      "assertions": [
+        "Uses PlayFab Matchmaking (CreateMatchmakingTicket/GetMatchmakingTicket) with a queue of 4 and server allocation off",
+        "The ticket's Creator entity comes from the login's EntityToken.Entity, and ticket calls send X-EntityToken",
+        "Polls GetMatchmakingTicket no faster than every 6 seconds",
+        "A backend triggered by the playfab.matchmaking.match_found rule (Azure Functions) deploys on Edgegap with POST /v2/deployments and the players' locations or IPs",
+        "The rule-triggered function returns without waiting for the server to be ready (webhook or other async path)",
+        "The server address reaches the client through data players cannot write (read-only player data or similar) and the client ignores data from an earlier match (checks the match ID)",
+        "The Godot client connects ENetMultiplayerPeer to the delivered host and the external port (not a hard-coded 9050)",
+        "The dedicated server still starts headless on 9050 (dedicated_server feature or --server) and stops its own Edgegap deployment via ARBITRIUM_DELETE_URL/ARBITRIUM_DELETE_TOKEN when empty or finished",
+        "A Dockerfile (or explicit steps) runs the Linux dedicated server export; the app version uses UDP 9050",
+        "No PlayFab secret key or Edgegap API token in the Godot project; they live in the backend's settings",
+        "Does not keep the manual IP field as the main path for online play",
+        "HANDOFF.md covers creating the queue, the Azure Function App and its settings, registering the function, and creating the match_found rule"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "broken-playfab-bridge",
+      "prompt": "Our PlayFab to Edgegap bridge for Rift Rumble doesn't work: players get matched but never get a server. The project, the Azure Function and our playtest logs are in the folder. Find out why and fix everything that's wrong, not just the first bug.",
+      "expected_output": "Finds and fixes: wrong payload path (PlayStreamEvent.Payload); waiting for the server inside the rule (10 s timeout) → deploy + ready webhook function; double 'token' prefix; port name 'Game Port' vs 'gameport'; client-writable UpdateUserData → read-only data (client reads GetUserReadOnlyData); hard-coded New York location → players' locations; client polls the ticket every 1 s (TooManyRequests) → 6 s; PlayFab secret on the server app version + env printed by Dockerfile → removed, rotate the key; server address webhook verified.",
+      "files": ["fixtures/broken-playfab-bridge"],
+      "assertions": [
+        "Fixes the payload path: the rule's context has PlayStreamEvent.Payload.MatchId/QueueName (not PlayStreamEventEnvelope.EventData)",
+        "Removes the wait-for-ready loop from the rule-triggered function (PlayFab's ~10 s limit) and delivers the address asynchronously (webhook_on_ready to a second function, or equivalent)",
+        "Fixes the Authorization header so it is 'token <uuid>' once (the setting already contains 'token ')",
+        "Fixes the port lookup to the app version's port name 'gameport' (not 'Game Port')",
+        "Writes the address to read-only player data (UpdateUserReadOnlyData) and the client reads GetUserReadOnlyData, so players can't forge it",
+        "Replaces the hard-coded New York coordinates with the matched players' locations or IPs",
+        "Slows client ticket polling to no faster than every 6 seconds (TooManyRequests in the log)",
+        "Removes PLAYFAB_SECRET_KEY from the Edgegap app version and the 'env;' from the Dockerfile CMD, and says to rotate the secret key",
+        "If a webhook is used, its handler verifies the deployment with the Edgegap API instead of trusting the webhook body",
+        "The client ignores stored server data from an earlier match (checks the match ID)",
+        "HANDOFF.md lists how to redeploy the functions, update settings, and verify with a two-player test"
+      ]
+    }
+  ]
+}

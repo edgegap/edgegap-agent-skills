@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/main_menu.gd" id="1"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+script = ExtResource("1")
+
+[node name="Status" type="Label" parent="."]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 600.0
+offset_bottom = 70.0
+
+[node name="Address" type="LineEdit" parent="."]
+offset_left = 40.0
+offset_top = 90.0
+offset_right = 300.0
+offset_bottom = 120.0
+placeholder_text = "Server IP"
+
+[node name="RaceButton" type="Button" parent="."]
+offset_left = 40.0
+offset_top = 140.0
+offset_right = 200.0
+offset_bottom = 180.0
+text = "Race"

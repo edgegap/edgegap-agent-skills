@@ -1,0 +1,13 @@
+; Engine configuration file.
+config_version=5
+
+[application]
+
+config/name="Drift Clash"
+run/main_scene="res://scenes/main_menu.tscn"
+config/features=PackedStringArray("4.4")
+
+[autoload]
+
+PlayFab="*res://scripts/playfab.gd"
+Network="*res://scripts/network.gd"

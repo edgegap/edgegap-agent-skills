@@ -1,0 +1,6 @@
+2026-10-18T19:02:11.412Z [Information] Executing 'Functions.StartEdgegapDeployment' (Reason='This function was programmatically called via the host APIs.', Id=5b2c0e3a-7d41-4f0e-9a6c-3e1f2d8b9c10)
+2026-10-18T19:02:11.590Z [Information] StartEdgegapDeployment: MatchId and QueueName are required
+2026-10-18T19:02:11.592Z [Information] Executed 'Functions.StartEdgegapDeployment' (Succeeded, Id=5b2c0e3a-7d41-4f0e-9a6c-3e1f2d8b9c10, Duration=180ms)
+2026-10-18T19:09:47.003Z [Information] Executing 'Functions.StartEdgegapDeployment' (Reason='This function was programmatically called via the host APIs.', Id=a8e4f1c2-0b37-4d2a-8f15-6c9d7e2a1b44)
+2026-10-18T19:09:47.151Z [Information] StartEdgegapDeployment: MatchId and QueueName are required
+2026-10-18T19:09:47.153Z [Information] Executed 'Functions.StartEdgegapDeployment' (Succeeded, Id=a8e4f1c2-0b37-4d2a-8f15-6c9d7e2a1b44, Duration=150ms)
