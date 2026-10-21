@@ -21,7 +21,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SKIP_DIRS = {".git", "node_modules", "__pycache__"}
 SKIP_FILES = {"scripts/scan_private_refs.py"}
-TEXT_SUFFIXES = {".md", ".json", ".cs", ".txt", ".asset", ".yml", ".yaml", ".py", ".sh", ""}
+TEXT_SUFFIXES = {".md", ".json", ".cs", ".txt", ".asset", ".yml", ".yaml", ".py", ".sh", ".gd", ".cfg", ".tscn", ".godot", ""}
 
 ALLOWED_EMAILS = {"noreply@anthropic.com", "info@edgegap.com", "support@edgegap.com"}
 
@@ -35,6 +35,7 @@ ALLOWED = [
     ("om-p7q2w9z4x1.edgegap.net", "fictional matchmaker in the broken-orbitbrawl eval fixture"),
     ("om-rr7k2pq9xd.edgegap.net", "fictional matchmaker in the broken-rocketrumble eval fixture"),
     ("VITE_MM_TOKEN=3c9b7e1d-fake-4a6b-9c1d-matchmaker000", "fake matchmaker token in the broken-rocketrumble eval fixture"),
+    ("om-r4t8y2u6i0.edgegap.net", "fictional matchmaker in the broken-skyarena eval fixture"),
     ('Token = "PASTE_MATCHMAKER_AUTH_TOKEN', "placeholder in the broken-kartclash eval fixture"),
     ("<id>.edgegap.net", "placeholder"),
     ("dGhlIHNhbXBsZSBub25jZQ==", "RFC 6455 sample WebSocket key"),

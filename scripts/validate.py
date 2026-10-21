@@ -77,7 +77,7 @@ def check_manifests() -> None:
 def check_secrets() -> None:
     uuid = re.compile(r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b")
     for path in ROOT.rglob("*"):
-        if path.is_file() and ".git" not in path.parts and path.suffix in {".md", ".json", ".cs", ".txt", ".asset", ""}:
+        if path.is_file() and ".git" not in path.parts and path.suffix in {".md", ".json", ".cs", ".txt", ".asset", ".gd", ".cfg", ".godot", ""}:
             for hit in uuid.findall(path.read_text(encoding="utf-8", errors="ignore")):
                 if not hit.startswith("xxxxxxxx"):
                     errors.append(f"{path.relative_to(ROOT)}: looks like a real token/UUID ({hit[:8]}...)")

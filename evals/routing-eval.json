@@ -5,7 +5,7 @@
   },
   {
     "query": "I want to host my Godot 4 multiplayer shooter. I have the game but no server setup yet. Where do I start?",
-    "expected_skill": "edgegap"
+    "expected_skill": "edgegap-godot"
   },
   {
     "query": "I'm building a turn-based word game where players make a move every few hours. How should I host the multiplayer part?",
@@ -41,7 +41,7 @@
   },
   {
     "query": "Our Nakama backend forms matches. Write the TypeScript that starts an Edgegap server for each match and gives players the address.",
-    "expected_skill": "edgegap-deployments-api"
+    "expected_skill": "edgegap-nakama"
   },
   {
     "query": "We keep Unity Matchmaker (UGS). How do I make the Cloud Code allocator deploy Edgegap servers?",
@@ -174,5 +174,13 @@
   {
     "query": "colyseus server on edgegap: the matchmake request works but I connect with wss://<public ip>:<port> and get a certificate error",
     "expected_skill": "edgegap-colyseus"
+  },
+  {
+    "query": "We use Nakama for accounts and the matchmaker, and our Unity game has a dedicated server build. How does Nakama start an Edgegap server per match?",
+    "expected_skill": "edgegap-nakama"
+  },
+  {
+    "query": "nakama-edgegap fleet manager: my Godot server sends READY but Nakama logs 'instance is ready but has no address'",
+    "expected_skill": "edgegap-nakama"
   }
 ]

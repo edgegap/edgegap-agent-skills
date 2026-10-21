@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16.2-alpine
+    environment:
+      - POSTGRES_DB=nakama
+      - POSTGRES_PASSWORD=localdb
+    volumes:
+      - data:/var/lib/postgresql/data
+  nakama:
+    build: .
+    depends_on: [postgres]
+    env_file: .env
+    entrypoint:
+      - "/bin/sh"
+      - "-ecx"
+      - >
+        /nakama/nakama migrate up --database.address postgres:localdb@postgres:5432/nakama &&
+        exec /nakama/nakama --name nakama1
+        --database.address postgres:localdb@postgres:5432/nakama
+        --runtime.http_key "$${NAKAMA_HTTP_KEY}"
+        --runtime.env "EDGEGAP_API_URL=https://api.edgegap.com"
+        --runtime.env "EDGEGAP_API_TOKEN=$${EDGEGAP_API_TOKEN}"
+        --runtime.env "EDGEGAP_APPLICATION=$${EDGEGAP_APPLICATION}"
+        --runtime.env "INITIAL_EDGEGAP_VERSION=$${INITIAL_EDGEGAP_VERSION}"
+        --runtime.env "EDGEGAP_PORT_NAME=$${EDGEGAP_PORT_NAME}"
+        --runtime.env "NAKAMA_ACCESS_URL=$${NAKAMA_ACCESS_URL}"
+    ports: ["7349:7349", "7350:7350", "7351:7351"]
+volumes:
+  data:

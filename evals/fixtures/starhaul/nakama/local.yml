@@ -1,0 +1,5 @@
+console:
+  username: admin
+  password: change-me
+runtime:
+  js_entrypoint: "index.js"

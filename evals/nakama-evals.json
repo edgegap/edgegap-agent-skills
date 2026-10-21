@@ -1,0 +1,101 @@
+{
+  "skill_name": "edgegap-nakama",
+  "constraints": "Environment constraints for this eval: you cannot run Docker, Nakama, Go, Godot, Node or any Edgegap MCP tool, you have no network access to Edgegap or Nakama, and you have no Edgegap account access. Make every code and config change directly in the project copy, and write HANDOFF.md in the outputs folder with the exact remaining steps (commands, dashboard clicks, what to verify) a developer must do, in order. Don't ask questions; make reasonable assumptions and state them in HANDOFF.md.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "reefrush-relayed-to-dedicated",
+      "prompt": "Reef Rush is in the project folder: Godot 4 brawler, Nakama for device login + matchmaking, matches are relayed through Nakama and the first player hosts. I want to keep Nakama but have every match run on an Edgegap dedicated server near the players, with the server deciding the winner and the wins leaderboard something players can't cheat. Set it up.",
+      "expected_output": "Go module with the Edgegap Fleet Manager, AfterAuthenticateDevice hook, MatchmakerMatched hook (6-arg Create with user_ids metadata, returns \"\"), notifications 111/112/113, authoritative leaderboard + S2S result RPC that refuses player sessions; Godot dedicated server mode that sends READY with game_server metadata, connection events, STOP, checks tokens via /v2/account; client handles notifications and connects to the server; go.mod pins nakama-edgegap by pseudo-version; compose with runtime env from .env and no sh -x; public HTTPS NAKAMA_ACCESS_URL; UDP app version; registry credentials on the version.",
+      "files": [
+        "fixtures/reefrush"
+      ],
+      "assertions": [
+        "Does not recommend or keep relays / host-client / player-hosted matches for online play",
+        "Nakama Go module creates the Edgegap fleet manager (fleetmanager.NewEdgegapFleetManager) and registers it with initializer.RegisterFleetManager",
+        "Registers the AfterAuthenticate hook for device auth (RegisterAfterAuthenticateDevice with fleetmanager.OnAuthenticateUpdateDevice), matching the game's sign-in, not only Custom",
+        "MatchmakerMatched hook calls nk.GetFleetManager().Create with 6 arguments (ctx, max players, user IDs, latencies, metadata, callback), handling both return values, and passes the matched user IDs in the metadata",
+        "MatchmakerMatched hook returns an empty match ID (\"\") so clients aren't sent to a Nakama match",
+        "The create callback notifies players with the server address on success (code 111 or a documented equivalent) and with failure codes on timeout/error, and the client handles those codes",
+        "The callback doesn't depend only on instanceInfo.ConnectionInfo (nil-safe, falls back to address data the server sent with READY)",
+        "Game server sends READY to NAKAMA_INSTANCE_EVENT_URL with its public IP and external port (game_server / ARBITRIUM_PUBLIC_IP + ARBITRIUM_PORTS_MAPPING) in the metadata",
+        "Game server sends connection events (full list of connected Nakama user IDs) to NAKAMA_CONNECTION_EVENT_URL",
+        "Game server sends STOP to NAKAMA_INSTANCE_EVENT_URL at match end and when empty / nobody joins",
+        "Game server verifies each player's Nakama session token with GET /v2/account and rejects users not in the instance's user_ids",
+        "Wins leaderboard is authoritative and written only by the server through an S2S RPC (http_key) that rejects calls carrying a player session; the client no longer writes it",
+        "The result RPC counts each instance's result once (idempotent per instance ID)",
+        "Server reuses the http_key from the injected NAKAMA_* URLs (or another server-only path) rather than baking the key into the image or app version",
+        "go.mod pins github.com/edgegap/nakama-edgegap by commit pseudo-version (not @0.4.0 / v0.4.0)",
+        "Nakama compose passes the Edgegap settings with --runtime.env from a git-ignored .env, and the entrypoint does not use sh -x",
+        "NAKAMA_ACCESS_URL is a public HTTPS URL (real host or tunnel), not localhost; HANDOFF explains why",
+        "Client points at Nakama's public URL (or HANDOFF says to) so stored player IPs are public",
+        "App version port is UDP on the server's ENet port, name matching EDGEGAP_PORT_NAME",
+        "HANDOFF tells the developer to add the registry credentials to the Edgegap app version",
+        "No Edgegap API token in client or game server code; the token lives only in Nakama's runtime env",
+        "Delivered Nakama module compiles with heroiclabs/nakama-pluginbuilder:3.39.0 (checked by docker build)"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "starhaul-node-server-steam",
+      "prompt": "starhaul is in the folder. nakama (typescript module) does steam login + matchmaking, and we wrote a node websocket sim server that's meant to replace the client that currently runs the sim. we want nakama to spin up our node server on edgegap for each matched group, close to them, players connect to it, and the run's salvage total recorded server side. desktop electron clients. wire it all up.",
+      "expected_output": "Adds a Go module next to the TS module (Fleet Manager is Go) and moves the matchmaker hook to Go; AfterAuthenticateSteam hook; 6-arg Create with user_ids metadata returning \"\"; Node server implements READY with game_server, batched connection events, STOP, /v2/account token check, S2S result RPC with the injected http_key; authoritative leaderboard written by the server; client handles notifications and connects to the Node server; WS app version (TLS upgrade optional for desktop); compose/.env; public NAKAMA_ACCESS_URL; registry credentials.",
+      "files": [
+        "fixtures/starhaul"
+      ],
+      "assertions": [
+        "Recognises the Fleet Manager is a Go package and adds a Go module (with RegisterFleetManager) alongside or instead of the TypeScript module",
+        "The MatchmakerMatched hook is registered in exactly one runtime (the TS registerMatchmakerMatched / salvage_match relay is removed or no longer used for matchmaking)",
+        "Registers the AfterAuthenticate hook for Steam (RegisterAfterAuthenticateSteam with fleetmanager.OnAuthenticateUpdateSteam)",
+        "MatchmakerMatched calls Create with 6 arguments, handles both return values, passes matched user IDs in metadata, and returns \"\"",
+        "Clients get the server address through a Nakama notification (111 or equivalent) instead of socket.joinMatch, and handle failure notifications",
+        "Node server sends READY with its public IP and external port (game_server metadata) once listening",
+        "Node server sends batched connection events with the full list of Nakama user IDs",
+        "Node server sends STOP when the run is over and when empty / nobody joins, and exits after a grace period",
+        "Node server requires each client to present its Nakama session token and verifies it with GET /v2/account, rejecting users not in user_ids",
+        "Salvage leaderboard is authoritative and written by the server through an S2S RPC that refuses player sessions; the client's writeLeaderboardRecord is removed",
+        "Server calls the S2S RPC using the http_key from the injected NAKAMA_* URLs (no separate key baked into the image or app version)",
+        "go.mod pins nakama-edgegap by commit pseudo-version",
+        "Nakama Docker image builds the Go plugin with nakama-pluginbuilder matching the Nakama version and still includes the JS bundle if TS code is kept",
+        "Compose passes Edgegap settings via --runtime.env from a git-ignored .env; no sh -x in the entrypoint",
+        "NAKAMA_ACCESS_URL is a public HTTPS URL, not localhost",
+        "Client connects to Nakama through the public URL (or HANDOFF says to), not 127.0.0.1",
+        "App version port protocol fits the ws server (WS, or TCP), internal port 9100, name matching EDGEGAP_PORT_NAME; client connects to the external port",
+        "Server Dockerfile runs Node as PID 1 (exec form) and HANDOFF uses --platform linux/amd64 with a unique tag",
+        "HANDOFF tells the developer to add the registry credentials to the Edgegap app version",
+        "No Edgegap API token in client or server code",
+        "Delivered Nakama Go module compiles with heroiclabs/nakama-pluginbuilder:3.39.0 (checked by docker build)"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "broken-tidewars-debug",
+      "prompt": "our nakama + edgegap setup for tidewars is falling apart, notes and logs are in EDGEGAP-NOTES.md and logs/. nakama image won't rebuild, players get 'Unable to start a game server', deployments failed when they did get created, nakama crashed once, our api token is in the logs, servers never stop, and the leaderboard is full of fake wins. find and fix everything you can.",
+      "expected_output": "Pins nakama-edgegap by pseudo-version; registers AfterAuthenticateEmail (client uses email); fixes the README-copied hook (6-arg Create with user_ids metadata, return \"\", nil-safe ConnectionInfo with game_server fallback); sh -ec, rotate token and http_key, .env out of the image; public HTTPS NAKAMA_ACCESS_URL and clients on the public URL (private 172.18 IP in logs); registry credentials on the app version; server READY with game_server, STOP, real user IDs in connection events, /v2/account token check, no logging of the event URL; authoritative leaderboard with S2S result RPC; lower max duration.",
+      "files": [
+        "fixtures/broken-tidewars"
+      ],
+      "assertions": [
+        "Explains the build failure (nakama-edgegap tags lack the v prefix) and pins the module by commit pseudo-version",
+        "Explains the 'Unable to start a game server' failures: no AfterAuthenticate hook for email (only Custom), so no PlayerIp and Create fails; registers RegisterAfterAuthenticateEmail and notes players must sign in again",
+        "Explains the crash as the callback dereferencing a nil instanceInfo.ConnectionInfo and makes it nil-safe (falls back to READY game_server metadata)",
+        "MatchmakerMatched returns \"\" instead of a JSON reply, and passes the matched user IDs in Create's metadata",
+        "Explains the failed deployments as missing registry credentials on the app version and tells the developer to add them",
+        "Explains that localhost NAKAMA_ACCESS_URL makes Edgegap webhooks and servers unable to call Nakama; sets/asks for a public HTTPS URL",
+        "Notes the private player IP (172.18.0.1) in the log and makes clients use Nakama's public URL",
+        "Removes sh -x from the compose entrypoint and tells the developer to rotate the Edgegap API token and the http_key",
+        "Stops copying .env into the Nakama image (and keeps .env out of git/docker builds)",
+        "Server sends READY with game_server metadata (public IP + ports mapping), not a bare READY",
+        "Server sends STOP via NAKAMA_INSTANCE_EVENT_URL at match end / when empty instead of only quitting, with a fallback quit",
+        "Connection events send the full list of Nakama user IDs (not ENet peer IDs), batched",
+        "Server verifies players' Nakama session tokens with /v2/account and rejects users not matched to the instance",
+        "Server no longer logs the NAKAMA_* event URLs (they carry the http_key)",
+        "Leaderboard made authoritative and written by the server through an S2S RPC that refuses player sessions, counting each instance once; client submit_win removed; HANDOFF covers cleaning the fake records",
+        "Notes that LeaderboardCreate won't change an existing tidewars_wins leaderboard to authoritative, and deletes/recreates it or uses a new ID",
+        "Suggests lowering the 24 h max duration on the app version",
+        "HANDOFF lists the remaining steps in order",
+        "Delivered Nakama module compiles with heroiclabs/nakama-pluginbuilder:3.39.0 (checked by docker build)"
+      ]
+    }
+  ]
+}
