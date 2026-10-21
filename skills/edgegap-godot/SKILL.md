@@ -2,7 +2,7 @@
 name: edgegap-godot
 description: 'Godot 4 + Edgegap: take a Godot multiplayer game (high-level multiplayer: MultiplayerAPI, @rpc, ENetMultiplayerPeer, WebSocketMultiplayerPeer, MultiplayerSpawner, netfox) to dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a Godot project (project.godot, .gd, .tscn, export_presets.cfg). It has tested GDScript templates (a server lifecycle autoload that waits for the matched players and stops its own deployment, a matchmaker client and Find Match button), the headless Linux dedicated server export, Dockerfile, app version ports (UDP for ENet, WS + TLS Upgrade for web and wss), matchmaker config, and fixes for Godot pitfalls: empty server logs, export allowlists that drop new scripts, SIGTERM ignored in containers, join validation that silently blocks matched players. Use when a Godot dev wants online play: "host my Godot game", "nobody should host", "Find Match button", "Godot web multiplayer", or is debugging Godot deployments, ports or matchmaking on Edgegap.'
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Edgegap for Godot 4: dedicated servers + matchmaking
@@ -29,6 +29,7 @@ Use **dedicated (authoritative) servers**, not a player host, unless the develop
 Read, don't ask (`references/godot.md` §1 has the grep list):
 - `project.godot`: Godot version (`config/features`), autoloads, main scene, `application/run/flush_stdout_on_print`. Godot 3 (`NetworkedMultiplayerENet`) is out of scope for the templates; the Edgegap side is the same.
 - Who runs the server: a Godot client talking to a Colyseus (Node.js) server is `edgegap-colyseus`, not this skill.
+- Who matches players: a Godot game whose accounts and matchmaking live in Nakama (the Edgegap Fleet Manager for Nakama starts its servers) is `edgegap-nakama`, which has its own Godot server template.
 - How the game goes online: `ENetMultiplayerPeer` (UDP) or `WebSocketMultiplayerPeer` (TCP), `create_server` / `create_client`, the port, `multiplayer.multiplayer_peer =`, custom `MultiplayerAPI` branches (`set_multiplayer`). WebRTC or noray/NAT punch-through means peer-to-peer today: the server path replaces it.
 - Host assumptions: a Host button that also spawns a local player for peer 1, `multiplayer.is_server()` used as "I'm a player too", UI, camera or audio code on the server, a lobby or Start button the host presses (`references/godot.md` §3).
 - `export_presets.cfg`: existing presets, `export_filter` (`all_resources` or an explicit allowlist), custom features, any build script that writes presets.

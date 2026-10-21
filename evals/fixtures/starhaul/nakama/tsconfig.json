@@ -1,0 +1,4 @@
+{
+  "compilerOptions": { "target": "es5", "outFile": "./build/index.js", "typeRoots": ["./node_modules"], "lib": ["es6"], "strict": false },
+  "files": ["./src/main.ts"]
+}
