@@ -1,0 +1,15 @@
+[vite] connected.
+[main.ts:41] Find Match clicked
+[matchmaking.ts:25] ticket tkt-7c1e0a52-fake created (SEARCHING)
+GET https://om-rr7k2pq9xd.edgegap.net/memberships/tkt-7c1e0a52-fake 404 (Not Found)
+GET https://om-rr7k2pq9xd.edgegap.net/memberships/tkt-7c1e0a52-fake 404 (Not Found)
+GET https://om-rr7k2pq9xd.edgegap.net/memberships/tkt-7c1e0a52-fake 404 (Not Found)
+... (repeats every 2 s until the tab is closed)
+
+--- manual connect from localhost (?server=203.0.113.7:31842), deployment showed Ready 1 s earlier ---
+POST http://203.0.113.7:31842/matchmake/joinOrCreate/arena 502 (Bad Gateway)
+[network.ts:19] join failed ServerError: 502
+[main.ts:58] Server error
+
+--- same, pressed Play again ~6 s later ---
+[network.ts:15] joined arena room f7Kx91Qz as 0bq2nX

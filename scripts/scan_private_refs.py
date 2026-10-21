@@ -33,6 +33,8 @@ ALLOWED = [
     ("om-k2x9fj3q1a.edgegap.net", "fictional matchmaker in the broken-kartclash eval fixture"),
     ("om-a1b2c3d4e5.edgegap.net", "fictional matchmaker in a FishNet routing eval query"),
     ("om-p7q2w9z4x1.edgegap.net", "fictional matchmaker in the broken-orbitbrawl eval fixture"),
+    ("om-rr7k2pq9xd.edgegap.net", "fictional matchmaker in the broken-rocketrumble eval fixture"),
+    ("VITE_MM_TOKEN=3c9b7e1d-fake-4a6b-9c1d-matchmaker000", "fake matchmaker token in the broken-rocketrumble eval fixture"),
     ("om-r4t8y2u6i0.edgegap.net", "fictional matchmaker in the broken-skyarena eval fixture"),
     ('Token = "PASTE_MATCHMAKER_AUTH_TOKEN', "placeholder in the broken-kartclash eval fixture"),
     ("<id>.edgegap.net", "placeholder"),

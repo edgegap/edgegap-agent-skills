@@ -2,6 +2,16 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.13.1 (2026-10-21)
+
+Task evals for Colyseus.
+
+- `edgegap-colyseus` (0.1.1), from its first task evals:
+  - `references/server.md`: the `onLeave` snippet no longer uses `consented: boolean`, which doesn't typecheck on Colyseus 0.17 (the second parameter is the close code). Reconnection code for 0.17 (`onDrop` / `onReconnect` / `onLeave`) and 0.15/0.16 (`allowReconnection` in `onLeave`), with `playerLeft()` only when the seat is gone; typechecked on 0.16 and 0.17, not run on Edgegap.
+  - `references/clients.md`: with one deployment per match, a client that resumes with `reconnect(token)` stores the endpoint with the token; the itch.io embed origin (`https://html-classic.itch.zone`) for `allowed_cors_origins`.
+  - `SKILL.md`, `references/deploy.md`: the `15` s expansion repeats `min_team_size: 2` on purpose (agents "fixed" it); `inspect` off before launch.
+- Evals: `evals/colyseus-evals.json` (3 tasks, 3 runs per configuration) with fixtures `hoverhoop` (Colyseus 0.16 on Colyseus Cloud, Redis, PM2, `allowReconnection`, Phaser) and `broken-rocketrumble` (Colyseus 0.17 with planted pitfalls and matching logs); the tanks fixture is the upstream demo before the Edgegap work. 100% with the skill vs 90% without (51/51 vs 43/51, 54/54 vs 47/54, 48/48 vs 48/48). Without the skill: matchmaker configs off the 3.x schema, beacon latency rules for browser clients, TCP instead of WS, missing CORS origins, no `--platform linux/amd64`. The broken-project task doesn't separate the two: its logs name every bug.
+
 ## 0.13.0 (2026-10-21)
 
 Adds Nakama. PR #17 merged into the stacked branch after its base had already landed, so this release brings it to main on top of 0.12.0 (Godot).

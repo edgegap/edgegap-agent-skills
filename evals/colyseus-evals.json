@@ -1,0 +1,91 @@
+{
+  "skill_name": "edgegap-colyseus",
+  "constraints": "Environment constraints for this eval: you cannot run Docker, game engines or Edgegap MCP tools, and you have no Edgegap account access. You may run npm install and the TypeScript compiler. Make every code and config change directly in the project copy, and write HANDOFF.md in the outputs folder with the exact remaining steps (commands, dashboard clicks, what to verify) a developer must do, in order. Don't ask questions; make reasonable assumptions and state them in HANDOFF.md.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "tanks-per-match-matchmaker",
+      "prompt": "This is the Colyseus tanks demo (server, Three.js web client and Godot client are in the project folder). We want to host it on Edgegap: a fresh server for every match close to the players, a Find Match button in both the web client and the Godot client, and servers that go away when the match is over. The web build will be on https://tanks.example.com. Set it up.",
+      "expected_output": "Lifecycle module with self-stop through ARBITRIUM_DELETE_URL, playground/monitor off on Edgegap, Dockerfile with Node as PID 1, WS + TLS Upgrade app version named gameport, matchmaker config with the page origin, browser and Godot matchmaker clients (POST /tickets, GET /tickets/{id}, wss by FQDN, join retry), unique tags, dashboard steps.",
+      "files": [
+        "fixtures/tanks"
+      ],
+      "assertions": [
+        "Does not recommend relays, Colyseus Cloud, PM2 clustering or Redis presence for the per-match setup",
+        "Server stops its own deployment with a DELETE to ARBITRIUM_DELETE_URL using ARBITRIUM_DELETE_TOKEN (not the Edgegap API token)",
+        "Self-stop fires when nobody joins within a timeout and when the last player has left for a while, and never while players are connected",
+        "Playground and monitor are not served on Edgegap deployments (kept for local dev or removed)",
+        "Dockerfile runs Node as PID 1 with an exec-form CMD (no npm start, no shell form, no PM2) and the TypeScript runtime it needs is installed in the image (tsx in dependencies or a compile step)",
+        "App version port is 2567 (or the server's PORT), protocol WS, TLS Upgrade on, named the same as the clients' port lookup",
+        "Matchmaker config is valid JSON, names the app and version, allows https://tanks.example.com in allowed_cors_origins, and its profile name equals the clients' profile",
+        "Web client creates a ticket with POST /tickets and polls GET /tickets/{id} until HOST_ASSIGNED, sending the matchmaker Auth Token",
+        "Web client connects to wss://<assignment fqdn>:<external port of the named port>, not ws:// or the public IP",
+        "First join after HOST_ASSIGNED is retried several times (e.g. 10 x 2 s) because a fresh deployment answers 502 for a few seconds",
+        "Godot client gets the same matchmaker flow (HTTPRequest tickets + poll) and connects with wss by FQDN",
+        "No Edgegap API token in any client or the server image; the matchmaker Auth Token is the only Edgegap token in clients",
+        "Docker build uses --platform linux/amd64 and pushes a new unique tag (not latest)",
+        "HANDOFF.md gives the dashboard steps to create and start the matchmaker and copy its API URL and Auth Token into the clients",
+        "Matchmaker config follows the matchmaker 3.x schema: ticket_* periods inside each profile, rules.initial and rules.expansions keyed by seconds then rule name",
+        "No beacon 'latencies' rule in a profile that browser clients use (browsers can't ping beacons)",
+        "Delivered server typechecks with no new errors (tsc --noEmit; upstream loadtest.ts errors excluded)"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "hoverhoop-colyseus-cloud-to-edgegap",
+      "prompt": "we run hover hoop on colyseus cloud right now (colyseus 0.16, phaser client, it's all in the folder). we want to move to edgegap with one server per race near the players and a Find Match button. the web client is on play.hoverhoop.gg and on itch.io. mobile players drop a lot so reconnecting has to keep working. can you do the port?",
+      "expected_output": "Redis/PM2 dropped for one process per deployment, lifecycle counting seats only after failed reconnection, self-stop after race results, compiled-TS Dockerfile with node as PID 1, WS + TLS app version, matchmaker config with both web origins (incl. itch.io), Phaser client matchmaker with wss FQDN, join retry, reconnect against the same deployment.",
+      "files": [
+        "fixtures/hoverhoop"
+      ],
+      "assertions": [
+        "Removes (or disables on Edgegap) the Redis presence/driver and PM2 multi-process setup, explaining that one deployment runs one match in one process",
+        "Server stops its own deployment with a DELETE to ARBITRIUM_DELETE_URL using ARBITRIUM_DELETE_TOKEN",
+        "A player who drops and is inside the 20 s allowReconnection window is not counted as gone: the empty/self-stop logic only counts seats released by a consented leave or a failed reconnection",
+        "Self-stop also fires when nobody joins within a timeout",
+        "After the race results the server ends the match and stops its deployment instead of looping back to the waiting phase forever",
+        "Dockerfile compiles the TypeScript (or ships tsx as a runtime dependency) and runs Node as PID 1 with an exec-form CMD (no npm start, no PM2)",
+        "Playground and monitor are not served on Edgegap deployments",
+        "App version port is 2567 (or the server's PORT), protocol WS, TLS Upgrade on, named the same as the client's port lookup",
+        "Matchmaker config allows https://play.hoverhoop.gg and the itch.io HTML5 origin (https://html-classic.itch.zone or equivalent) in allowed_cors_origins, with 2-6 players per match",
+        "Client creates a ticket with POST /tickets, polls GET /tickets/{id}, and deletes the ticket when the player cancels searching",
+        "Client connects with colyseus.js to wss://<assignment fqdn>:<external port>, retrying the first join on 502",
+        "Reconnection still targets the same deployment: the stored reconnection token is kept together with that deployment's endpoint (not the old fixed Colyseus Cloud URL)",
+        "No Edgegap API token in the client or the server image; the matchmaker Auth Token is the only Edgegap token in the client",
+        "Docker build uses --platform linux/amd64 and pushes a new unique tag (not latest)",
+        "HANDOFF.md covers creating the app version and matchmaker, the client settings, and switching off Colyseus Cloud after a successful test",
+        "Matchmaker config follows the matchmaker 3.x schema: ticket_* periods inside each profile, rules.initial and rules.expansions keyed by seconds then rule name",
+        "No beacon 'latencies' rule in a profile that browser clients use (browsers can't ping beacons)",
+        "Delivered server typechecks (tsc --noEmit)"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "broken-rocketrumble-debug",
+      "prompt": "our colyseus game rocket rumble is on edgegap and it's a mess: find match does nothing on the live site, from localhost it searches forever, the first connect usually fails with a 502, some servers run for 24h with nobody in them, mobile players lose their match when the phone locks, and security flagged our image and our web bundle. notes, logs and the edgegap configs are in the folder. find and fix what you can.",
+      "expected_output": "Every planted pitfall found and fixed: CORS origin, /memberships poll path, 502 join retry, WS + TLS Upgrade and wss by FQDN, port name mismatch, self-stop through ARBITRIUM_DELETE_URL with no API token, token rotation, Deploy API removed from the client, npm as PID 1, playerLeft in onDrop, no-join and match-end self-stop, playground/monitor exposed, --platform linux/amd64, unique tags.",
+      "files": [
+        "fixtures/broken-rocketrumble"
+      ],
+      "assertions": [
+        "Explains the live-site failure as CORS: https://rocketrumble.example.com is missing from allowed_cors_origins, and adds it to the matchmaker config",
+        "Fixes the poll path: GET /tickets/{id} instead of /memberships/{id}",
+        "Explains the 502 as a deployment that is not ready yet and retries the first join several times instead of failing",
+        "Switches the app version to protocol WS with TLS Upgrade on (new app version) and the client to wss://<fqdn>:<external port>, explaining the mixed-content block",
+        "Fixes the port name mismatch: the app version names the port 'game' while the client looks up 'gameport' (made consistent)",
+        "Self-stop uses ARBITRIUM_DELETE_URL with ARBITRIUM_DELETE_TOKEN, and the Edgegap API token is removed from the Dockerfile/image",
+        "Removes the Deploy API call ('Spawn test server') and VITE_EDGEGAP_API_TOKEN from the client, and says to revoke/rotate the leaked API token; keeps the matchmaker Auth Token in the client as client-safe",
+        "Dockerfile runs Node as PID 1 with an exec-form CMD (not CMD npm start / shell form), explaining that npm swallows SIGTERM",
+        "Fixes the mobile drop: playerLeft is no longer counted in onDrop (only when the seat is really gone in onLeave), and onReconnect no longer double-counts",
+        "Adds a self-stop when nobody joins within a timeout (the 24 h idle deployments)",
+        "Adds a self-stop after game over (victory or wipe), after the result is shown",
+        "Playground and monitor are no longer served on Edgegap deployments",
+        "Docker build uses --platform linux/amd64 (the v1 exec format error from the M2 Mac) and pushes unique tags instead of latest",
+        "HANDOFF.md lists the remaining steps in order (rotate token, build/push, new app version, matchmaker update, verify)",
+        "Matchmaker config follows the matchmaker 3.x schema: ticket_* periods inside each profile, rules.initial and rules.expansions keyed by seconds then rule name",
+        "Delivered server typechecks (tsc --noEmit)"
+      ]
+    }
+  ],
+  "notes": "Fixture tanks is colyseus/realtime-tanks-demo at 6339493 (before the Edgegap integration; MIT), trimmed to server/, web-threejs/ and godot/, not committed here; its upstream src/loadtest.ts already fails tsc. hoverhoop (Colyseus 0.16 with @colyseus/tools, Redis, PM2, allowReconnection, Phaser) and broken-rocketrumble (Colyseus 0.17 with onDrop/onReconnect, planted pitfalls, logs written to match them) are synthetic. Tokens in broken-rocketrumble are fake. Typecheck assertions are checked by npm install + tsc on the delivered server. Results (skill 0.1.0, 3 runs per configuration, 2026-10-20): 100% with the skill vs 90% without (tanks 51/51 vs 43/51, hoverhoop 54/54 vs 47/54, broken-rocketrumble 48/48 vs 48/48); every delivered server typechecks. Baseline misses: matchmaker configs off the 3.x schema (ticket periods at the root, expansions keyed by rule name), beacon latencies rules in browser profiles, TCP/HTTP instead of WS for the port, no allowed_cors_origins, no --platform linux/amd64, no empty grace period, a race that loops back to waiting. broken-rocketrumble doesn't discriminate: its notes and logs point at every bug."
+}

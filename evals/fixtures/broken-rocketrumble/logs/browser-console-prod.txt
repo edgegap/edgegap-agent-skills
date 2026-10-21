@@ -1,0 +1,9 @@
+[main.ts:41] Find Match clicked
+Access to fetch at 'https://om-rr7k2pq9xd.edgegap.net/tickets' from origin 'https://rocketrumble.example.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+POST https://om-rr7k2pq9xd.edgegap.net/tickets net::ERR_FAILED
+[matchmaking.ts:22] TypeError: Failed to fetch
+    at createTicket (matchmaking.ts:18:23)
+
+--- manual connect (pasted ?server=203.0.113.7:31842 from the dashboard) ---
+Mixed Content: The page at 'https://rocketrumble.example.com/?server=203.0.113.7:31842' was loaded over HTTPS, but attempted to connect to the insecure WebSocket endpoint 'ws://203.0.113.7:31842/'. This request has been blocked; this endpoint must be available over WSS.
+Mixed Content: The page at 'https://rocketrumble.example.com/?server=203.0.113.7:31842' was loaded over HTTPS, but requested an insecure resource 'http://203.0.113.7:31842/matchmake/joinOrCreate/arena'. This request has been blocked; the content must be served over HTTPS.
