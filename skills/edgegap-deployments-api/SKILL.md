@@ -1,13 +1,13 @@
 ---
 name: edgegap-deployments-api
-description: 'Write backend code that starts, tracks and stops Edgegap game servers through the HTTP API: POST /v2/deployments with player IPs or coordinates, env vars and tags, ready/error/terminate webhooks, status polling within rate limits, stopping and cleaning up orphaned deployments, and handing players the address and external port. Use whenever building a custom matchmaker, allocator, lobby service or CI job for Edgegap, connecting PlayFab, Unity Matchmaker (UGS Cloud Code), EOS lobbies or Steam lobbies to Edgegap servers (Nakama: edgegap-nakama), or when someone mentions api.edgegap.com, the Deploy API, deployment webhooks, request_id, or Edgegap error codes 422/429/410. Not for game clients, which must never hold the API token.'
+description: 'Write backend code that starts, tracks and stops Edgegap game servers through the HTTP API: POST /v2/deployments with player IPs or coordinates, env vars and tags, ready/error/terminate webhooks, status polling within rate limits, stopping and cleaning up orphaned deployments, and handing players the address and external port. Use whenever building a custom matchmaker, allocator, lobby service or CI job for Edgegap, connecting Unity Matchmaker (UGS Cloud Code), EOS lobbies or Steam lobbies to Edgegap servers (Nakama: edgegap-nakama), or when someone mentions api.edgegap.com, the Deploy API, deployment webhooks, request_id, or Edgegap error codes 422/429/410. Not for game clients, which must never hold the API token.'
 metadata:
-  version: "0.2.2"
+  version: "0.2.3"
 ---
 
 # Edgegap Deployments API for your backend
 
-Use this when the developer's own backend decides when a match starts: a custom matchmaker, a lobby service, a PlayFab Cloud Script, a Unity Matchmaker Cloud Code module, an EOS or Steam lobby owner's backend. For Nakama, load `edgegap-nakama` instead: the Edgegap Fleet Manager for Nakama already makes these calls. If they just want players matched onto servers and have no backend yet, Edgegap's hosted matchmaker does all of this without code; prefer it.
+Use this when the developer's own backend decides when a match starts: a custom matchmaker, a lobby service, a Unity Matchmaker Cloud Code module, an EOS or Steam lobby owner's backend. For Nakama, load `edgegap-nakama` instead: the Edgegap Fleet Manager for Nakama already makes these calls. For PlayFab Matchmaking, load `edgegap-playfab`: its Azure Functions already make them. If they just want players matched onto servers and have no backend yet, Edgegap's hosted matchmaker does all of this without code; prefer it.
 
 The code you write calls HTTP. When you act on Edgegap yourself while building it, follow the `edgegap` skill's [references/agent-rules.md](../edgegap/references/agent-rules.md). Endpoint shapes are in [references/api-reference.md](references/api-reference.md).
 
@@ -125,7 +125,7 @@ app.post("/edgegap/ready/:token", async (req, res) => {
 | Edgegap Matchmaker | Hosted; deploys and hands out addresses itself, no backend code | https://docs.edgegap.com/learn/matchmaking |
 | Nakama (Heroic Labs) | The Edgegap Fleet Manager for Nakama (Go plugin) deploys from Nakama's matchmaker: use `edgegap-nakama` | https://github.com/edgegap/nakama-edgegap |
 | Unity Matchmaker (UGS) | Keep Unity's matchmaker; a Cloud Code module calls the Deploy API | https://docs.edgegap.com/docs/tools-and-integrations/deploy-from-ugs |
-| PlayFab | Keep PlayFab matchmaking; a Cloud Script calls the Deploy API with player locations | https://docs.edgegap.com/docs/tools-and-integrations/playfab-bridge |
+| PlayFab | Keep PlayFab matchmaking; two Azure Functions (rule on `match_found`, ready webhook) deploy near the players and hand out the address: use `edgegap-playfab` | https://github.com/edgegap/sample-playfab-matchmaker-fishnet |
 | EOS lobbies (Unreal) | Lobby members store their IP; a backend service deploys for the lobby | https://docs.edgegap.com/docs/tools-and-integrations/unreal-eos-lobby-integration |
 | Migrating from Multiplay, GameLift, Hathora | Concept mapping and migration steps | https://docs.edgegap.com/docs/tools-and-integrations |
 

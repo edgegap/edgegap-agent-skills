@@ -1,0 +1,23 @@
+{
+  "Name": "skirmish-2v2",
+  "MinMatchSize": 4,
+  "MaxMatchSize": 4,
+  "ServerAllocationEnabled": true,
+  "BuildId": "<skirmish-linux-v14 build id>",
+  "Teams": [
+    { "Name": "red", "MinTeamSize": 2, "MaxTeamSize": 2 },
+    { "Name": "blue", "MinTeamSize": 2, "MaxTeamSize": 2 }
+  ],
+  "Rules": [
+    {
+      "Type": "DifferenceRule",
+      "Name": "SkillRule",
+      "Attribute": { "Path": "Skill", "Source": "User" },
+      "Difference": 300,
+      "MergeFunction": "Average",
+      "DefaultAttributeValue": 1000,
+      "Weight": 1,
+      "SecondsUntilOptional": 30
+    }
+  ]
+}

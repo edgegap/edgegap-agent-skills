@@ -1,0 +1,16 @@
+{
+  "name": "v3",
+  "docker_repository": "registry.edgegap.com",
+  "docker_image": "rift-studio-x1y2z3/rift-rumble",
+  "docker_tag": "2026.10.18-2",
+  "req_cpu": 512,
+  "req_memory": 1024,
+  "max_duration": 60,
+  "ports": [
+    { "port": 7770, "protocol": "UDP", "name": "gameport", "to_check": true }
+  ],
+  "envs": [
+    { "key": "PLAYFAB_TITLE_ID", "value": "7C2E1", "is_secret": false },
+    { "key": "PLAYFAB_SECRET_KEY", "value": "********", "is_secret": true }
+  ]
+}

@@ -2,7 +2,7 @@
 name: edgegap-unity
 description: 'Unity + Edgegap: get a Unity multiplayer game online with dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a Unity project: it has the Unity workflow, tested C# templates (matchmaker client, server self-stop), Linux server build, Dockerfile, matchmaker config and fixes for known pitfalls. Use when a Unity dev wants online play: "put my game online", "play with people over the internet", "works on LAN/same wifi but not online", "nobody should have to host", "click Play and get matched", how Fall Guys/Among Us match players, servers for a playtest, "where do I start with servers". Also for Mirror host/client games moving to dedicated servers, WebGL multiplayer, or debugging Edgegap deployments, ports or matchmaking for a Unity game. Use even for beginners who never say Edgegap, servers or Docker. Not for NGO (edgegap-ngo), FishNet (edgegap-fishnet), PurrNet (edgegap-purrnet) or Fusion (edgegap-fusion) projects, Unreal (edgegap-unreal), Godot or non-game backends.'
 metadata:
-  version: "0.1.12"
+  version: "0.1.13"
 ---
 
 # Edgegap for Unity: dedicated servers + matchmaking
@@ -108,6 +108,6 @@ Hand-off summary: what was built, where the files are, the app/version/matchmake
 - `references/troubleshooting.md`: symptom → fix tables for build, Docker, deployment, connection, SDK quirks.
 - `assets/unity/`: drop-in C# (matchmaking client, server lifecycle, DTOs, link.xml). `assets/unity/Editor/`: `EdgegapServerBuild` (Linux server + test client builds) and `EdgegapSceneSetup` (adds/configures the components from the command line). `assets/docker/`: Dockerfile + .dockerignore. `assets/matchmaker/`: config templates.
 
-Related skills in this pack, if installed: `edgegap-nakama` when the studio keeps Nakama for matchmaking (with the Unity server plugin edgegap-server-nakama-plugin-unity), `edgegap-deployments-api` when it keeps another backend or matchmaker (PlayFab, UGS) instead of Edgegap's, and `edgegap-launch` before going live.
+Related skills in this pack, if installed: `edgegap-nakama` when the studio keeps Nakama for matchmaking (with the Unity server plugin edgegap-server-nakama-plugin-unity), `edgegap-playfab` when it keeps PlayFab Matchmaking, `edgegap-deployments-api` when it keeps another backend or matchmaker (UGS) instead of Edgegap's, and `edgegap-launch` before going live.
 
 Sources of truth if something here looks outdated: https://docs.edgegap.com/unity, https://github.com/edgegap/edgegap-unity-sdk (releases), and the reference sample https://github.com/edgegap/mirror-webgl.

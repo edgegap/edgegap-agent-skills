@@ -1,0 +1,74 @@
+[
+  {
+    "query": "We use PlayFab for login and matchmaking in our Unity game. How do we get each PlayFab match running on its own Edgegap dedicated server?",
+    "expected_skill": "edgegap-playfab"
+  },
+  {
+    "query": "PlayFab Multiplayer Servers is getting too expensive for us. I want to keep PlayFab Matchmaking but host the servers on Edgegap instead. What changes in the queue, the GSDK server code and the client?",
+    "expected_skill": "edgegap-playfab"
+  },
+  {
+    "query": "Our PlayFab rule on playfab.matchmaking.match_found calls an Azure Function that deploys on Edgegap, but the players never get the server address. Where do I look?",
+    "expected_skill": "edgegap-playfab"
+  },
+  {
+    "query": "I found Edgegap's old PlayFab bridge, a CloudScript that calls /v1/deploy. Microsoft says CloudScript is legacy. What should the bridge look like now with Azure Functions?",
+    "expected_skill": "edgegap-playfab"
+  },
+  {
+    "query": "LoginWithCustomID returns PlayerCreationDisabled on my new PlayFab title, and I'm trying to get the Edgegap + PlayFab matchmaking sample running",
+    "expected_skill": "edgegap-playfab"
+  },
+  {
+    "query": "Godot 4 game, players log in with PlayFab through its REST API. I want PlayFab to match 4 players and start an Edgegap server near them. Set it up.",
+    "expected_skill": "edgegap-playfab"
+  },
+  {
+    "query": "In my FishNet game the client calls PlayFab CreateMatchmakingTicket. Once matched, how does the client find out which Edgegap server to connect to?",
+    "expected_skill": "edgegap-playfab"
+  },
+  {
+    "query": "We get two Edgegap deployments for every PlayFab match. The match_found rule triggers our StartEdgegapDeployment function. Why?",
+    "expected_skill": "edgegap-playfab"
+  },
+  {
+    "query": "Unreal Engine 5 shooter with PlayFab accounts and matchmaking, servers currently on PlayFab MPS. Move hosting to Edgegap.",
+    "expected_skill": "edgegap-playfab"
+  },
+  {
+    "query": "Is it safe to pass our PlayFab title secret key to the game server as an environment variable so it can write the server IP into player data? That's what our Edgegap integration does today.",
+    "expected_skill": "edgegap-playfab"
+  },
+  {
+    "query": "Our game uses Nakama for login and matchmaking. How do we get each match on its own Edgegap dedicated server?",
+    "expected_skill": "edgegap-nakama"
+  },
+  {
+    "query": "Keep Unity Matchmaker (UGS) and have a Cloud Code module start Edgegap servers. How do I write that module?",
+    "expected_skill": "edgegap-deployments-api"
+  },
+  {
+    "query": "FishNet Unity game, no backend at all. I want a Find Match button that puts players on an Edgegap dedicated server.",
+    "expected_skill": "edgegap-fishnet"
+  },
+  {
+    "query": "Our own Go matchmaker decides matches. How do we call Edgegap's API to start a server and get notified when it is ready?",
+    "expected_skill": "edgegap-deployments-api"
+  },
+  {
+    "query": "How do I migrate my PlayFab title from Economy v1 to Economy v2 catalogs and inventory?",
+    "expected_skill": null
+  },
+  {
+    "query": "PlayFab leaderboards: how do I reset a statistic weekly and give rewards to the top 10?",
+    "expected_skill": null
+  },
+  {
+    "query": "How do I add Steam login to my PlayFab title with LoginWithSteam and link it to existing custom ID accounts?",
+    "expected_skill": null
+  },
+  {
+    "query": "Set up PlayFab Party voice chat in my Unity game for a lobby of 4 players.",
+    "expected_skill": null
+  }
+]
