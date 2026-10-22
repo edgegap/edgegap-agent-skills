@@ -2,7 +2,7 @@
 name: edgegap-fishnet
 description: 'FishNet (Fish-Networking) + Edgegap: take a Unity game built on FishNet to dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a FishNet project (Assets/FishNet, Tugboat, Bayou, Multipass, ServerManager, NetworkHudCanvas). It has FishNet-ready C# templates verified on Edgegap (matchmaker client, server self-stop, scene-change persistence), the Start On Headless and WebGL/Bayou wss setup, port 7770 app version, Dockerfile, matchmaker config and fixes for known pitfalls, including the SDK JSON bug on Unity before 2022.3. Use when a FishNet dev wants online play: "host my FishNet game", "players should not host", "works on LAN but not online", "Find Match button", "FishNet WebGL on Edgegap", moving off the old FishNet Edgegap samples that call the API from the client, or debugging FishNet deployments, ports or matchmaking. Other Unity netcodes (NGO, Mirror): edgegap-unity.'
 metadata:
-  version: "0.2.4"
+  version: "0.2.5"
 ---
 
 # Edgegap for FishNet: dedicated servers + matchmaking
@@ -75,7 +75,7 @@ Read `references/deploy.md` §4-5.
 ## Phase 5: Matchmaker
 
 Read `references/matchmaker.md`.
-1. Start from `assets/matchmaker/casual-webgl.json` (2-4 players, no latency rule, a 15 s expansion stage that keeps `min_team_size` at 2: without one, two players wait about 5 minutes) or build one with `edgegap_build_matchmaker_config`. Set `application.name`/`version`, and `allowed_cors_origins` for every WebGL origin.
+1. Start from `assets/matchmaker/casual-webgl.json` (2-4 players, no latency rule, a 15 s expansion stage that keeps `min_team_size` at 2: without one, two players wait until their tickets expire; keep `ticket_expiration_period` at `30s`) or build one with `edgegap_build_matchmaker_config`. Set `application.name`/`version`, and `allowed_cors_origins` for every WebGL origin.
 2. Walk the developer through the dashboard: Create Matchmaker → upload → Create and Start → copy **API URL** and **Auth Token**.
 3. `GET <API URL>/monitor` with the token answers (DNS can take ~5 min).
 
@@ -89,7 +89,7 @@ Read `references/matchmaker.md`.
 
 1. `edgegap_list_deployments`: nothing of yours left running.
 2. Build the client: `-executeMethod EdgegapServerBuild.BuildClient -edgegapClientTarget webgl|win64|mac|linux`. Serve WebGL from an allowed origin (`python -m http.server 8080 --bind 127.0.0.1` in `Builds/Client/webgl`).
-3. **Test with two clients.** Two browser tabs (bring each to the front before clicking; background tabs throttle Unity), or two builds. Watch SEARCHING → MATCH_FOUND → HOST_ASSIGNED → connected. A lone ticket can wait until it nearly expires before it gets a server, even with a `min_team_size: 1` expansion (`references/matchmaker.md` §3).
+3. **Test with two clients.** Two browser tabs (bring each to the front before clicking; background tabs throttle Unity), or two builds. Watch SEARCHING → MATCH_FOUND → HOST_ASSIGNED → connected. A lone ticket can wait until it nearly expires (30 s with the template) before it gets a server, even with a `min_team_size: 1` expansion (`references/matchmaker.md` §3).
 4. Server logs show `N matched player(s)`. Close both clients → `Stopping deployment: all players left` → the deployment disappears.
 5. Debug with `references/troubleshooting.md` until this passes.
 

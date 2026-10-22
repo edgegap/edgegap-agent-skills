@@ -4,7 +4,7 @@
   "max_deployment_retry_count": 3,
   "profiles": {
     "ranked-2v2": {
-      "ticket_expiration_period": "5m",
+      "ticket_expiration_period": "30s",
       "ticket_removal_period": "1m",
       "group_inactivity_removal_period": "5m",
       "application": { "name": "my-game", "version": "20261022-1430" },
@@ -20,7 +20,7 @@
           }
         },
         "expansions": {
-          "30": { "beacons": { "max_latency": 300 } }
+          "20": { "beacons": { "max_latency": 300 } }
         }
       }
     }

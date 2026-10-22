@@ -4,7 +4,7 @@
   "max_deployment_retry_count": 3,
   "profiles": {
     "casual": {
-      "ticket_expiration_period": "3m",
+      "ticket_expiration_period": "30s",
       "ticket_removal_period": "1m",
       "group_inactivity_removal_period": "5m",
       "application": { "name": "my-game", "version": "20261022-1430" },
@@ -20,12 +20,12 @@
           }
         },
         "expansions": {
-          "30": { "match_size": { "min_team_size": 1 } }
+          "20": { "match_size": { "min_team_size": 1 } }
         }
       }
     },
     "duel": {
-      "ticket_expiration_period": "3m",
+      "ticket_expiration_period": "30s",
       "ticket_removal_period": "1m",
       "group_inactivity_removal_period": "5m",
       "application": { "name": "my-game", "version": "20261022-1430" },

@@ -4,7 +4,7 @@
   "max_deployment_retry_count": 3,
   "profiles": {
     "casual": {
-      "ticket_expiration_period": "5m",
+      "ticket_expiration_period": "30s",
       "ticket_removal_period": "1m",
       "group_inactivity_removal_period": "5m",
       "application": {

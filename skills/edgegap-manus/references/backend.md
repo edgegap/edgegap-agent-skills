@@ -92,7 +92,7 @@ The browser polls `status` every 2 s; the backend reads the ticket at most once 
 
 | Ticket | Backend does |
 |---|---|
-| `SEARCHING` | keep waiting; after `searchTimeoutMs` (120 s) delete the ticket, return `timeout` |
+| `SEARCHING` | keep waiting; after `searchTimeoutMs` (28 s) delete the ticket, return `timeout` |
 | `MATCH_FOUND` | a server is starting; after `allocationTimeoutMs` (90 s) return `server_allocation_timeout` |
 | `MATCH_FOUND` → `SEARCHING` | the deployment failed and the matchmaker retries; after `maxDeploymentRetries` return `server_allocation_failed` |
 | `HOST_ASSIGNED` | store the assignment (the matchmaker deletes assigned tickets soon after), return `ready` with a fresh join token |
@@ -101,7 +101,7 @@ The browser polls `status` every 2 s; the backend reads the ticket at most once 
 | 429 | keep state, tell the browser to slow down |
 | 5xx / network | keep state; after 5 in a row return `matchmaker_unavailable` (free-tier matchmakers stop every 3 hours) |
 
-Keep the matchmaker's `ticket_expiration_period` (3 m in the template) longer than `searchTimeoutMs`, so the backend decides the timeout and the user sees why.
+Keep the matchmaker's `ticket_expiration_period` (30 s in the template, so a developer testing alone isn't left waiting minutes) longer than `searchTimeoutMs`, so the backend decides the timeout and the user sees why.
 
 ## 6. Cancel, leave, reconnect
 
