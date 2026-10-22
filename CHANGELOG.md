@@ -2,6 +2,18 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.14.1 (2026-10-22)
+
+Timestamp image tags and app versions.
+
+- Every skill that builds an image or creates an app version now tags the image and names the version with the same UTC timestamp, `YYYYMMDD-HHMM` (e.g. `20261022-1430`, `date -u +%Y%m%d-%H%M`), instead of `v1`, `v2`, semver, environment aliases or `latest`, so the team and customers testing a sample can see when a server was last updated. Docker tags can't contain colons, hence no ISO `T14:30`.
+  - New rule in `edgegap` `references/agent-rules.md`; `edgegap-containerize` uses the tag as the version name.
+  - Matchmaker templates (`edgegap-unity`, `-ngo`, `-fishnet`, `-purrnet`, `-godot`, `-colyseus`, `-manus`) and the PlayFab `local.settings.example.json` show `"version": "20261022-1430"`; the API reference examples and the BR200 example JSON use the same format.
+  - Scripts: the BR200 and Simple FPS `package.sh` default to the UTC timestamp tag (Simple FPS no longer requires a tag argument), and the Manus GitHub workflow tags with `YYYYMMDD-HHMM` instead of date + commit SHA.
+  - Build steps in each engine skill's `SKILL.md` and `deploy.md` say which format to use.
+- Skills bumped (patch): edgegap 0.14.1, colyseus 0.1.2, containerize 0.2.1, deployments-api 0.2.4, eos-voice 0.1.1, fishnet 0.2.4, fusion 0.1.2, fusion-simplefps 0.1.1, godot 0.1.2, manus 0.1.1, nakama 0.1.2, ngo 0.1.2, playfab 0.1.1, purrnet 0.1.3, unity 0.1.14, unreal 0.1.2.
+- `evals/guardrails.json` uses a timestamp tag in its smoke-test prompt. Not re-run: wording and examples only.
+
 ## 0.14.0 (2026-10-21)
 
 Adds PlayFab.

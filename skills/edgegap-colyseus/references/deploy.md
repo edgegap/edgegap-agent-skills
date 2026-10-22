@@ -9,7 +9,7 @@ docker login registry.edgegap.com          # the developer runs this: registry u
 docker push registry.edgegap.com/<project>/<game>:<tag>
 ```
 
-Use a new tag for every build (`v1`, a date, a commit SHA), never `latest`: app versions point at a tag, and reusing one makes deployments unreproducible. `--platform linux/amd64` matters on Apple Silicon and ARM machines; Edgegap runs amd64.
+Use a new tag for every build, never `latest`: app versions point at a tag, and reusing one makes deployments unreproducible. Tag with a UTC timestamp `YYYYMMDD-HHMM` (e.g. `20261022-1430`, from `date -u +%Y%m%d-%H%M`), the same string for the image tag and the app version name, so anyone can see when the server was last updated. `--platform linux/amd64` matters on Apple Silicon and ARM machines; Edgegap runs amd64.
 
 The image from `assets/server/Dockerfile` is `node:22-slim` plus production dependencies. Keep `node_modules` out of the build context (`.dockerignore`).
 

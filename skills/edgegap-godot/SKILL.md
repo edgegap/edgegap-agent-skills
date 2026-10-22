@@ -2,7 +2,7 @@
 name: edgegap-godot
 description: 'Godot 4 + Edgegap: take a Godot multiplayer game (high-level multiplayer: MultiplayerAPI, @rpc, ENetMultiplayerPeer, WebSocketMultiplayerPeer, MultiplayerSpawner, netfox) to dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a Godot project (project.godot, .gd, .tscn, export_presets.cfg). It has tested GDScript templates (a server lifecycle autoload that waits for the matched players and stops its own deployment, a matchmaker client and Find Match button), the headless Linux dedicated server export, Dockerfile, app version ports (UDP for ENet, WS + TLS Upgrade for web and wss), matchmaker config, and fixes for Godot pitfalls: empty server logs, export allowlists that drop new scripts, SIGTERM ignored in containers, join validation that silently blocks matched players. Use when a Godot dev wants online play: "host my Godot game", "nobody should host", "Find Match button", "Godot web multiplayer", or is debugging Godot deployments, ports or matchmaking on Edgegap.'
 metadata:
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Edgegap for Godot 4: dedicated servers + matchmaking
@@ -61,7 +61,7 @@ Read `references/deploy.md` §2-§3.
 1. Append `assets/godot/export_presets.server.cfg` to `export_presets.cfg` (renumber the preset index). If the project uses an export allowlist, the client presets too, the new scripts must be exported: list them under `"resources"`, and switch `"scenes"` presets, which ignore listed scripts (`references/godot.md` §6). Check with `--export-pack`.
 2. `godot --headless --path . --export-release "Edgegap Linux Server" build/server/server.x86_64`.
 3. Copy `assets/docker/Dockerfile` and `.dockerignore` to the project root; set `EXPOSE` to the port and protocol.
-4. The developer runs `docker login registry.edgegap.com`; you build with `--platform linux/amd64` and push a fresh tag.
+4. The developer runs `docker login registry.edgegap.com`; you build with `--platform linux/amd64` and push a fresh tag (UTC timestamp `YYYYMMDD-HHMM`, also the app version name).
 5. Test the container with simulated Edgegap variables (`references/deploy.md` §3): two clients connect, `docker logs` shows the `EDGEGAP` lines live, and `docker stop` ends it in about a second.
 
 ✅ Check: `edgegap_list_registry_tags` shows the tag.

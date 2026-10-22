@@ -40,7 +40,7 @@ Copy `assets/docker/Dockerfile` and `assets/docker/.dockerignore` to the project
 - installs `ca-certificates` and **tini**: Godot has no SIGTERM handler and the kernel drops unhandled signals sent to PID 1, so without tini `docker stop` and Edgegap's stop wait out the grace period and kill the server (measured: 20 s and exit 137 without tini, 1 s with it);
 - runs `server.x86_64 --headless -- --server`; never prints the environment, which holds `ARBITRIUM_DELETE_TOKEN`.
 
-Set `EXPOSE <port>/udp` (ENet) or `<port>/tcp` (WebSocket). Tags: never `latest`, never reuse a tag.
+Set `EXPOSE <port>/udp` (ENet) or `<port>/tcp` (WebSocket). Tags: never `latest`, never reuse a tag (Edgegap caches by tag). Use a UTC timestamp `YYYYMMDD-HHMM` (e.g. `20261022-1430`, from `date -u +%Y%m%d-%H%M`), the same string for the image tag and the app version name, so anyone can see when the server was last updated.
 
 Local test with simulated Edgegap variables, before pushing:
 ```bash

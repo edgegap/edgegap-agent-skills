@@ -40,7 +40,7 @@ Batch mode on old 2021.3 patch releases can fail to license even with Unity Hub 
 
 Copy `assets/docker/Dockerfile` and `.dockerignore` to the project root (the build context is only `Builds/EdgegapServer`). Set `EXPOSE` to `7770/tcp` for Bayou or `7770/udp` for Tugboat (documentation only). The Dockerfile installs CA certificates (needed for the HTTPS self-stop call) and doesn't print the environment, which would leak the self-stop token into logs.
 
-Tags: never `latest`, never reuse a tag (Edgegap caches by tag); use a timestamp.
+Tags: never `latest`, never reuse a tag (Edgegap caches by tag). Use a UTC timestamp `YYYYMMDD-HHMM` (e.g. `20261022-1430`, from `date -u +%Y%m%d-%H%M`), the same string for the image tag and the app version name, so anyone can see when the server was last updated.
 
 The developer logs in themselves (credentials on the dashboard's Container Registry page):
 ```bash

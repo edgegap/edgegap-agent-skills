@@ -10,7 +10,7 @@ docker login registry.edgegap.com          # the developer runs this: username a
 docker push registry.edgegap.com/<project>/<game>:<tag>
 ```
 
-A new tag for every build, never `latest`.
+A new tag for every build, never `latest`: a UTC timestamp `YYYYMMDD-HHMM` (e.g. `20261022-1430`, from `date -u +%Y%m%d-%H%M`), the same string for the image tag and the app version name, so anyone can see when the server was last updated.
 
 Edgegap MCP: `edgegap_create_app` once, then `edgegap_create_app_version`:
 

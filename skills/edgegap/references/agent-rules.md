@@ -11,6 +11,7 @@ Every Edgegap skill that touches the account follows these rules. They live here
 ## Before anything that costs money or changes what players get
 
 - **Ask first** before deploying, stopping a deployment, creating or editing an app or app version, or changing a matchmaker. Say what it will do and roughly what it costs (free tier: free, but one deployment at a time).
+- **Timestamp builds.** Tag server images and name app versions with a UTC timestamp `YYYYMMDD-HHMM` (e.g. `20261022-1430`, from `date -u +%Y%m%d-%H%M`), the same string for the image tag and the app version name, so anyone can see when the server was last updated. Never `v1`, `v2` or `latest`.
 - **Tag what you start.** Pass a tag such as `agent-test` on every deployment you create, and record the `request_id` it returns.
 - **Stop only what you started**, by exact `request_id`. Never stop a deployment the developer did not ask you to touch, and never clean up by pattern or with bulk stop: the token is organization-wide, so a filter can hit live matches.
 - **Don't enumerate or change apps the developer didn't mention.** Read what you need for the task at hand.

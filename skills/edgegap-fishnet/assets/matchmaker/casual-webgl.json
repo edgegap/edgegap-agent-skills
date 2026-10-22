@@ -12,7 +12,7 @@
       "group_inactivity_removal_period": "5m",
       "application": {
         "name": "my-game",
-        "version": "v1"
+        "version": "20261022-1430"
       },
       "rules": {
         "initial": {

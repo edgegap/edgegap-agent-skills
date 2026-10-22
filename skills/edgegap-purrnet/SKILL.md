@@ -2,7 +2,7 @@
 name: edgegap-purrnet
 description: 'PurrNet + Edgegap: take a Unity game built on PurrNet to dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a PurrNet project (dev.purrnet.purrnet, NetworkManager start flags, UDPTransport, WebTransport, ParrelSync clones). It has PurrNet-ready C# templates verified on Edgegap that add themselves at runtime without editing scenes (server start and self-stop, connect panel with direct and matchmaker modes, settings asset), port 5000 UDP app version, Dockerfile, matchmaker config, and fixes for PurrNet pitfalls: auto start flags, the async StartClient, ObserversRpc that never runs on a dedicated server. Use when a PurrNet dev wants online play: "host my PurrNet game", "nobody should host", "works with a host but not online", "Find Match button", or is debugging PurrNet deployments, ports or matchmaking on Edgegap. Other Unity netcodes: edgegap-unity (NGO, Mirror) or edgegap-fishnet.'
 metadata:
-  version: "0.1.2"
+  version: "0.1.3"
 ---
 
 # Edgegap for PurrNet: dedicated servers + matchmaking
@@ -57,7 +57,7 @@ Edgegap account, Docker running, Unity **Linux Build Support (Mono)** + **Linux 
 Read `references/deploy.md` §2-3.
 1. `"<Unity>" -batchmode -quit -projectPath "<project>" -executeMethod EdgegapServerBuild.Build -logFile build-server.log` → `Builds/EdgegapServer/ServerBuild`.
 2. Copy `assets/docker/Dockerfile` and `.dockerignore` to the project root.
-3. The developer runs `docker login registry.edgegap.com`; you build with `--platform linux/amd64` and push a fresh tag.
+3. The developer runs `docker login registry.edgegap.com`; you build with `--platform linux/amd64` and push a fresh tag (UTC timestamp `YYYYMMDD-HHMM`, also the app version name).
 4. `docker run --rm -p 5000:5000/udp <image>` and connect two clients.
 
 ✅ Check: `edgegap_list_registry_tags` shows the tag.

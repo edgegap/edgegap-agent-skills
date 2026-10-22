@@ -15,7 +15,7 @@ grep -qx "subtarget=Server" Builds/EdgegapServer/edgegap-build.txt 2>/dev/null \
 docker buildx build --platform linux/amd64 --load -f edgegap/Dockerfile -t br200-edgegap:local .
 
 if [[ -n "${1:-}" ]]; then
-    tag="${2:-$(date -u +%Y.%m.%d-%H.%M.%S)}"   # a new tag per build; never reuse one
+    tag="${2:-$(date -u +%Y%m%d-%H%M)}"   # UTC timestamp: a new tag per build that shows when it was built; use it as the app version name too
     docker tag br200-edgegap:local "$1:$tag"
     docker push "$1:$tag"
     echo "Pushed $1:$tag. Use this tag in your app version."

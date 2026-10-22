@@ -2,7 +2,7 @@
 name: edgegap-unity
 description: 'Unity + Edgegap: get a Unity multiplayer game online with dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a Unity project: it has the Unity workflow, tested C# templates (matchmaker client, server self-stop), Linux server build, Dockerfile, matchmaker config and fixes for known pitfalls. Use when a Unity dev wants online play: "put my game online", "play with people over the internet", "works on LAN/same wifi but not online", "nobody should have to host", "click Play and get matched", how Fall Guys/Among Us match players, servers for a playtest, "where do I start with servers". Also for Mirror host/client games moving to dedicated servers, WebGL multiplayer, or debugging Edgegap deployments, ports or matchmaking for a Unity game. Use even for beginners who never say Edgegap, servers or Docker. Not for NGO (edgegap-ngo), FishNet (edgegap-fishnet), PurrNet (edgegap-purrnet) or Fusion (edgegap-fusion) projects, Unreal (edgegap-unreal), Godot or non-game backends.'
 metadata:
-  version: "0.1.13"
+  version: "0.1.14"
 ---
 
 # Edgegap for Unity: dedicated servers + matchmaking
@@ -58,7 +58,7 @@ Read `references/deploy.md` §1-2. Make sure the developer has an account, Docke
 Read `references/deploy.md` §3-4.
 1. Build the Linux dedicated server to `Builds/EdgegapServer/ServerBuild`: by command line with `assets/unity/Editor/EdgegapServerBuild.cs` (project must be closed in the Editor), or the developer clicks the menu item.
 2. Copy `assets/docker/Dockerfile` and `.dockerignore` to the project root.
-3. Developer runs `docker login registry.edgegap.com` with the credentials from the dashboard Container Registry page. You run `docker build --platform linux/amd64 -t registry.edgegap.com/<project>/<image>:<tag> .` and `docker push`, with a fresh tag every build and never `latest`.
+3. Developer runs `docker login registry.edgegap.com` with the credentials from the dashboard Container Registry page. You run `docker build --platform linux/amd64 -t registry.edgegap.com/<project>/<image>:<tag> .` and `docker push`, with a fresh tag every build (UTC timestamp `YYYYMMDD-HHMM`, also the app version name), never `latest`.
 4. Optional but cheap: `docker run` locally and connect a client to it.
 
 ✅ Check: `edgegap_list_registry_tags` shows the tag.

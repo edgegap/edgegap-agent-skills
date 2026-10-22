@@ -1,6 +1,6 @@
 {
   "application": "br200",
-  "version": "br200-2026.10.19",
+  "version": "20261019-1430",
   "users": [
     { "user_type": "ip_address", "user_data": { "ip_address": "198.51.100.23" } },
     { "user_type": "ip_address", "user_data": { "ip_address": "203.0.113.71" } }

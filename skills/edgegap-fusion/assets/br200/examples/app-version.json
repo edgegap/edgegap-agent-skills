@@ -1,8 +1,8 @@
 {
-  "name": "br200-2026.10.19",
+  "name": "20261019-1430",
   "docker_repository": "registry.edgegap.com",
   "docker_image": "<your-registry-project>/br200",
-  "docker_tag": "<tag printed by scripts/package.sh>",
+  "docker_tag": "20261019-1430",
   "private_username": "<registry username from the dashboard>",
   "private_token": "<registry token from the dashboard>",
   "req_cpu": 1024,

@@ -40,7 +40,7 @@ Opening the project in a newer Unity re-serializes assets and bumps packages. Do
 
 Copy `assets/docker/Dockerfile` and `.dockerignore` to the project root. The build context is only `Builds/EdgegapServer` (minus `*_DoNotShip`). The Dockerfile installs CA certificates (for the HTTPS self-stop call), passes `$UNITY_COMMANDLINE_ARGS` to the server, and doesn't print the environment, which would leak the self-stop token.
 
-Tags: never `latest`, never reuse a tag.
+Tags: never `latest`, never reuse a tag (Edgegap caches by tag). Use a UTC timestamp `YYYYMMDD-HHMM` (e.g. `20261022-1430`, from `date -u +%Y%m%d-%H%M`), the same string for the image tag and the app version name, so anyone can see when the server was last updated.
 
 The developer logs in (Container Registry page in the dashboard):
 ```bash

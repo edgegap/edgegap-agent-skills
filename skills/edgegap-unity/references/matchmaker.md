@@ -64,7 +64,7 @@ Write the final file as `matchmaker-config.json` in the project root (it contain
       "ticket_expiration_period": "5m",
       "ticket_removal_period": "1m",
       "group_inactivity_removal_period": "5m",
-      "application": { "name": "my-game", "version": "v1" },
+      "application": { "name": "my-game", "version": "20261022-1430" },
       "rules": {
         "initial": {
           "match_size": {
