@@ -2,7 +2,7 @@
 name: edgegap-purrnet
 description: 'PurrNet + Edgegap: take a Unity game built on PurrNet to dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a PurrNet project (dev.purrnet.purrnet, NetworkManager start flags, UDPTransport, WebTransport, ParrelSync clones). It has PurrNet-ready C# templates verified on Edgegap that add themselves at runtime without editing scenes (server start and self-stop, connect panel with direct and matchmaker modes, settings asset), port 5000 UDP app version, Dockerfile, matchmaker config, and fixes for PurrNet pitfalls: auto start flags, the async StartClient, ObserversRpc that never runs on a dedicated server. Use when a PurrNet dev wants online play: "host my PurrNet game", "nobody should host", "works with a host but not online", "Find Match button", or is debugging PurrNet deployments, ports or matchmaking on Edgegap. Other Unity netcodes: edgegap-unity (NGO, Mirror) or edgegap-fishnet.'
 metadata:
-  version: "0.1.3"
+  version: "0.1.4"
 ---
 
 # Edgegap for PurrNet: dedicated servers + matchmaking
@@ -75,7 +75,7 @@ Read `references/deploy.md` §4-5.
 ## Phase 5: Matchmaker
 
 Read `references/matchmaker.md`.
-1. `assets/matchmaker/casual.json` (2-4 players, a 15 s expansion stage that keeps `min_team_size` at 2: without one, two players wait about 5 minutes) with the app name and version, or `edgegap_build_matchmaker_config`. Save as `matchmaker-config.json` in the project root. If other `matchmaker-config.json` files exist on the machine, give the developer the full path to upload.
+1. `assets/matchmaker/casual.json` (2-4 players, a 15 s expansion stage that keeps `min_team_size` at 2: without one, two players wait until their tickets expire; keep `ticket_expiration_period` at `30s`) with the app name and version, or `edgegap_build_matchmaker_config`. Save as `matchmaker-config.json` in the project root. If other `matchmaker-config.json` files exist on the machine, give the developer the full path to upload.
 2. Dashboard: Create Matchmaker → upload → Create and Start → copy **API URL** and **Auth Token**.
 3. `GET <API URL>/monitor` with the token answers.
 
@@ -89,7 +89,7 @@ Read `references/matchmaker.md`.
 
 1. `edgegap_list_deployments`: nothing of yours left running.
 2. `-executeMethod EdgegapServerBuild.BuildClient -edgegapClientTarget win64|mac|linux` → `Builds/Client/<target>`.
-3. Two clients, **Find Match** in both (or `-edgegapFindMatch` on the command line): searching → match found → joining → connected, both on one server. Test with two: a lone ticket may wait until it nearly expires.
+3. Two clients, **Find Match** in both (or `-edgegapFindMatch` on the command line): searching → match found → joining → connected, both on one server. Test with two: a lone ticket may wait until it nearly expires (30 s with the template).
 4. Server logs `2 matched player(s)` and `2 player(s) connected.` Close both → `Stopping deployment: all players left` → the deployment disappears.
 5. Debug with `references/troubleshooting.md`.
 

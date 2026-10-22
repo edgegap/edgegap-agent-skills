@@ -38,7 +38,7 @@ In order:
 
 | Symptom | Cause / fix |
 |---|---|
-| Two players stay `SEARCHING` for ~5 minutes, then match | The profile has no expansion stage, so the matchmaker waits to fill `max_team_size` (`matchmaker.md` §6). Add one |
+| Two players stay `SEARCHING` until their tickets expire, then match | The profile has no expansion stage, so the matchmaker waits to fill `max_team_size` (`matchmaker.md` §6). Add one |
 | 400 on tickets | Profile name or attributes don't match the config (or Unity before 2022.3 with SDK 3.5.5, §4) |
 | 401 | Wrong Auth Token, or a `Bearer`/`token` prefix |
 | `abandon failed (not found)` in the client log | The group expired or was removed before the client cancelled; harmless |

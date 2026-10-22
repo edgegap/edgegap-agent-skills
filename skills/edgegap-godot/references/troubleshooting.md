@@ -45,8 +45,8 @@ In order:
 | 400 on tickets | Profile name or attributes don't match the config |
 | Web build: every call fails with result code 0, desktop works | `allowed_cors_origins` misses the page's origin (`matchmaker.md` §2) |
 | Matchmaker deploys another game's server | The wrong `matchmaker-config.json` was uploaded: give the full path, check `application.name` |
-| Two players stay `SEARCHING` for ~5 minutes, then match | No expansion stage (`matchmaker.md` §6) |
-| A lone player waits ~5 minutes | Expected on the free tier: test with two clients |
+| Two players stay `SEARCHING` until their tickets expire, then match | No expansion stage (`matchmaker.md` §6) |
+| A lone player waits ~5 minutes | `ticket_expiration_period` is `5m`: a lone ticket may only match near expiry on the free tier. Set it to `30s`, or test with two clients |
 | Flips MATCH_FOUND ↔ SEARCHING | Free tier's one deployment is busy (stop test deployments), or the version can't deploy (registry credentials; do a direct deploy) |
 | New build not used | `application.version` not updated (Stop → Edit → Start) |
 | OFFLINE | Free-tier 3-hour shutdown: restart |

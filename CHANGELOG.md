@@ -2,6 +2,17 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.15.2 (2026-10-22)
+
+Short ticket expiration in every matchmaker config.
+
+- Matchmaker templates set `ticket_expiration_period` to `"30s"` (was `"5m"`, `"3m"` for Manus). On matchmaker 3.3.2 a lone or partial ticket may only get a match when it nears expiry, so a developer testing alone waited about 5 minutes and gave up before getting a server. Expansion keys that sat at or above 30 s move to 20 s (Manus solo stage, Unity `teams-latency` latency stage), so they still fire before tickets expire.
+  - New rule in `edgegap` `references/agent-rules.md`: every matchmaker config an agent writes or generates uses `30s`, with expansions below it; raise it only when the developer asks for longer production queues.
+  - Matchmaker references, `SKILL.md` steps and troubleshooting rows in `edgegap-unity`, `-ngo`, `-fishnet`, `-purrnet`, `-godot`, `-colyseus`, `-threejs` and `-manus` describe the 30 s value instead of the 5-minute wait.
+  - `edgegap-manus`: the backend's `searchTimeoutMs` drops from 120 s to 28 s so it stays below the ticket expiration.
+- Skills bumped (patch): edgegap 0.15.2, colyseus 0.1.3, fishnet 0.2.5, godot 0.1.3, manus 0.1.3, ngo 0.1.3, purrnet 0.1.4, threejs 0.1.2, unity 0.1.15. `edgegap-unreal` already used `20s`.
+- Not re-run on Edgegap with the 30 s value; eval fixtures (`evals/fixtures/broken-*`) keep their original configs.
+
 ## 0.15.1 (2026-10-22)
 
 Timestamp image tags and app versions.

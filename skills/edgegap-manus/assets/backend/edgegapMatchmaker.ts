@@ -92,7 +92,7 @@ export function configFromEnv(): MatchmakerConfig {
     },
     regions: ["north-america", "south-america", "europe", "asia", "oceania", "africa"],
     gamePortName: "gameport",
-    searchTimeoutMs: 120_000,
+    searchTimeoutMs: 28_000,
     allocationTimeoutMs: 90_000,
     pollIntervalMs: 2_000,
     assignmentTtlMs: 30 * 60_000,

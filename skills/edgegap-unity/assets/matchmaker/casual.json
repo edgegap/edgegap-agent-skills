@@ -5,7 +5,7 @@
   "allowed_cors_origins": ["http://localhost:8080"],
   "profiles": {
     "casual": {
-      "ticket_expiration_period": "5m",
+      "ticket_expiration_period": "30s",
       "ticket_removal_period": "1m",
       "group_inactivity_removal_period": "5m",
       "application": { "name": "my-game", "version": "20261022-1430" },

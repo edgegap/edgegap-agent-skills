@@ -56,7 +56,7 @@ Templates: `assets/matchmaker/casual.json` (one game) and `several-games.json` (
 
 - `application: {name, version}` = an existing, active version with registry credentials.
 - Free-for-all: `team_count: 1`, `min_team_size: 2`, `max_team_size: N`, and an expansion `"20": {"match_size": {"min_team_size": 1}}` so a lone player gets a server (with bots) after 20 s. Observed: 2 and 3 players on such a profile matched together in 12–16 s.
-- **Teams**: `team_count: 2`, `min_team_size: 1`, `max_team_size: 2` (1v1 or 2v2). Observed on 2026-10-22: 4 tickets → 2v2 in 4–6 s, each ticket carrying its `team_id` to the server (`MM_TICKET_<id>`). But with `min_team_size: 2` plus a `"20"` expansion to 1, two or three tickets did **not** match at 20 s: a 1v1 formed only when the tickets reached the 5 minute expiry. Start team profiles at the smallest size you accept instead of relying on the expansion. A team profile never matches a lone player: give solo players another mode.
+- **Teams**: `team_count: 2`, `min_team_size: 1`, `max_team_size: 2` (1v1 or 2v2). Observed on 2026-10-22: 4 tickets → 2v2 in 4–6 s, each ticket carrying its `team_id` to the server (`MM_TICKET_<id>`). But with `min_team_size: 2` plus a `"20"` expansion to 1, two or three tickets did **not** match at 20 s: a 1v1 formed only when the tickets reached their expiry (then 5 minutes; the templates now use `30s`). Start team profiles at the smallest size you accept instead of relying on the expansion. A team profile never matches a lone player: give solo players another mode.
 - `allowed_cors_origins`: every page origin. `inspect: true` while testing (`GET /inspect/tickets` shows queued tickets), `false` before launch.
 
 Ticket API (header `Authorization: <auth token>`, raw):
