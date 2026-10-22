@@ -18,9 +18,7 @@ docker run --rm -p 7777:7777 registry.edgegap.com/<project>/<image>:<tag>    # l
 docker push registry.edgegap.com/<project>/<image>:<tag>
 ```
 
-Tag with a UTC timestamp `YYYYMMDD-HHMM` (e.g. `20261022-1430`, from `date -u +%Y%m%d-%H%M`), the same string as the app version name, so anyone can see when the server was last updated. Never `latest`.
-
-The developer runs `docker login registry.edgegap.com` with the Container Registry credentials from the dashboard. Tag with a date or commit (`2026.10.22-1`), never `latest`. `edgegap_list_registry_tags` confirms the push.
+The developer runs `docker login registry.edgegap.com` with the Container Registry credentials from the dashboard. Tag with a UTC timestamp `YYYYMMDD-HHMM` (e.g. `20261022-1430`, from `date -u +%Y%m%d-%H%M`), the same string as the app version name, so anyone can see when the server was last updated. Never `latest`. `edgegap_list_registry_tags` confirms the push.
 
 ## 2. App versions
 
