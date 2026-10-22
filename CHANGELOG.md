@@ -2,6 +2,20 @@
 
 Each skill also carries its own `metadata.version` in its frontmatter, and the `edgegap` skill states the pack version (`Pack version:`), so an agent can tell which copy it has.
 
+## 0.15.0 (2026-10-22)
+
+Adds Three.js and other browser games with their own Node.js server.
+
+- New skill `edgegap-threejs` (0.1.0): browser games in Three.js (or Babylon.js, PlayCanvas, Phaser, canvas) with a plain Node.js `ws` server. One authoritative server per match on Edgegap; the page calls the matchmaker itself with the client-safe token and connects over `wss` with TLS Upgrade.
+  - Verified on Edgegap on 2026-10-22 with [netcode-sample-threejs-minigames](https://github.com/edgegap/netcode-sample-threejs-minigames): five games (top-down shooter, kart racer, 2v2 soccer, light cycles, sumo) in one image, one app version per game (`GAME` env), one matchmaker 3.3.2 with a profile per game. Headless players queued together landed on one deployment per game (2 to 4 players, 4 to 16 s), played full matches, and every server stopped itself about 17 s after its match. Soccer used the matchmaker's teams (`team_id` from `MM_TICKET_<id>`: 0, 0, 1, 1). A browser page on `http://localhost:8080` clicked Find Match and played with a headless player. A direct deployment did the same, and matched deployments nobody joined stopped after 120 s.
+  - Templates are that repo's shared files: a game-agnostic room (phases, fixed tick, 20 Hz snapshots, bots, input handshake with the ticket ID, waiting for every matched player), the lifecycle module (matchmaker env, self-stop), a skeleton game, a Dockerfile, a direct-deploy script, the no-build Three.js client shell (menu, Find Match, local and `?server=` modes, HUD, easing helpers), matchmaker and WebSocket clients, matchmaker configs (one game; five profiles with a team profile), and headless-player and e2e scripts. The skeleton was copied into an empty project and played locally and in Docker, including the empty-server self-stop.
+  - Pitfalls from the run: 14 tickets in the same second got `429` (clients back off); tickets left by a crashed run got matched with the next run's players; with `team_count: 2`, `min_team_size: 2` and a 20 s expansion to 1, two or three tickets only matched at the 5 minute expiry, so team profiles start at `min_team_size: 1`; bots that are too careful make rounds last 40 s.
+  - Not run: Babylon.js, PlayCanvas or Phaser clients, mobile browsers, `REQUIRE_TICKET=1`, latency rules, the skeleton game on Edgegap.
+- `edgegap` (0.15.0) routes Three.js and other browser games with their own Node.js server to `edgegap-threejs` instead of pointing them at `edgegap-manus`. Its description is slightly shorter, to stay under 1024 characters.
+- `edgegap-manus` (0.1.1) points web games that need no sign-in to `edgegap-threejs`.
+- README, plugin and marketplace descriptions name Three.js; the verified table lists the minigames run.
+- Evals: `evals/threejs-routing-eval.json` (16 queries: 8 for the new skill, 4 for neighbouring skills, 4 browser-game questions unrelated to hosting): 48/48 with the whole pack, 3 runs each. `evals/colyseus-routing-eval.json` re-run with the new skill installed: 47/48 (one run loaded `edgegap-colyseus` for an `allowReconnection` question; the custom Node.js server prompt still routes to `edgegap-server-design`). Task evals not run.
+
 ## 0.14.0 (2026-10-21)
 
 Adds PlayFab.
