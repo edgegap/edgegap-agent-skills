@@ -9,7 +9,7 @@ Auth on every call: `Authorization: token <uuid>` (the Edgegap API token). `Cont
 ```json
 {
   "application": "my-game-server",
-  "version": "prod",
+  "version": "20261022-1430",
   "users": [
     { "user_type": "ip_address", "user_data": { "ip_address": "75.28.35.192" } },
     { "user_type": "geo_coordinates", "user_data": { "latitude": 45.508888, "longitude": -73.561668 } }
@@ -35,7 +35,7 @@ Auth on every call: `Authorization: token <uuid>` (the Edgegap API token). `Cont
 {
   "request_id": "f68e011bfb01",
   "application": "my-game-server",
-  "version": "2024.01.30-16.23.00-UTC",
+  "version": "20261022-1430",
   "fqdn": "f68e011bfb01.pr.edgegap.net",
   "public_ip": "162.254.141.66",
   "deployed_at": "2026-02-10T20:35:48Z",

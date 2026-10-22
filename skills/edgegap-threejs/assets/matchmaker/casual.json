@@ -8,7 +8,7 @@
       "ticket_expiration_period": "5m",
       "ticket_removal_period": "1m",
       "group_inactivity_removal_period": "5m",
-      "application": { "name": "my-web-game", "version": "v1" },
+      "application": { "name": "my-web-game", "version": "20261022-1430" },
       "rules": {
         "initial": {
           "match_size": {

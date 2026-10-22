@@ -2,7 +2,7 @@
 name: edgegap-ngo
 description: 'Netcode for GameObjects (NGO) + Edgegap: take a Unity game built on NGO to dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on an NGO project (com.unity.netcode.gameobjects, NetworkManager, UnityTransport, StartHost, ConnectionManager, Boss Room). It has NGO C# templates verified on Edgegap that add themselves at runtime, no scene edits (server start and self-stop, Find Match panel, settings asset), a Boss Room ConnectionManager adapter, port 7777 UDP app version, Dockerfile, matchmaker config, and fixes for NGO pitfalls: host-only logic, connection payloads and approval, UnityTransport needing an IP, client-only code on the server, Relay leftovers. Use when an NGO dev wants online play: "host my NGO game", "nobody should host", "replace Unity Relay or Multiplay", "Boss Room on Edgegap", "Find Match button", or is debugging NGO deployments, ports or matchmaking on Edgegap. Mirror or WebGL-first games: edgegap-unity. FishNet: edgegap-fishnet. PurrNet: edgegap-purrnet.'
 metadata:
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Edgegap for Netcode for GameObjects: dedicated servers + matchmaking
@@ -56,7 +56,7 @@ Edgegap account, Docker running, Unity **Linux Build Support (Mono)** + **Linux 
 Read `references/deploy.md` §2-3.
 1. `"<Unity>" -batchmode -quit -projectPath "<project>" -executeMethod EdgegapServerBuild.Build -logFile build-server.log` → `Builds/EdgegapServer/ServerBuild`. A first import of a large project takes 10+ minutes: run it in the background.
 2. Copy `assets/docker/Dockerfile` and `.dockerignore` to the project root.
-3. The developer runs `docker login registry.edgegap.com`; you build with `--platform linux/amd64` and push a fresh tag.
+3. The developer runs `docker login registry.edgegap.com`; you build with `--platform linux/amd64` and push a fresh tag (UTC timestamp `YYYYMMDD-HHMM`, also the app version name).
 4. `docker run --rm -p 7777:7777/udp <image>` and connect two clients.
 
 ✅ Check: `edgegap_list_registry_tags` shows the tag.

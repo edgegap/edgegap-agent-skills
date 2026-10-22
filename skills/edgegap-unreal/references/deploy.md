@@ -62,7 +62,7 @@ From Git Bash on Windows, prefix `docker run` commands that pass a container pat
 
 - The developer runs `docker login registry.edgegap.com` with the username and token from the dashboard **Container Registry** page (or you use `edgegap_get_registry_credentials` when it returns them). Never put that token in files.
 - The registry project name is on the same page; images are `registry.edgegap.com/<registry-project>/<image>:<tag>`.
-- **A new tag for every build** (`v2`, `2026-10-14-1`, the git SHA), with a new app version pointing at it. Don't re-push a tag a version already uses: a host that already pulled that tag may keep running its cached image, and you can't tell which build ran.
+- **A new tag for every build**, with a new app version pointing at it: a UTC timestamp `YYYYMMDD-HHMM` (e.g. `20261022-1430`, from `date -u +%Y%m%d-%H%M`), the same string for the image tag and the app version name, so anyone can see when the server was last updated. Don't re-push a tag a version already uses: a host that already pulled that tag may keep running its cached image, and you can't tell which build ran.
 - `edgegap_list_registry_tags` with the image name only (no project prefix) confirms the push.
 
 ## 5. App and app version

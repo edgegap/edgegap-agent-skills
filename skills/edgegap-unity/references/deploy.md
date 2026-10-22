@@ -82,7 +82,7 @@ First run imports the whole project and can take many minutes, so run it in the 
 
 Copy `assets/docker/Dockerfile` and `assets/docker/.dockerignore` to the **project root** (merge with an existing `.dockerignore`: the build context should contain only `Builds/EdgegapServer`). Change `EXPOSE` to match the transport (documentation only). Or generate one with `edgegap_generate_dockerfile` (`engine: "unity"`, `netcode`, `ports`) and check an existing one with `edgegap_validate_server_config`.
 
-**Tag**: never `latest`, never reuse a tag (Edgegap caches by tag). Use a timestamp, e.g. `2026.10.09-1530`. No spaces.
+**Tag**: never `latest`, never reuse a tag (Edgegap caches by tag). Use a UTC timestamp `YYYYMMDD-HHMM` (e.g. `20261022-1430`, from `date -u +%Y%m%d-%H%M`), the same string for the image tag and the app version name, so anyone can see when the server was last updated.
 
 **Registry credentials**: Edgegap Container Registry page, https://app.edgegap.com/registry-management/repositories/list: **Project**, **Username** (`robot$...+client-push`), **Token**. (`edgegap_get_registry_credentials` returns 403 for normal API tokens, so don't rely on it; it only works with plugin quick-start tokens.) Ask the developer to log in themselves so the registry token stays out of the chat:
 
@@ -112,7 +112,7 @@ Other registries (Docker Hub, GHCR, ECR, GitLab) work too. Use their host as `do
 | Field | Value |
 |---|---|
 | application | the app |
-| name | version name, e.g. `v1` or the image tag |
+| name | the image tag, e.g. `20261022-1430` |
 | docker_repository | `registry.edgegap.com` (host only, no scheme) |
 | docker_image | `<project>/<image>` |
 | docker_tag | the pushed tag |

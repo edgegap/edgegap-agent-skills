@@ -42,7 +42,7 @@ Expected clients: `CT=Relayed ... players=2 ... runnerScene=Deathmatch#1`, `exce
 
 ## 4. Edgegap
 
-1. `docker login registry.edgegap.com` (the developer, with the Container Registry credentials from the dashboard), then `scripts/package.sh registry.edgegap.com/<project>/simplefps <new-tag>`. Use a new tag per build, never `latest`.
+1. `docker login registry.edgegap.com` (the developer, with the Container Registry credentials from the dashboard), then `scripts/package.sh registry.edgegap.com/<project>/simplefps`. It tags with the UTC time, `YYYYMMDD-HHMM` (e.g. `20261022-1430`); use the same string as the app version name, so anyone can see when the server was last updated. A new tag per build, never `latest`.
 2. `edgegap_create_app` once, then `edgegap_create_app_version`:
    - image `registry.edgegap.com` / `<project>/simplefps` / the tag
    - `cpu_units` 1024, `memory_mb` 2048

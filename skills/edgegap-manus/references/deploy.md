@@ -73,7 +73,7 @@ Free tier: the matchmaker stops 3 hours after each start; restart it from the li
 
 ## 6. Shipping a new server build
 
-1. Push changes to `game-server/` → the workflow pushes a new tag.
-2. New app version with that tag (copy the previous version, change the tag).
+1. Push changes to `game-server/` → the workflow pushes a new tag, the UTC time `YYYYMMDD-HHMM` (e.g. `20261022-1430`).
+2. New app version named with that same tag (copy the previous version, change the name and tag), so anyone can see when the server was last updated.
 3. Matchmaker: **Stop → Edit** `application.version` in every profile **→ Start**. Forgetting this keeps deploying the old build.
 4. If the protocol changed, ship the browser change together with the matchmaker switch, or make the server accept both for a while.

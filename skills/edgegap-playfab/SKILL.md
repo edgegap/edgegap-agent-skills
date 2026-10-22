@@ -2,7 +2,7 @@
 name: edgegap-playfab
 description: 'PlayFab + Edgegap: keep PlayFab for players, login and Matchmaking, and run each match on its own Edgegap dedicated server near the players, started by PlayFab Azure Functions (CloudScript using Azure Functions), end to end. Load this before using any Edgegap MCP tool on a project that uses PlayFab for matchmaking (a PlayFab title ID, playfabapi.com, PlayFabMultiplayerAPI, CreateMatchmakingTicket) or is leaving PlayFab Multiplayer Servers (MPS, GSDK). Verified on Edgegap with a Unity FishNet game: match_found rule, StartEdgegapDeployment (POST /v2/deployments near the players), ready webhook, server address in player read-only data. Ships the Azure Functions, setup scripts, a dependency-free Unity client, server self-stop, and fixes for PlayFab pitfalls (new titles block LoginWithCustomID player creation, legacy CloudScript, ticket polling limits). Use for "PlayFab matchmaking with Edgegap servers", "replace PlayFab Multiplayer Servers", "PlayFab CloudScript Edgegap bridge", or debugging one.'
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Edgegap for PlayFab games: PlayFab matches players, Edgegap runs the match
@@ -55,7 +55,7 @@ Read `references/game-server.md`.
 
 ## Phase 2: Image, app version, one direct deployment
 
-1. Dockerfile (Unity: `assets/docker/`; other engines: `edgegap-containerize`), `docker build --platform linux/amd64`, the developer runs `docker login registry.edgegap.com`, push a fresh tag.
+1. Dockerfile (Unity: `assets/docker/`; other engines: `edgegap-containerize`), `docker build --platform linux/amd64`, the developer runs `docker login registry.edgegap.com`, push a fresh tag (UTC timestamp `YYYYMMDD-HHMM`, also the app version name).
 2. `edgegap_create_app` + `edgegap_create_app_version`: name the game port **`gameport`** (the functions look it up by that name), with its protocol (UDP for most netcodes). 0.5 vCPU / 1 GB, max duration 60. No env vars. The developer adds the registry credentials on the version; check `registry_credentials_set: true` with `edgegap_list_app_versions`. To ship a new image later without retyping them, `edgegap_update_app_version` to the new tag.
 3. `edgegap_deploy` near the developer, `edgegap_wait_for_deployment`, read the logs, connect one client by hand, `edgegap_stop_deployment`.
 

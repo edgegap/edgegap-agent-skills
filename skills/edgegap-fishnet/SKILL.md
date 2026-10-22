@@ -2,7 +2,7 @@
 name: edgegap-fishnet
 description: 'FishNet (Fish-Networking) + Edgegap: take a Unity game built on FishNet to dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on a FishNet project (Assets/FishNet, Tugboat, Bayou, Multipass, ServerManager, NetworkHudCanvas). It has FishNet-ready C# templates verified on Edgegap (matchmaker client, server self-stop, scene-change persistence), the Start On Headless and WebGL/Bayou wss setup, port 7770 app version, Dockerfile, matchmaker config and fixes for known pitfalls, including the SDK JSON bug on Unity before 2022.3. Use when a FishNet dev wants online play: "host my FishNet game", "players should not host", "works on LAN but not online", "Find Match button", "FishNet WebGL on Edgegap", moving off the old FishNet Edgegap samples that call the API from the client, or debugging FishNet deployments, ports or matchmaking. Other Unity netcodes (NGO, Mirror): edgegap-unity.'
 metadata:
-  version: "0.2.3"
+  version: "0.2.4"
 ---
 
 # Edgegap for FishNet: dedicated servers + matchmaking
@@ -57,7 +57,7 @@ Make sure the developer has an Edgegap account, Docker running, and the Unity **
 Read `references/deploy.md` §2-3.
 1. `"<Unity>" -batchmode -quit -projectPath "<project>" -executeMethod EdgegapServerBuild.Build -logFile build-server.log` → `Builds/EdgegapServer/ServerBuild`.
 2. Copy `assets/docker/Dockerfile` and `.dockerignore` to the project root.
-3. The developer runs `docker login registry.edgegap.com`. You build and push `registry.edgegap.com/<project>/<image>:<tag>` with `--platform linux/amd64` and a fresh tag.
+3. The developer runs `docker login registry.edgegap.com`. You build and push `registry.edgegap.com/<project>/<image>:<tag>` with `--platform linux/amd64` and a fresh tag (UTC timestamp `YYYYMMDD-HHMM`, also the app version name).
 4. Local smoke test: `docker run --rm -p 7770:7770 <image>` (Tugboat: `-p 7770:7770/udp`) and connect a client.
 
 ✅ Check: `edgegap_list_registry_tags` shows the tag.

@@ -28,11 +28,11 @@ jobs:
           username: ${{ secrets.EDGEGAP_REGISTRY_USERNAME }}
           password: ${{ secrets.EDGEGAP_REGISTRY_TOKEN }}
       - id: tag
-        run: echo "tag=$(date -u +%Y%m%d)-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+        run: echo "tag=$(date -u +%Y%m%d-%H%M)" >> "$GITHUB_OUTPUT"   # UTC timestamp: shows when the server was last updated
       - uses: docker/build-push-action@v6
         with:
           context: game-server
           platforms: linux/amd64
           push: true
           tags: ${{ vars.EDGEGAP_IMAGE }}:${{ steps.tag.outputs.tag }}
-      - run: echo "Pushed ${{ vars.EDGEGAP_IMAGE }}:${{ steps.tag.outputs.tag }} - create an app version with this tag." >> "$GITHUB_STEP_SUMMARY"
+      - run: echo "Pushed ${{ vars.EDGEGAP_IMAGE }}:${{ steps.tag.outputs.tag }} - create an app version named and tagged with it." >> "$GITHUB_STEP_SUMMARY"

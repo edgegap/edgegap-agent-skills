@@ -30,10 +30,10 @@ scripts/package.sh
 This builds `br200-edgegap:local` for `linux/amd64` from `edgegap/Dockerfile`, which uses Ubuntu 22.04 and a non-root user. The image is about 430 MB with IL2CPP. The kit's `.dockerignore` sends only `Builds/EdgegapServer` and the start script to Docker, not the whole Unity project. With an argument, the script also tags and pushes:
 
 ```bash
-scripts/package.sh registry.edgegap.com/<project>/br200 <new-tag>
+scripts/package.sh registry.edgegap.com/<project>/br200
 ```
 
-Use a new tag per build. The developer logs in first (`docker login registry.edgegap.com`) with the Container Registry credentials from the dashboard.
+Without a tag argument the script uses the UTC time, `YYYYMMDD-HHMM` (e.g. `20261022-1430`). Use a new tag per build and the same string as the app version name, so anyone can see when the server was last updated. The developer logs in first (`docker login registry.edgegap.com`) with the Container Registry credentials from the dashboard.
 
 ## 4. Local test
 

@@ -2,7 +2,7 @@
 name: edgegap-unreal
 description: 'Unreal Engine + Edgegap: get an Unreal multiplayer game online with dedicated servers and matchmaking, end to end. Load this before using any Edgegap MCP tool on an Unreal project: it has the Unreal workflow, tested C++ drop-ins (matchmaker client with latency beacons, server self-stop), source-engine and Linux cross-compile setup, server packaging, Dockerfile, matchmaker config and fixes for the pitfalls that cost hours. Use when an Unreal dev wants online play: "put my game online", "players can only join on LAN", "nobody should have to host", "click Play and get matched", listen server to dedicated server, a .uproject that needs servers, "open <ip>" connections, packaging a Linux server, or debugging Edgegap deployments, ports or matchmaking for an Unreal game. Covers C++ and Blueprint-only projects. Use even for beginners who never say Edgegap, servers or Docker. Not for Unity (edgegap-unity), Godot or non-game backends.'
 metadata:
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Edgegap for Unreal Engine: dedicated servers + matchmaking
@@ -65,7 +65,7 @@ Read `references/deploy.md` §2-4.
 1. Package the Linux server with `RunUAT BuildCookRun -server -noclient -serverplatform=Linux` into `Packaged/LinuxServer` (§2). Background it; the first run is about an hour.
 2. Copy `assets/docker/Dockerfile` and `.dockerignore` to the repo root and replace `<Module>`/`<Project>` (§3). The Dockerfile runs the server binary directly (not the generated `.sh`) with `-stdout -FullStdOutLogOutput`; both matter.
 3. `docker build --platform linux/amd64`, run it locally: the log must show `listening on port 7777` and `docker stop` must exit within seconds.
-4. Developer logs Docker into `registry.edgegap.com` with the dashboard Container Registry credentials; you push with a **new tag every build**, never reusing one (Edgegap hosts cache tags).
+4. Developer logs Docker into `registry.edgegap.com` with the dashboard Container Registry credentials; you push with a **new tag every build** (UTC timestamp `YYYYMMDD-HHMM`, also the app version name), never reusing one (Edgegap hosts cache tags).
 
 ✅ Check: `edgegap_list_registry_tags` shows the tag.
 
